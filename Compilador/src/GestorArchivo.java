@@ -17,6 +17,7 @@ public class GestorArchivo {
             int caracterArchivo = fileReader.read();
             while (caracterArchivo!= -1){
                 value = (char)caracterArchivo;
+                System.out.println(value);
                 matrizTransicion.leerCaracterArchivo(value);
                 caracterArchivo = fileReader.read();
             }
