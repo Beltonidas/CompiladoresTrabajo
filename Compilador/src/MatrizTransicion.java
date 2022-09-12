@@ -2,7 +2,7 @@ public class MatrizTransicion {
     private int matrizEstado [][];
     private int row;
     private int col;
-    //Se puede implementar los simbolos con un hashS
+    //Se puede implementar los simbolos con un hash, la idea es buscar la columna dependeindo el simbolo.
 
     public MatrizTransicion(int row, int col) {
         this.matrizEstado = new int[row][col];
@@ -13,7 +13,7 @@ public class MatrizTransicion {
     }
 
     public void leerCaracterArchivo(char caracterArchivo){
-        //Este metodo lee el caracater y determina que caracter es
+        //Este metodo lee el caracater, se tiene que determinar que caracter es para que luego vaya ejecutando los saltos para luego llegar al estado final
     }
 
     public int identificarCaracter(){

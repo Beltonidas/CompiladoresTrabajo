@@ -12,6 +12,7 @@ public class GestorArchivo {
     }
 
     public void readCode(String urlArchivo){
+        // Leo caracter por caracter, hasta que finalice el archivo
 
         try {
             int caracterArchivo = fileReader.read();
