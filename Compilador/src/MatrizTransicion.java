@@ -45,7 +45,15 @@ public class MatrizTransicion {
     }
 
     public int identificarCaracter(Character character){
+        //Si no es ninguno de los anteriores entonces, buscar en la tabla
         String aux = String.valueOf(character);
+        //Mayuscula
+        if (aux.equals(aux.toLowerCase()))
+            return 4;
+        if (aux.equals(aux.toUpperCase()))
+            return 5;
+        
+        
         return simbolos.get(aux);
     }
 
