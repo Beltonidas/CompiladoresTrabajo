@@ -1,16 +1,22 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MatrizTransicion {
     private int matrizEstado [][];
-    private int row;
-    private int col;
+    private List listCaracteresAcumulados;
+    private int indexFila;
+    private int indexCol;
     //Se puede implementar los simbolos con un hash, la idea es buscar la columna dependeindo el simbolo.
-    private Map simbolos;
+    private HashMap<String, Integer> simbolos;
 
-    public MatrizTransicion(int row, int col) {
-        this.matrizEstado = new int[row][col];
-        this.simbolos = new HashMap<Character, Integer>();
+    public MatrizTransicion(int[][] matriz, HashMap<String, Integer> indexSimbolo) {
+        this.matrizEstado = matriz;
+        this.simbolos = indexSimbolo;
+        this.listCaracteresAcumulados = new ArrayList<>();
+        this.indexCol = 0;
+        this.indexFila = 0;
     }
 
     public void generarMatriz(){
@@ -25,11 +31,22 @@ public class MatrizTransicion {
 
     public void leerCaracterArchivo(char caracterArchivo){
         //Este metodo lee el caracater, se tiene que determinar que caracter es para que luego vaya ejecutando los saltos para luego llegar al estado final
+        System.out.println("el index es"+ indexCol);
+        indexCol = identificarCaracter(caracterArchivo);
+        System.out.println("el index es"+ indexCol);
+        listCaracteresAcumulados.add(caracterArchivo);
+        if(matrizEstado[indexFila][indexCol] == -1){
+            // disparar accion semantica
+            System.out.println("entre en eñ estado final");
+            indexFila = 0;
+            listCaracteresAcumulados.clear();
+        }
+        indexFila = matrizEstado[indexFila][indexCol];
     }
 
-    public int identificarCaracter(){
-        //este metodo dependiendo del carcater que toque lo identifica y retorna el valor de la columna
-        return -1;
+    public int identificarCaracter(Character character){
+        String aux = String.valueOf(character);
+        return simbolos.get(aux);
     }
 
     public void ejecutarMovimiento(){
