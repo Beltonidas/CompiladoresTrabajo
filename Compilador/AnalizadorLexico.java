@@ -11,8 +11,8 @@ import java.util.Scanner;
 public class AnalizadorLexico {
     public static final int CANT_SIMBOLOS = 28;
     public static final int CANT_ESTADOS = 14;
-    public static final String MATRIZ_TRANS = "src//TablaTransicion.txt";
-    public static final String ARCHIVO_SIMBOLO = "src//TablaDistintosSimbolos.txt";
+    public static final String MATRIZ_TRANS = "C://Users//Tomas//OneDrive//Escritorio//Facultad//4to//Compiladores//CompiladoresTrabajo//testFiles//TablaTransicion.txt";
+    public static final String ARCHIVO_SIMBOLO = "C://Users//Tomas//OneDrive//Escritorio//Facultad//4to//Compiladores//CompiladoresTrabajo//testFiles//TablaDistintosSimbolos.txt";
     
         /*
          * En el archivo de la matriz de transicion utilizamos la siguiente convencion:
@@ -45,7 +45,7 @@ public class AnalizadorLexico {
         System.out.println("Hello there");
 
         //-- Generamos la instancia de gestor de archivo y luego procesamos los caracatres
-        String ruta = "C://CompiladoresTrabajo//Compilador//src//prueba.txt";
+        String ruta = "C://Users//Tomas//OneDrive//Escritorio//Facultad//4to//Compiladores//CompiladoresTrabajo//testFiles//prueba.txt";
         GestorArchivo gestorArchivo = new GestorArchivo(ruta);
         gestorArchivo.readCode();
 
@@ -76,6 +76,7 @@ public class AnalizadorLexico {
         for (int i = 0; i < gestorArchivo.getCharacater().size(); i++) {
             //te moves en ña matrix de estado hasta encontrar el esatdo final
             //si estas en un estado final colocas -1 
+            System.out.println("el simbolo es: "+ gestorArchivo.getCharacater().get(i));
             matrizTransicion.leerCaracterArchivo(gestorArchivo.getCharacater().get(i));
         }
         
