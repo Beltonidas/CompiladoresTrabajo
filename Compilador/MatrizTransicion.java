@@ -1,62 +1,112 @@
 package Compilador;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Scanner; 
 
 public class MatrizTransicion {
-    private int matrizEstado [][];
-    private List listCaracteresAcumulados;
+
+    /*
+    * En el archivo de la matriz de transicion utilizamos la siguiente convencion:
+    * Estado final, F = -1
+    * Estado error, e = -2
+    */
+    private final String MATRIZ_TRANS = "./testFiles/TablaTransicion.txt";
+    private final int FILAS_TRANS = 14;
+    private final int COLUMNAS_TRANS = 28;
+    private static final String ARCHIVO_SIMBOLO = "./testFiles/TablaDistintosSimbolos.txt";
+
+    //Posicion actual en la tabla
     private int indexFila;
     private int indexCol;
-    //Se puede implementar los simbolos con un hash, la idea es buscar la columna dependeindo el simbolo.
-    private HashMap<String, Integer> simbolos;
 
-    public MatrizTransicion(int[][] matriz, HashMap<String, Integer> indexSimbolo) {
-        this.matrizEstado = matriz;
-        this.simbolos = indexSimbolo;
-        this.listCaracteresAcumulados = new ArrayList<>();
+    //Matriz de transicion de estados
+    private int matrizEstado [][];
+
+    private MatrizAccionSemantica matrizAccionSemantica;
+
+    //Indice de simbolos
+    private HashMap<String, Integer> indexSimbolo;
+
+    public MatrizTransicion() {
+        this.cargarMatrizTrans();
+        this.cargarSimbolos();
         this.indexCol = 0;
         this.indexFila = 0;
     }
 
-    public void generarMatriz(){
-        // Se completan los datos de la matriz de transicion
-
-    }
-    public void cargarSimbolos(){
-        // hay que completar el hashmap para identificar los simbolos especias
-        // .	<	>	!	"="	"+"	"-"	"*"	"/"	{	}	[	]	(	)	,	;	:	´	"_"	$
-        // la idea de usar este map, es que dado el simbolo que entro nos devuelva la columna en el estado 0;
-    }
-
-    public void leerCaracterArchivo(char caracterArchivo){
-        //Este metodo lee el caracater, se tiene que determinar que caracter es para que luego vaya ejecutando los saltos para luego llegar al estado final
-        //System.out.println("el index columna "+ indexCol);
-        //System.out.println("el index fila "+ indexCol);
-        indexCol = identificarCaracter(caracterArchivo);
-        indexFila = matrizEstado[indexFila][indexCol];
-        //System.out.println("el index columna "+ indexCol);
-        //System.out.println("el index fila "+ indexFila);
-        if (indexFila == -1){
-            // disparar accion semantica
-            System.out.println("entre en el estado final");
-            System.out.println("el token es: ");
-            for (int i = 0; i < listCaracteresAcumulados.size(); i++) {
-                System.out.println(listCaracteresAcumulados.get(i));
+    public void cargarMatrizTrans() {
+        this.matrizEstado = new int[FILAS_TRANS][COLUMNAS_TRANS];
+        try {
+            Scanner s = new Scanner(new File(MATRIZ_TRANS));
+            
+            for (int i=0; i<FILAS_TRANS; i++) {
+                for (int j=0; j<COLUMNAS_TRANS; j++) {
+                    this.matrizEstado[i][j] = Integer.parseInt(s.nextLine());
+                }
             }
-            indexFila = 0;
-            listCaracteresAcumulados.clear();
+            s.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("No se ha podido leer el archivo localizado en: " + MATRIZ_TRANS);
+            e.printStackTrace();
         }
-        //System.out.println("Valor en la matriz= "+ matrizEstado[indexFila][indexCol]);
-        listCaracteresAcumulados.add(caracterArchivo);
+    }
+
+    public void cargarSimbolos(){
+        indexSimbolo = new HashMap<String, Integer>();
+        try {
+            String simbolo;
+            int index;
+            Scanner scanner = new Scanner(new File(ARCHIVO_SIMBOLO));
+            while (scanner.hasNext()){
+                simbolo = scanner.nextLine();
+                index = Integer.parseInt(scanner.nextLine());
+                indexSimbolo.put(simbolo, index);
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("No se ha podido leer el archivo localizado en: " + ARCHIVO_SIMBOLO);
+            e.printStackTrace();
+        }
+    }
+
+    public Integer leerCaracterArchivo(char caracterArchivo, Boolean unico){
+        System.out.println("el caracter es: "+caracterArchivo);
+        indexCol = identificarCaracter(caracterArchivo);
+        matrizAccionSemantica.ejecutar(indexFila, indexCol, caracterArchivo);
+        indexFila = matrizEstado[indexFila][indexCol];
+        if (indexFila == -1 ){
+            System.out.println("Estado final");
+            indexFila = 0;
+            indexCol = 0;
+        }
+        return 1;
+    }
+
+
+
+
+    public Integer leerCaracterArchivo2(char caracterArchivo, Boolean unico){
+        System.out.println("el caracter es: "+caracterArchivo);
+        indexCol = identificarCaracter(caracterArchivo);
+        //matrizAccionSemantica.ejecutar(indexFila, indexCol, caracterArchivo);
+        indexFila = matrizEstado[indexFila][indexCol];
+        if (indexFila == -1 ){
+            anterior = caracterArchivo;
+            System.out.println("Estado final");
+            indexFila = 0;
+            indexCol = 0;
+        }
+        return 1;
     }
 
     public int identificarCaracter(Character character){
         //Si no es ninguno de los anteriores entonces, buscar en la tabla
         String aux = String.valueOf(character);
-        if (simbolos.containsKey(aux))
-            return simbolos.get(aux);
+        if (indexSimbolo.containsKey(aux))
+            return indexSimbolo.get(aux);
         //Numero
         boolean isNumeric =  aux.matches("[+-]?\\d*(\\.\\d+)?");
         if (isNumeric)
@@ -73,9 +123,5 @@ public class MatrizTransicion {
         if (aux.equals(aux.toUpperCase()))
             return 5;
         return -1;
-    }
-
-    public void ejecutarMovimiento(){
-        // en este metodo se simulan las tranciciones de estado
     }
 }

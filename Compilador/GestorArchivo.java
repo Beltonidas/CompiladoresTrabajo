@@ -1,44 +1,32 @@
 package Compilador;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GestorArchivo {
-    private FileReader fileReader;
-    private char value;
-    private MatrizTransicion matrizTransicion;
-    private ArrayList listCaracteres;
-    private String rutaArchivo;
 
-    public GestorArchivo(String rutaArchivo){
-        this.fileReader = null;
-        //this.matrizTransicion = matrizTransicion;
-        this.value = (char) -1;
-        this.listCaracteres = new ArrayList<Character>();
-        this.rutaArchivo = rutaArchivo;
+    public GestorArchivo(){
     }
 
-
-    public void readCode(){
+    // Abre el earchivo y te devuelve la lista de carateres con el codigo
+    public static List<Character> readCode(String rutaArchivo){
+        List<Character> listaCaracteres = new ArrayList<Character>();
         // Leo caracter por caracter, hasta que finalice el archivo
         try {
-            fileReader = new FileReader(rutaArchivo);
+            Character value;
+            FileReader fileReader = new FileReader(rutaArchivo);
             int caracterArchivo = fileReader.read();
             while (caracterArchivo!= -1){
                 value = (char)caracterArchivo;
-                System.out.println(value);
-                listCaracteres.add(value);
-                //matrizTransicion.leerCaracterArchivo(value);
+                listaCaracteres.add(value);
+                System.out.print(value);
                 caracterArchivo = fileReader.read();
             }
             fileReader.close();
-            
+            return listaCaracteres;
         } catch (Exception e) {
-            System.out.println("No se pudo leer el archivo");
+            System.out.println(e.getMessage());
         }
+        return null;
     }
-
-    public ArrayList<Character> getCharacater(){
-        return listCaracteres;
-    }
-
 }
