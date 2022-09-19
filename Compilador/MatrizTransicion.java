@@ -36,6 +36,14 @@ public class MatrizTransicion {
         this.indexCol = 0;
         this.indexFila = 0;
     }
+    public void getMatriz(){
+        for (int i = 0; i < FILAS_TRANS; i++) {
+            for (int j = 0; j < COLUMNAS_TRANS; j++) {
+                System.out.print("["+ matrizEstado[i][j] +"]");
+            }
+            System.out.println("");
+        }
+    } 
 
     public void cargarMatrizTrans() {
         this.matrizEstado = new int[FILAS_TRANS][COLUMNAS_TRANS];
@@ -123,5 +131,5 @@ public class MatrizTransicion {
         indexFila = value;
     }
 
-
+    //
 }

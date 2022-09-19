@@ -1,1 +1,3 @@
-Hola = 19;
+int hola =: 37;
+hola como estas;
+123+34;
