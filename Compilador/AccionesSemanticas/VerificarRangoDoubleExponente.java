@@ -36,7 +36,7 @@ public class VerificarRangoDoubleExponente implements AccionSemantica {
          * 3.0 D +120
          * 3.0 D -120
          * 
-         * (Caso 3)
+         * (Caso 3)   ,,
          * 0.3 D 120
          * 0.3 D +120
          * 0.3 D -120

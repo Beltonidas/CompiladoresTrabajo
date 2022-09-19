@@ -72,6 +72,10 @@ public class MatrizTransicion {
         }
     }
 
+    public HashMap<String, Integer> getSimbolos(){
+        return indexSimbolo;
+    }
+    
     public Integer leerCaracterArchivo(char caracterArchivo, Boolean unico){
         System.out.println("el caracter es: "+caracterArchivo);
         indexCol = identificarCaracter(caracterArchivo);
@@ -107,4 +111,17 @@ public class MatrizTransicion {
             return 5;
         return -1;
     }
+
+    public int ejecutarCambioEstado(char caracterArchivo, int indiceColumna){
+        // nos interesa saber cunado es final para disparar las acciones semanticas
+        indexCol = indiceColumna;
+        indexFila = matrizEstado[indexFila][indexCol];
+        return indexFila;
+    }
+
+    public void setIndexFila(int value){
+        indexFila = value;
+    }
+
+
 }
