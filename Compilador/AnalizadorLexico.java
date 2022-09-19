@@ -33,7 +33,7 @@ public class AnalizadorLexico {
              i=i+proximo;
          } */
         //Procesamos el archivo
-        /* int iteradorListaCaracteres = 0;
+        int iteradorListaCaracteres = 0;
         int valorSignoColumna = -1;
         int proximoMovimiento;
         Character simboloProcesar;
@@ -52,6 +52,6 @@ public class AnalizadorLexico {
                 listaCaracteresAcumulados.clear();
             }
             iteradorListaCaracteres++;
-        }  */
+        }
     }
 }
