@@ -12,17 +12,56 @@ public class AnalizadorLexico {
         String ruta = "./testFiles/prueba.txt";
         List<List<Character>> listaCaracteres = GestorArchivo.readCode(ruta);
         List<Character> listaCaracteresAcumulados = new ArrayList<>();
-        //System.out.println(listaCaracteres);
-        for (int i = 0; i < listaCaracteres.size(); i++) {
-            System.out.println(listaCaracteres.get(i));
-        }
+
+        // Imprimir la lista de cacteres
+        /*
+            for (int i = 0; i < listaCaracteres.size(); i++) {
+                System.out.println(listaCaracteres.get(i));
+            }
+         */
 
         //Cargamos la matriz de transicion
         MatrizTransicion matrizTransicion = new MatrizTransicion();
-        matrizTransicion.getMatriz();
+        
         //Procesamos el archivo
 
-        /* int iteradorListaCaracteres = 0;
+        int iteradorListaCaracteres = 0;
+        Character simboloProcesar;
+        List<Character> lineaProcesar = null;
+
+        while (iteradorListaCaracteres < listaCaracteres.size()){
+            lineaProcesar = listaCaracteres.get(iteradorListaCaracteres);
+            for (int i = 0; i < lineaProcesar.size(); i++) {
+                simboloProcesar = lineaProcesar.get(i);
+                // enviar simbolo a la matriz de transicion
+                matrizTransicion.leerCaracterArchivo(simboloProcesar, false);
+            }   
+        }
+            iteradorListaCaracteres++;
+    }
+}
+
+
+
+
+
+// --------------------- CODIGO BASURA --------------
+    /* int i = 0;
+         boolean unico = false;
+         while (i<listaCaracteres.size()) {
+             Integer proximo = matrizTransicion.leerCaracterArchivo(listaCaracteres.get(i),unico);
+             if (proximo == 0){
+                 //Chequear que no sea un simbolo de longitud 1
+                 unico = true;
+             }
+             if (unico){
+                 proximo=1;
+                 unico=false;
+             }
+             i=i+proximo;
+         } 
+         
+         int iteradorListaCaracteres = 0;
         int valorSignoColumna = -1;
         int proximoMovimiento;
         Character simboloProcesar;
@@ -41,26 +80,7 @@ public class AnalizadorLexico {
                 listaCaracteresAcumulados.clear();
             }
             iteradorListaCaracteres++;
-        } */
-    }
-
-
-
-
-
-    // ------- CODIGO BASURA --------------
-    /* int i = 0;
-         boolean unico = false;
-         while (i<listaCaracteres.size()) {
-             Integer proximo = matrizTransicion.leerCaracterArchivo(listaCaracteres.get(i),unico);
-             if (proximo == 0){
-                 //Chequear que no sea un simbolo de longitud 1
-                 unico = true;
-             }
-             if (unico){
-                 proximo=1;
-                 unico=false;
-             }
-             i=i+proximo;
-         } */
-}
+        }
+         
+         
+    */
