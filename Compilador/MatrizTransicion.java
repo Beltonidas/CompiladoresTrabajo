@@ -85,23 +85,6 @@ public class MatrizTransicion {
         return 1;
     }
 
-
-
-
-    public Integer leerCaracterArchivo2(char caracterArchivo, Boolean unico){
-        System.out.println("el caracter es: "+caracterArchivo);
-        indexCol = identificarCaracter(caracterArchivo);
-        //matrizAccionSemantica.ejecutar(indexFila, indexCol, caracterArchivo);
-        indexFila = matrizEstado[indexFila][indexCol];
-        if (indexFila == -1 ){
-            anterior = caracterArchivo;
-            System.out.println("Estado final");
-            indexFila = 0;
-            indexCol = 0;
-        }
-        return 1;
-    }
-
     public int identificarCaracter(Character character){
         //Si no es ninguno de los anteriores entonces, buscar en la tabla
         String aux = String.valueOf(character);

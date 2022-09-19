@@ -24,6 +24,7 @@ public class TokenLexema {
 		return lexema;
 	}
 	
+	
 	@Override
 	public boolean equals(Object o) {
 		try {
