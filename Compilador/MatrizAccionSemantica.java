@@ -1,40 +1,56 @@
 package Compilador;
 
 import java.util.List;
+import java.util.Scanner;
+
+import Compilador.AccionesSemanticas.AccionSemantica;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class MatrizAccionSemantica{
     
-    private int[][] matriz;
-    private Character ultimoCaracter;
-    private MatrizTransicion matrizTransicion;
+    private int[][] matrizSemantica;
+    private List<AccionSemantica> accionesSemanticas = new ArrayList<AccionSemantica>();
+    private Boolean modoComentario = false;
+    private final String MATRIZ_SEM = "./testFiles/TablaSemantica.txt";
+    private final int FILAS_SEM = 14;
+    private final int COLUMNAS_SEM = 28;
 
     public MatrizAccionSemantica() {
-
-    }
-    public Character getUltimoCaracter(){
-        return ultimoCaracter;
+        this.cargarMatrizSemantica();
+        this.cargarAccionesSemanticas();
     }
 
-    public void setMatizTransicion(MatrizTransicion matrizTransicion){
-        this.matrizTransicion = matrizTransicion;
+    private void cargarAccionesSemanticas(){
     }
 
-    public int dispararAccionSemantica(int fila, int columna, List<Character> lista){
-        if (fila < 0){ //Estado final o puede ser un error
-            matrizTransicion.setIndexFila(0);
-            matrizTransicion.setIndexColumna(0);
-            System.out.println("el token es: " + lista);
-            if(lista.size()==1){
-                lista.clear();
-                return 1;
-            }
-            lista.clear();
-            return 0;
+    private void cargarMatrizSemantica(){
+        this.matrizSemantica = new int[FILAS_SEM][COLUMNAS_SEM];
+        try {
+            Scanner s = new Scanner(new File(MATRIZ_SEM));
+            for (int i=0; i<FILAS_SEM; i++) {
+                    for (int j=0; j<COLUMNAS_SEM; j++) {
+                        this.matrizSemantica[i][j] = Integer.parseInt(s.nextLine());
+                    }
+                }
+                s.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("No se ha podido leer el archivo localizado en: " + MATRIZ_SEM);
+            e.printStackTrace();
         }
-        //System.out.println(lista);
+    }
+
+    public int dispararAccionSemantica(int indexFila,int indexCol, Character caracterArchivo){
+        int accion = matrizSemantica[indexFila][indexCol];
+        int respuesta=0;
+        if (accion >= 0){
+            respuesta = accionesSemanticas.get(accion).ejecutar(caracterArchivo);
+        }
+        if (respuesta != 0){
+            System.out.println(respuesta);
+        }
         return 1;
     }
-
-    //AS1 Crear cadena agregar caracter a la cadena
-    //AS2 Agregar caracter a la cadena
 }

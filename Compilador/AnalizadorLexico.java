@@ -12,13 +12,6 @@ public class AnalizadorLexico {
         String ruta = "./testFiles/prueba.txt";
         List<List<Character>> listaCaracteres = GestorArchivo.readCode(ruta);
 
-        // Imprimir la lista de cacteres
-        /*
-            for (int i = 0; i < listaCaracteres.size(); i++) {
-                System.out.println(listaCaracteres.get(i));
-            }
-         */
-
         //Cargamos la matriz de transicion
         MatrizTransicion matrizTransicion = new MatrizTransicion();
         
@@ -35,7 +28,8 @@ public class AnalizadorLexico {
             while (iteradorLineaCaracteres < lineaProcesar.size()) {
                 simboloProcesar = lineaProcesar.get(iteradorLineaCaracteres);
                 // enviar simbolo a la matriz de transicion
-                proximoMovimiento = matrizTransicion.leerCaracterArchivo(simboloProcesar, false);
+                proximoMovimiento = matrizTransicion.transicionCaracter(simboloProcesar, false);
+                // aca habria que tener en cuenta que hay que pedir el token generado
                 iteradorLineaCaracteres = iteradorLineaCaracteres + proximoMovimiento;
             }
             iteradorLineaCaracteres = 0;   
@@ -44,47 +38,3 @@ public class AnalizadorLexico {
             
     }
 }
-
-
-
-
-
-// --------------------- CODIGO BASURA --------------
-    /* int i = 0;
-         boolean unico = false;
-         while (i<listaCaracteres.size()) {
-             Integer proximo = matrizTransicion.leerCaracterArchivo(listaCaracteres.get(i),unico);
-             if (proximo == 0){
-                 //Chequear que no sea un simbolo de longitud 1
-                 unico = true;
-             }
-             if (unico){
-                 proximo=1;
-                 unico=false;
-             }
-             i=i+proximo;
-         } 
-         
-         int iteradorListaCaracteres = 0;
-        int valorSignoColumna = -1;
-        int proximoMovimiento;
-        Character simboloProcesar;
-
-        while (iteradorListaCaracteres < listaCaracteres.size()){
-            simboloProcesar = listaCaracteres.get(iteradorListaCaracteres);
-            valorSignoColumna = matrizTransicion.identificarCaracter(simboloProcesar);
-            proximoMovimiento = matrizTransicion.ejecutarCambioEstado(simboloProcesar, valorSignoColumna);
-            if (valorSignoColumna != 0)
-                listaCaracteresAcumulados.add(simboloProcesar);
-            if (proximoMovimiento < 0){
-                //Estamos en un estado final hay que disparar acciones semanticas
-                System.out.println(listaCaracteresAcumulados);
-                System.out.println("disparar accion semantica");
-                matrizTransicion.setIndexFila(0);
-                listaCaracteresAcumulados.clear();
-            }
-            iteradorListaCaracteres++;
-        }
-         
-         
-    */
