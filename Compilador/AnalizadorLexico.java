@@ -11,7 +11,6 @@ public class AnalizadorLexico {
         //Cargamos el archivo
         String ruta = "./testFiles/prueba.txt";
         List<List<Character>> listaCaracteres = GestorArchivo.readCode(ruta);
-        List<Character> listaCaracteresAcumulados = new ArrayList<>();
 
         // Imprimir la lista de cacteres
         /*
@@ -26,18 +25,23 @@ public class AnalizadorLexico {
         //Procesamos el archivo
 
         int iteradorListaCaracteres = 0;
+        int iteradorLineaCaracteres = 0;
         Character simboloProcesar;
         List<Character> lineaProcesar = null;
+        int proximoMovimiento;
 
         while (iteradorListaCaracteres < listaCaracteres.size()){
             lineaProcesar = listaCaracteres.get(iteradorListaCaracteres);
-            for (int i = 0; i < lineaProcesar.size(); i++) {
-                simboloProcesar = lineaProcesar.get(i);
+            while (iteradorLineaCaracteres < lineaProcesar.size()) {
+                simboloProcesar = lineaProcesar.get(iteradorLineaCaracteres);
                 // enviar simbolo a la matriz de transicion
-                matrizTransicion.leerCaracterArchivo(simboloProcesar, false);
-            }   
-        }
+                proximoMovimiento = matrizTransicion.leerCaracterArchivo(simboloProcesar, false);
+                iteradorLineaCaracteres = iteradorLineaCaracteres + proximoMovimiento;
+            }
+            iteradorLineaCaracteres = 0;   
             iteradorListaCaracteres++;
+        }
+            
     }
 }
 

@@ -1,3 +1,3 @@
-int hola =: 37;
-hola como estas;
-123+34;
+Ho;
+123+2;
+int hola = 32;

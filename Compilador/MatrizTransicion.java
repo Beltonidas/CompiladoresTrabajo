@@ -19,8 +19,11 @@ public class MatrizTransicion {
     private static final String ARCHIVO_SIMBOLO = "./testFiles/TablaDistintosSimbolos.txt";
 
     //Posicion actual en la tabla
-    private int indexFila;
-    private int indexCol;
+    public int indexFila;
+    public int indexCol;
+
+    //Posicion para la lista de caracteres
+    private int proximoMovimiento;
 
     //Matriz de transicion de estados
     private int matrizEstado [][];
@@ -31,13 +34,15 @@ public class MatrizTransicion {
     private HashMap<String, Integer> indexSimbolo;
 
     //Caracteres acumulados
-    private List<Character> listaCaracteresAcumulados = new ArrayList<>();
+    public List<Character> listaCaracteresAcumulados = new ArrayList<>();
 
     public MatrizTransicion() {
         this.cargarMatrizTrans();
         this.cargarSimbolos();
         this.indexCol = 0;
         this.indexFila = 0;
+        this.matrizAccionSemantica = new MatrizAccionSemantica();
+        matrizAccionSemantica.setMatizTransicion(this);
     }
     
 //--------- GENERAR ESTRUCTURAS --------------------
@@ -96,15 +101,23 @@ public class MatrizTransicion {
         indexFila = value;
     }
 
+    public void setIndexColumna(int value){
+        indexCol = value;
+    }
 //--------- ACCIONES --------------------
 
     public Integer leerCaracterArchivo(char caracterArchivo, Boolean unico){
-        System.out.println("el caracter es: "+caracterArchivo);
+        //System.out.println("el caracter es: "+caracterArchivo);
         indexCol = identificarCaracter(caracterArchivo);
+        //System.out.println("la columna es la: " +indexCol);
         indexFila = matrizEstado[indexFila][indexCol];
         listaCaracteresAcumulados.add(caracterArchivo);
+        proximoMovimiento = matrizAccionSemantica.dispararAccionSemantica(indexFila, indexCol, listaCaracteresAcumulados);
+        //System.out.println(listaCaracteresAcumulados);
+        
+        return  proximoMovimiento;
 
-        return  matrizAccionSemantica.dispararAccionSemantica(indexFila, indexCol, listaCaracteresAcumulados);
+        //retorna 0 o 1
 
         /* if (indexFila == -1 ){
             System.out.println("Estado final");
@@ -122,7 +135,7 @@ public class MatrizTransicion {
         //Numero
         boolean isNumeric =  aux.matches("[+-]?\\d*(\\.\\d+)?");
         if (isNumeric)
-            return 6;
+            return 5;
         
         //Cadena vacia blanco
         if (aux.isEmpty())
@@ -133,7 +146,7 @@ public class MatrizTransicion {
             return 4;
         //Minuscula
         if (aux.equals(aux.toUpperCase()))
-            return 5;
+            return 3;
         return -1;
     }
 
