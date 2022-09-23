@@ -1,8 +1,12 @@
 package Compilador;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Scanner;
 
 public class GestorArchivo {
 
@@ -38,7 +42,27 @@ public class GestorArchivo {
         return null;
     }
 
+    //private static final String RUTA_PALABRAS_RESERVADAS = "./testFiles/palabras_reservadas.txt";
+    public static Hashtable<String, Integer> cargarPalabrasReservadas(String ruta) {
+		Hashtable<String, Integer> palabrasR = new Hashtable<String, Integer>();
 
+        try {
+            File arch = new File(ruta);
+            Scanner s = new Scanner(arch);
+
+            while (s.hasNext()) {
+                String palabra_actual = s.next();
+                int id = s.nextInt();
+                palabrasR.put(palabra_actual, id);
+            }
+            s.close();
+        } catch (FileNotFoundException excepcion) {
+            System.out.println("No se ha podido leer el archivo localizado en: " + ruta);
+            excepcion.printStackTrace();
+        }
+
+        return palabrasR;
+    }
 
 
     //--------CODIGO BASURA------------77
