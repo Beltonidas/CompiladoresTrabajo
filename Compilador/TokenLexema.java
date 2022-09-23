@@ -3,23 +3,41 @@ package Compilador;
 public class TokenLexema {
 	
 	private Integer id;
-	private String lexema;
+	private StringBuilder lexema;
 	
 	public TokenLexema(Integer id) {
 		this.id=id;
-		this.lexema=null;
+		this.lexema = new StringBuilder();
 	}
 	
 	public TokenLexema(Integer id, String lexema) {
 		this.id=id;
-		this.lexema=lexema;
+		this.lexema= new StringBuilder(lexema);
+	}
+
+	public TokenLexema(String lexema) {
+		this.id = null;
+		this.lexema = new StringBuilder(lexema);
 	}
 
 	public Integer getId() {
 		return id;
 	}
+	
+	public void setId(Integer id) {
+		this.id=id;
+	}
+	
+	public void setLexema(String lexema) {
+		this.lexema.delete(0, this.lexema.length());
+		this.lexema.append(lexema);
+	}
 
-	public String getLexema() {
+	public void appendLexema(Character caracter) {
+		this.lexema.append(caracter);
+	}
+	
+	public StringBuilder getLexema() {
 		//Debe retornar segun el tipo que sea
 		return lexema;
 	}

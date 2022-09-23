@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TablaSimbolo {
-	private List<TokenLexema> tabla;
+	private static List<TokenLexema> tabla=new ArrayList<TokenLexema>();
     
 	public TablaSimbolo() {
-		this.tabla = new ArrayList<TokenLexema>();
 	}
 	
-	public Integer addSimbolo(TokenLexema tok) {
+	public static Integer addSimbolo(TokenLexema tok) {
 		if (tabla.contains(tok)) {
 			return null;
 		} else {

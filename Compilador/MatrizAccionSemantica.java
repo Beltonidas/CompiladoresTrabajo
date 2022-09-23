@@ -1,18 +1,16 @@
 package Compilador;
-
-import java.util.List;
 import java.util.Scanner;
 
 import Compilador.AccionesSemanticas.AccionSemantica;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MatrizAccionSemantica{
     
     private int[][] matrizSemantica;
-    private List<AccionSemantica> accionesSemanticas = new ArrayList<AccionSemantica>();
+    private HashMap<Integer,AccionSemantica> accionesSemanticas = new HashMap<Integer,AccionSemantica>();
     private Boolean modoComentario = false;
     private final String MATRIZ_SEM = "./testFiles/TablaSemantica.txt";
     private final int FILAS_SEM = 14;
@@ -20,10 +18,16 @@ public class MatrizAccionSemantica{
 
     public MatrizAccionSemantica() {
         this.cargarMatrizSemantica();
-        this.cargarAccionesSemanticas();
+        this.inicializarAccionesSemanticas();
     }
 
-    private void cargarAccionesSemanticas(){
+    private void inicializarAccionesSemanticas(){
+    	this.accionesSemanticas.put(0, null);
+    	this.accionesSemanticas.put(0, null);
+    	this.accionesSemanticas.put(0, null);
+    	this.accionesSemanticas.put(0, null);
+    	this.accionesSemanticas.put(0, null);
+    	this.accionesSemanticas.put(0, null);
     }
 
     private void cargarMatrizSemantica(){

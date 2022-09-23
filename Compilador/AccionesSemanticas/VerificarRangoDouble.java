@@ -1,47 +1,56 @@
 package Compilador.AccionesSemanticas;
 
-import java.util.List;
+import Compilador.TokenLexema;
 
 public class VerificarRangoDouble extends AccionSemantica {
-    
 
+	public VerificarRangoDouble() {
+	}
 
-    public VerificarRangoDouble (){
-
-    }
-
-
-    @Override
-    public int ejecutar(Character caracter){
-        //Supongo que viene un arreglo de character y el caracter, que es lo que le tengo que entregar a la tabla de simbolos
-        //Primero convertimos la lista en una cadena e caracteres
-        String numString ="";
-        char punto= '.';
-        Double numero;
-        // En este caso tenemos las siguientes casos
-        /*
-         * 1.0
-         * 0.1
-         * .1
-         * 
-        */
-        String lexema = super.tokenActual.getLexema();
-        if (Character.compare(lexema.charAt(0), punto) == 0){
-            // es del estilo con punto
-            numString = "0";
-            for (int i = 0; i < lexema.length(); i++) {
-                numString = numString + lexema;
-            }
-            numero = Double.parseDouble(numString);
-        }else{
-            numero = Double.parseDouble(numString);
-        }
-        //Verificar el numero, este debe estar bajo el siguiente rango: 1.17549435F-38 < x < 3.40282347F+38 U -1.7976931348623157D+308 < x < -2.2250738585072014D-308  0.0
-        if (Double.MIN_VALUE < numero && numero < Double.MAX_VALUE){
-        	return 0;
-        } // colocamos el valor maximo (decision)
-        return -10;
-
-    }
-    
+	@Override
+	public int ejecutar(Character caracter) {
+		Double parteDecimal=0.0;
+		int parteExponente=0;
+		StringBuilder lexema = AccionSemantica.tokenActual.getLexema();
+		int indexPunto = lexema.indexOf(".");
+		int indexExponente = lexema.indexOf("D");
+		
+		
+		if (indexPunto==0) {
+			//Caso en que no hay parte entera
+			if (indexExponente!=-1) {
+				//Caso en que hay parte exponencial
+				parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
+				if (parteExponente>=308||parteExponente<=-308) {
+					AccionSemantica.tokenActual = new TokenLexema(,"Exponente de la constante double fuera de rango.");
+					return -1;
+				}
+				parteDecimal = Double.parseDouble("0"+lexema.substring(indexPunto, indexExponente)+"E"+lexema.substring(indexExponente+1,lexema.length()));
+			}else {
+				parteDecimal = Double.parseDouble("0"+lexema.substring(indexPunto, lexema.length()));
+			}
+			if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
+				AccionSemantica.tokenActual = new TokenLexema(,"Valor de la constante double fuera de rango.");
+				return -1;
+			}
+		} else {
+			//Caso en que hay parte entera
+			if (indexExponente!=-1) {
+				//Caso en que hay parte exponencial
+				parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
+				if (parteExponente>=308||parteExponente<=-308) {
+					AccionSemantica.tokenActual = new TokenLexema(,"Exponente de la constante double fuera de rango.");
+					return -1;
+				}
+				parteDecimal = Double.parseDouble(lexema.substring(0, indexExponente)+"0E"+lexema.substring(indexExponente+1,lexema.length()));
+			} else {
+				parteDecimal = Double.parseDouble(lexema.substring(0, lexema.length())+"0");
+			}
+			if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
+				AccionSemantica.tokenActual = new TokenLexema(,"Valor de la constante double fuera de rango.");
+				return -1;
+			}
+		}
+		return 0;
+	}
 }
