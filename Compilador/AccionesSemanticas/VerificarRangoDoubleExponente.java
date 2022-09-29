@@ -2,7 +2,7 @@ package Compilador.AccionesSemanticas;
 
 import java.util.List;
 
-public class VerificarRangoDoubleExponente implements AccionSemantica {
+public class VerificarRangoDoubleExponente{
 
     private Double numero;
     private int exponenteNumero;
@@ -13,8 +13,8 @@ public class VerificarRangoDoubleExponente implements AccionSemantica {
     }
 
 
-    @Override
-    public void ejecutar(List<Character> listaCarateres, Character character){
+    //@Override
+   /*  public int ejecutar(Character character){
         //Supongo que viene un arreglo de character y el cactaer, que es lo que le tengo que entregar a la tabla de simbolos
         //Primero convertimos la lista en una cadena e caracteres
         String numString ="";
@@ -44,6 +44,7 @@ public class VerificarRangoDoubleExponente implements AccionSemantica {
         */
 
         // Caso 1
+        /* 
         if (Character.compare(listaCarateres.get(0), punto) == 0){
             // es del estilo con punto
             numString = "0";
@@ -71,5 +72,5 @@ public class VerificarRangoDoubleExponente implements AccionSemantica {
         }
 
     }
-    
+     */
 }

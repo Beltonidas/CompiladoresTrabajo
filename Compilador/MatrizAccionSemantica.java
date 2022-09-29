@@ -18,7 +18,7 @@ public class MatrizAccionSemantica{
 
     public MatrizAccionSemantica() {
         this.cargarMatrizSemantica();
-        this.inicializarAccionesSemanticas();
+        //this.inicializarAccionesSemanticas();
     }
 
     private void inicializarAccionesSemanticas(){
@@ -56,5 +56,14 @@ public class MatrizAccionSemantica{
             System.out.println(respuesta);
         }
         return 1;
+    }
+
+    public void imprimirMatrizSemantica (){
+        for (int i=0; i<FILAS_SEM; i++) {
+            for (int j=0; j<COLUMNAS_SEM; j++) {
+                System.out.print(matrizSemantica[i][j]+" ");
+            }
+            System.out.println(" ");
+        }
     }
 }

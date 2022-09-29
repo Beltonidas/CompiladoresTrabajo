@@ -12,7 +12,7 @@ public class VerificarComparador extends AccionSemantica {
 		switch (AccionSemantica.tokenActual.getLexema().toString()) {
 			case "+":
 				//Segun el caso hacer un token y devolver 0
-				AccionSemantica.tokenActual.setId();
+				AccionSemantica.tokenActual.setId(null);
 				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
 				break;
 			case "-":

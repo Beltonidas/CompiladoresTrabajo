@@ -22,7 +22,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 				//Caso en que hay parte exponencial
 				parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
 				if (parteExponente>=308||parteExponente<=-308) {
-					AccionSemantica.tokenActual = new TokenLexema(,"Exponente de la constante double fuera de rango.");
+					AccionSemantica.tokenActual = new TokenLexema("Exponente de la constante double fuera de rango.");
 					return -1;
 				}
 				parteDecimal = Double.parseDouble("0"+lexema.substring(indexPunto, indexExponente)+"E"+lexema.substring(indexExponente+1,lexema.length()));
@@ -30,7 +30,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 				parteDecimal = Double.parseDouble("0"+lexema.substring(indexPunto, lexema.length()));
 			}
 			if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
-				AccionSemantica.tokenActual = new TokenLexema(,"Valor de la constante double fuera de rango.");
+				AccionSemantica.tokenActual = new TokenLexema("Valor de la constante double fuera de rango.");
 				return -1;
 			}
 		} else {
@@ -39,7 +39,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 				//Caso en que hay parte exponencial
 				parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
 				if (parteExponente>=308||parteExponente<=-308) {
-					AccionSemantica.tokenActual = new TokenLexema(,"Exponente de la constante double fuera de rango.");
+					AccionSemantica.tokenActual = new TokenLexema("Exponente de la constante double fuera de rango.");
 					return -1;
 				}
 				parteDecimal = Double.parseDouble(lexema.substring(0, indexExponente)+"0E"+lexema.substring(indexExponente+1,lexema.length()));
@@ -47,7 +47,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 				parteDecimal = Double.parseDouble(lexema.substring(0, lexema.length())+"0");
 			}
 			if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
-				AccionSemantica.tokenActual = new TokenLexema(,"Valor de la constante double fuera de rango.");
+				AccionSemantica.tokenActual = new TokenLexema("Valor de la constante double fuera de rango.");
 				return -1;
 			}
 		}

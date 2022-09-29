@@ -18,7 +18,8 @@ public class VerificarIdentificador extends AccionSemantica {
 		//Chequear palabras reservadas
 		Integer id = map.get(AccionSemantica.tokenActual.getLexema().toString().toLowerCase());
 		if (id == null) {
-			AccionSemantica.tokenActual.setId(idDeIdentificador);
+			AccionSemantica.tokenActual.setId(null);
+			// queda completar esta linea, solo use para testear
 			if (AccionSemantica.tokenActual.getLexema().length()>25) {
 				AccionSemantica.tokenActual.getLexema().delete(25, AccionSemantica.tokenActual.getLexema().length());
 			}

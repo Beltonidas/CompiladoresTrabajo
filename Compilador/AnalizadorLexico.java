@@ -35,6 +35,11 @@ public class AnalizadorLexico {
             iteradorLineaCaracteres = 0;   
             iteradorListaCaracteres++;
         }
+
+
+        //Testeo de matriz
+        MatrizAccionSemantica matrizAccionSemantica = new MatrizAccionSemantica();
+        matrizAccionSemantica.imprimirMatrizSemantica();
             
     }
 }
