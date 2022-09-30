@@ -33,7 +33,7 @@ public class MatrizAccionSemantica{
     
     private boolean correspondeEntregarToken(Integer accion) {
     	switch (accion) {
-    	case 6,0,1:
+    	case 6,0,1,-2,-1:
     		return false;
     	default:
     		return true;
@@ -82,7 +82,7 @@ public class MatrizAccionSemantica{
         if (correspondeEntregarToken(accion)){
         	aLex.entregarToken(AccionSemantica.getToken().getLexema().toString());
         }
-        if (respuesta == 1 || respuesta == -1) {
+        if (respuesta == 1 || respuesta == -1 || accion == -2) {
     		aLex.avanzarLectura();
     	}
     }

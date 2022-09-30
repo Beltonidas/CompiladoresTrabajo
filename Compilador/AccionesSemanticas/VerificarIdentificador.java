@@ -3,7 +3,6 @@ package Compilador.AccionesSemanticas;
 public class VerificarIdentificador extends AccionSemantica {
 
 	public VerificarIdentificador() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
