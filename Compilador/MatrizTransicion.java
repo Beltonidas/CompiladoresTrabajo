@@ -22,9 +22,6 @@ public class MatrizTransicion {
     public int indexFila;
     public int indexCol;
 
-    //Posicion para la lista de caracteres
-    private int proximoMovimiento;
-
     //Matriz de transicion de estados
     private int matrizEstado [][];
 
@@ -36,12 +33,12 @@ public class MatrizTransicion {
     //Caracteres acumulados
     public List<Character> listaCaracteresAcumulados = new ArrayList<>();
 
-    public MatrizTransicion() {
+    public MatrizTransicion(AnalizadorLexico al) {
         this.cargarMatrizTrans();
         this.cargarSimbolos();
         this.indexCol = 0;
         this.indexFila = 0;
-        this.matrizAccionSemantica = new MatrizAccionSemantica();
+        this.matrizAccionSemantica = new MatrizAccionSemantica(al);
     }
 
     public void cargarMatrizTrans() {
@@ -56,7 +53,7 @@ public class MatrizTransicion {
             }
             s.close();
         } catch (FileNotFoundException e) {
-            System.out.println("No se ha podido leer el archivo localizado en: " + MATRIZ_TRANS);
+            System.err.println("No se ha podido leer el archivo localizado en: " + MATRIZ_TRANS);
             e.printStackTrace();
         }
     }
@@ -74,7 +71,7 @@ public class MatrizTransicion {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("No se ha podido leer el archivo localizado en: " + ARCHIVO_SIMBOLO);
+            System.err.println("No se ha podido leer el archivo localizado en: " + ARCHIVO_SIMBOLO);
             e.printStackTrace();
         }
     }
@@ -92,16 +89,18 @@ public class MatrizTransicion {
     }
 //--------- METODOS --------------------
 
-    public Integer transicionCaracter(char caracterArchivo, Boolean unico){
+    public String transicionCaracter(char caracterArchivo, Boolean unico){
+    	String codigoToken="";
     	int estadoAnterior = indexFila;
         indexCol = identificarCaracter(caracterArchivo);
         indexFila = matrizEstado[indexFila][indexCol];
-        proximoMovimiento = matrizAccionSemantica.dispararAccionSemantica(indexFila, indexCol, caracterArchivo);
+        System.out.println("El tipo de caracter recibido nos hace pasar al estado: "+indexFila);
+        matrizAccionSemantica.dispararAccionSemantica(estadoAnterior, indexCol, caracterArchivo);
         if (indexFila<0) {
         	indexCol=0;
         	indexFila=0;
         }
-        return  proximoMovimiento;
+        return  codigoToken;
     }
 
     public int identificarCaracter(Character character){

@@ -21,7 +21,6 @@ public class GestorArchivo {
         String lineaCadenaTexto;
         // Leo caracter por caracter, hasta que finalice el archivo
         try {
-            int iteradorListaCaracteres = 0;
             FileReader fileReader = new FileReader(rutaArchivo);
             BufferedReader LineaArchivo = new BufferedReader(fileReader); // Leo por lineas el codigo fuente
 

@@ -1,29 +1,22 @@
 package Compilador.AccionesSemanticas;
 
-import java.util.List;
-
 import Compilador.TokenLexema;
 
 public class AccionSemantica {
 	protected static TokenLexema tokenActual;
-	protected static Boolean modoComentario=false;
 	
 	
 	//---Done
 	/*
 	 * AS 0 Generar nuevo token sin tipo
-	 * AS 1	Añadir caracter al token
+	 * AS 1	Aï¿½adir caracter al token
 	 * AS 2 Verificar palabras reservadas, truncar identificador de ser necesario y devolver el token
 	 * AS 3	Verificar si es un short unsigned int //entre 0 y 255 o un entero comun
 	 * AS 4	Verificar rango de double y devolver token
 	 * AS 5	Verificar tipo de comparador y devolver token correspondiente
-	*/
-	
-	/*---Working
-	 * 
 	 * AS 6	Borrar lista caracteres acumulados y dejar de acumular
 	 * AS 7	Volver a acumular caracteres e informar del comentario
-	 */
+	*/
 	
 	//Return de 1 significa caracter consumido, 0 significa repetir el mismo, -1 error detallado en el token
 	
@@ -31,7 +24,7 @@ public class AccionSemantica {
 		return -1;
     }
     
-    public TokenLexema getToken() {
+    public static TokenLexema getToken() {
 		return AccionSemantica.tokenActual;
     }
 }

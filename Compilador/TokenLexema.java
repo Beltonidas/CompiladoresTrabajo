@@ -2,15 +2,10 @@ package Compilador;
 
 public class TokenLexema {
 	
-	private Integer id;
+	private String id;
 	private StringBuilder lexema;
 	
-	public TokenLexema(Integer id) {
-		this.id=id;
-		this.lexema = new StringBuilder();
-	}
-	
-	public TokenLexema(Integer id, String lexema) {
+	public TokenLexema(String id, String lexema) {
 		this.id=id;
 		this.lexema= new StringBuilder(lexema);
 	}
@@ -20,17 +15,16 @@ public class TokenLexema {
 		this.lexema = new StringBuilder(lexema);
 	}
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 	
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id=id;
 	}
 	
 	public void setLexema(String lexema) {
-		this.lexema.delete(0, this.lexema.length());
-		this.lexema.append(lexema);
+		this.lexema = new StringBuilder(lexema);
 	}
 
 	public void appendLexema(Character caracter) {
@@ -38,8 +32,11 @@ public class TokenLexema {
 	}
 	
 	public StringBuilder getLexema() {
-		//Debe retornar segun el tipo que sea
 		return lexema;
+	}
+	
+	public void resetLexema() {
+		this.lexema.delete(0, this.lexema.length());
 	}
 	
 	
@@ -47,7 +44,7 @@ public class TokenLexema {
 	public boolean equals(Object o) {
 		try {
 			TokenLexema x = (TokenLexema)o;
-			if (x.getId()==this.id && x.getLexema()==this.lexema)
+			if (x.id.equals(this.id) && x.lexema.equals(this.lexema))
 				return true;
 		} catch (Exception e) {
 		}

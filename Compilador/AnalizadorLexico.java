@@ -1,45 +1,46 @@
 package Compilador;
-import java.util.ArrayList;
 import java.util.List;
 
 
 
 
 public class AnalizadorLexico {
+	
+	private MatrizTransicion matrizTransicion = new MatrizTransicion(this);
+	private List<List<Character>> archivoCodigoFuente;
+	private int iteradorLineaCaracteres = 0;
+	//private BufferTokens bufferTokens = new BufferTokens();
+	
+	public AnalizadorLexico(){
+	}
         
-    public static void main(String[] args) throws Exception {
+	public void avanzarLectura() {
+		iteradorLineaCaracteres++;
+	}
+	
+	public void entregarToken(String token) {
+		//this.bufferTokens.add(token);
+		System.out.println("El token entregao es: "+token);
+	}
+	
+    public void ejecutar(String ruta) {
         //Cargamos el archivo
-        String ruta = "./testFiles/prueba.txt";
-        List<List<Character>> listaCaracteres = GestorArchivo.readCode(ruta);
-
-        //Cargamos la matriz de transicion
-        MatrizTransicion matrizTransicion = new MatrizTransicion();
+        archivoCodigoFuente = GestorArchivo.readCode(ruta);
         
         //Procesamos el archivo
-
         int iteradorListaCaracteres = 0;
-        int iteradorLineaCaracteres = 0;
+        iteradorLineaCaracteres = 0;
         Character simboloProcesar;
         List<Character> lineaProcesar = null;
-        int proximoMovimiento;
-
-        while (iteradorListaCaracteres < listaCaracteres.size()){
-            lineaProcesar = listaCaracteres.get(iteradorListaCaracteres);
+        while (iteradorListaCaracteres < archivoCodigoFuente.size()){
+            lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
             while (iteradorLineaCaracteres < lineaProcesar.size()) {
                 simboloProcesar = lineaProcesar.get(iteradorLineaCaracteres);
-                // enviar simbolo a la matriz de transicion
-                proximoMovimiento = matrizTransicion.transicionCaracter(simboloProcesar, false);
-                // aca habria que tener en cuenta que hay que pedir el token generado
-                iteradorLineaCaracteres = iteradorLineaCaracteres + proximoMovimiento;
+                System.out.println(simboloProcesar);
+                matrizTransicion.transicionCaracter(simboloProcesar, false);
             }
             iteradorLineaCaracteres = 0;   
             iteradorListaCaracteres++;
         }
-
-
-        //Testeo de matriz
-        MatrizAccionSemantica matrizAccionSemantica = new MatrizAccionSemantica();
-        matrizAccionSemantica.imprimirMatrizSemantica();
-            
     }
 }

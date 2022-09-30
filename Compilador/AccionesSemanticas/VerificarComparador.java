@@ -1,7 +1,5 @@
 package Compilador.AccionesSemanticas;
 
-import Compilador.TokenLexema;
-
 public class VerificarComparador extends AccionSemantica {
 
 	public VerificarComparador() {
@@ -9,82 +7,51 @@ public class VerificarComparador extends AccionSemantica {
 
 	@Override
 	public int ejecutar(Character caracter) {
-		switch (AccionSemantica.tokenActual.getLexema().toString()) {
-			case "+":
+		AccionSemantica.tokenActual.appendLexema(caracter);
+		switch (caracter) {
+			case '+':
 				//Segun el caso hacer un token y devolver 0
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "-":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "*":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "/":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "{":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "}":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "[":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "]":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "(":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case ")":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case ",":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case ";":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case ":":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "=:":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "<=":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case ">=":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "==":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
-			case "=!":
-				AccionSemantica.tokenActual.setId(null);
-				AccionSemantica.tokenActual.getLexema().delete(0, AccionSemantica.tokenActual.getLexema().length());
-				break;
+				AccionSemantica.tokenActual.setId("Comparador");
+				return 1;
+			case '-':
+				AccionSemantica.tokenActual.setId("Comparador");
+				return 1;
+			case '*':
+				AccionSemantica.tokenActual.setId("Comparador");
+				return 1;
+			case '/':
+				AccionSemantica.tokenActual.setId("Comparador");
+				return 1;
+			case '{':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case '}':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case '[':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case ']':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case '(':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case ')':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case ',':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case ';':
+				AccionSemantica.tokenActual.setId("Separador");
+				return 1;
+			case ':':
+				AccionSemantica.tokenActual.setId("Comparador");
+				return 1;
+			default:
+				return 0;
 		}
-		return 0;
 	}
 
 }

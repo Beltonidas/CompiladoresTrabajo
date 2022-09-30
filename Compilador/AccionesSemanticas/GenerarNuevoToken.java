@@ -9,9 +9,6 @@ public class GenerarNuevoToken extends AccionSemantica {
 	
 	@Override
 	public int ejecutar(Character caracter) {
-		if (AccionSemantica.modoComentario) {
-			return 1;
-		}
 		AccionSemantica.tokenActual = new TokenLexema(caracter.toString());
 		return 1;
 	}
