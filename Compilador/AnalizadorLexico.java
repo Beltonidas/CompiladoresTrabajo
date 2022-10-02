@@ -36,7 +36,7 @@ public class AnalizadorLexico {
             lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
             while (iteradorLineaCaracteres < lineaProcesar.size()) {
                 simboloProcesar = lineaProcesar.get(iteradorLineaCaracteres);
-                System.out.println(simboloProcesar);
+                //System.out.println(simboloProcesar);
                 matrizTransicion.transicionCaracter(simboloProcesar, false);
             }
             iteradorLineaCaracteres = 0;   
