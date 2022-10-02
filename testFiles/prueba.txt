@@ -1,3 +1,11 @@
-oHH;
-123+2;
-int hola = 32;
+int x = 32;
+int y = 58;
+int z = y + x;
+if (z >= x){
+    << "hola esto es una prueba">>
+}
+else{
+    int j = 100;
+}
+32+58 = 44;
+Double Asig = 32;
