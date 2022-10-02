@@ -41,7 +41,7 @@ public class TablaSimbolos {
 	}
 	
 	public TokenLexema getSimbolo(String key) {
-		return tabla.get(key.toLowerCase());
+		return tabla.get(key);
 	}
 	
 }

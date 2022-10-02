@@ -8,7 +8,6 @@ public class FinComentario extends AccionSemantica {
 	
 	@Override
 	public int ejecutar(Character caracter) {
-		AccionSemantica.tokenActual.setId("Comentario");
 		return 1;
 	}
 }

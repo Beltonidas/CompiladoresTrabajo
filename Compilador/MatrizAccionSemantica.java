@@ -21,7 +21,20 @@ public class MatrizAccionSemantica{
     //-----------------CONSTRUCTOR------------------------
     public MatrizAccionSemantica() {
         this.cargarMatrizSemantica();
+<<<<<<< HEAD
         //this.inicializarAccionesSemanticas();
+=======
+        this.inicializarAccionesSemanticas();
+    }
+    
+    private boolean correspondeEntregarToken(Integer accion) {
+    	switch (accion) {
+    	case 6,0,1,-2,-1:
+    		return false;
+    	default:
+    		return true;
+    	}
+>>>>>>> 6d842864811a39c8e5e9e86f7f919911112e2ecc
     }
 
     //----------------- GENERAR ESTRUCTURA ------------------------
@@ -60,7 +73,16 @@ public class MatrizAccionSemantica{
         if (respuesta != 0){
             System.out.println(respuesta);
         }
+<<<<<<< HEAD
         return 1;
+=======
+        if (correspondeEntregarToken(accion)){
+        	aLex.entregarToken(AccionSemantica.getToken().getLexema().toString());
+        }
+        if (respuesta == 1 || respuesta == -1 || accion == -2) {
+    		aLex.avanzarLectura();
+    	}
+>>>>>>> 6d842864811a39c8e5e9e86f7f919911112e2ecc
     }
 
     public void imprimirMatrizSemantica (){

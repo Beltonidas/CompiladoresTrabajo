@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner; 
+import java.util.Scanner;
+
+import Compilador.AccionesSemanticas.AccionSemantica; 
 
 public class MatrizTransicion {
 
@@ -99,6 +101,7 @@ public class MatrizTransicion {
         if (indexFila<0) {
         	indexCol=0;
         	indexFila=0;
+        	AccionSemantica.getToken().resetLexema();
         }
         return  codigoToken;
     }
