@@ -2,6 +2,8 @@ package Compilador;
 import java.util.HashMap;
 import java.util.List;
 
+import Compilador.AccionesSemanticas.AccionSemantica;
+
 
 
 
@@ -30,7 +32,7 @@ public class AnalizadorLexico {
     public void ejecutar(String ruta) {
         //Cargamos el archivo
         archivoCodigoFuente = GestorArchivo.readCode(ruta);
-        
+        AccionSemantica.getNewToken();
         //Procesamos el archivo
         int iteradorListaCaracteres = 0;
         iteradorLineaCaracteres = 0;

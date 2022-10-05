@@ -1,8 +1,8 @@
 package Compilador.AccionesSemanticas;
 
-public class ComienzoComentario extends AccionSemantica {
+public class ComentarioConsumirCaracter extends AccionSemantica {
 
-	public ComienzoComentario() {
+	public ComentarioConsumirCaracter() {
 	}
 	
 	@Override

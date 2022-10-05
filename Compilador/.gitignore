@@ -3,3 +3,5 @@
 /ClaseMaestra.class
 /AnalizadorLexico.class
 /TablaSimbolos.class
+/Parser.class
+/ParserVal.class

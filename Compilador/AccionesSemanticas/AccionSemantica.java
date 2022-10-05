@@ -27,4 +27,8 @@ public class AccionSemantica {
     public static TokenLexema getToken() {
 		return AccionSemantica.tokenActual;
     }
+
+    public static void getNewToken() {
+        tokenActual = new TokenLexema("");
+    }
 }

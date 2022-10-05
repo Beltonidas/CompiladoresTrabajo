@@ -3,9 +3,7 @@ import java.util.Scanner;
 
 import Compilador.AccionesSemanticas.AccionSemantica;
 import Compilador.AccionesSemanticas.AddCaracterToken;
-import Compilador.AccionesSemanticas.ComienzoComentario;
-import Compilador.AccionesSemanticas.FinComentario;
-import Compilador.AccionesSemanticas.GenerarNuevoToken;
+import Compilador.AccionesSemanticas.ComentarioConsumirCaracter;
 import Compilador.AccionesSemanticas.VerificarCadenaCaracteres;
 import Compilador.AccionesSemanticas.VerificarComparador;
 import Compilador.AccionesSemanticas.VerificarIdentificador;
@@ -33,7 +31,7 @@ public class MatrizAccionSemantica{
     
     private boolean correspondeEntregarToken(Integer accion) {
     	switch (accion) {
-    	case 6,0,1,-2,-1,7:
+    	case 6,1,-2,-1,7:
     		return false;
     	default:
     		return true;
@@ -41,15 +39,13 @@ public class MatrizAccionSemantica{
     }
 
     private void inicializarAccionesSemanticas(){
-    	this.accionesSemanticas.put(0, new GenerarNuevoToken());
     	this.accionesSemanticas.put(1, new AddCaracterToken());
     	this.accionesSemanticas.put(2, new VerificarIdentificador());
     	this.accionesSemanticas.put(3, new VerificarRangoEntero());
     	this.accionesSemanticas.put(4, new VerificarRangoDouble());
     	this.accionesSemanticas.put(5, new VerificarComparador());
-    	this.accionesSemanticas.put(6, new ComienzoComentario());
-    	this.accionesSemanticas.put(7, new FinComentario());
-    	this.accionesSemanticas.put(8, new VerificarCadenaCaracteres());
+    	this.accionesSemanticas.put(6, new ComentarioConsumirCaracter());
+    	this.accionesSemanticas.put(7, new VerificarCadenaCaracteres());
     }
 
     private void cargarMatrizSemantica(){
@@ -81,6 +77,7 @@ public class MatrizAccionSemantica{
         }
         if (correspondeEntregarToken(accion)){
         	aLex.entregarToken(TablaSimbolos.addSimbolo(AccionSemantica.getToken()));
+        	AccionSemantica.getNewToken();
         }
         if (respuesta == 1 || respuesta == -1 || accion == -2) {
     		aLex.avanzarLectura();
