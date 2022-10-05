@@ -1,12 +1,18 @@
 %{
-package compilador;
-
-import java.io.*;
+package Compilador;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Scanner;;
 %}
 
 //Declaracion de tokens:
-%token id cte cadena if then else end_if out fun return break ui8 f64 SIMB_ASIGNACION SIMB_MAY_IGUAL SIMB_MEN_IGUAL
- SIMB_DISTINTO SIMB_COM_I SIMB_COM_F discard for continue defer
+%token id cte cadena if then else end_if out fun return break ui8 f64 discard for continue defer SIMB_ASIGNACION SIMB_MAY_IGUAL
+ SIMB_MEN_IGUAL SIMB_DISTINTO SIMB_COM_I SIMB_COM_F
 
 %left '+' '-'
 %left '*' '/'
@@ -90,10 +96,11 @@ termino: termino '*' factor
 
 factor: id
             | cte
+            | '-' cte 
             | id '(' ')'
             | id '(' factor ')'
             | id '(' factor ',' factor ')'
-; //Duda
+;
 
 seleccion: if condicion_if then_selec end_if ';'
             | if condicion_if then_selec else_selecc end_if ';'
@@ -111,7 +118,7 @@ condicion_if: '(' expresion_booleana ')'
 ;
 
 expresion_booleana: expresion comparador expresion
-;//Esta bien asi? si viene solo una expresion tengo que considerarlo como un error?
+;
 
 comparador: SIMB_DISTINTO
             | SIMB_MAY_IGUAL
@@ -125,7 +132,7 @@ impresion: out '(' cadena ')'
 ;
 
 invocar_fun: discard '(' factor ')' 
-            //| '(' factor ')' //PONER ACCION QUE INFORME DE ERROR
+            | '(' factor ')' //PONER ACCION QUE INFORME DE ERROR
 ;
 
 for_continue: for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutiva_for '}'
@@ -133,8 +140,6 @@ for_continue: for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas
             | cadena ':' for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutiva_for '}'
             | cadena ':' for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutiva_for
 ;
-//DUDA: ESTA BIEN PONER EL FOR SIN SEPARAR EN MAS REGLAS?
-//YA QUE NECESITO SABER QUE EL ID PARA "I" SEA EL MISMO QUE EL QUE SE UTILIZA PARA LA COMPARACION
 
 mas_o_menos: '+'
             | '-'
@@ -149,3 +154,7 @@ inst_ejecutiva_for: inst_ejecutiva
             | break ':' cadena ';'
             | continue ';'
 ;
+
+%%
+
+//codigo loco
