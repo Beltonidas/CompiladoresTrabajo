@@ -2,24 +2,24 @@ package Compilador;
 
 public class TokenLexema {
 	
-	private String id;
+	private int id;
 	private StringBuilder lexema;
 	
-	public TokenLexema(String id, String lexema) {
+	public TokenLexema(int id, String lexema) {
 		this.id=id;
 		this.lexema= new StringBuilder(lexema);
 	}
 
 	public TokenLexema(String lexema) {
-		this.id = null;
+		this.id = 0;
 		this.lexema = new StringBuilder(lexema);
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 	
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id=id;
 	}
 	
@@ -40,7 +40,7 @@ public class TokenLexema {
 	public boolean equals(Object o) {
 		try {
 			TokenLexema x = (TokenLexema)o;
-			if (x.id.equals(this.id) && x.lexema.equals(this.lexema))
+			if (x.id ==this.id && x.lexema.equals(this.lexema))
 				return true;
 		} catch (Exception e) {
 		}

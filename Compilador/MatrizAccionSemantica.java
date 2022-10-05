@@ -72,8 +72,18 @@ public class MatrizAccionSemantica{
         if (accion >= 0){
             respuesta = accionesSemanticas.get(accion).ejecutar(caracterArchivo);
         }
-        if (respuesta == -1){
+        if (respuesta < 0){
+            System.err.println("Error en linea: "+aLex.getLinea()+", caracter: "+aLex.getCaracter());
             System.err.println(AccionSemantica.getToken().getLexema());
+            aLex.entregarToken(respuesta*-1);
+            AccionSemantica.getNewToken();
+            aLex.avanzarLectura();
+            return;
+        }
+        if (accion==-1) {
+            System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter: "+caracterArchivo+" no esperado.");
+            aLex.avanzarLectura();
+            return;
         }
         if (correspondeEntregarToken(accion)){
         	aLex.entregarToken(TablaSimbolos.addSimbolo(AccionSemantica.getToken()));

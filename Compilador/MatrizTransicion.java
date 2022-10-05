@@ -89,8 +89,7 @@ public class MatrizTransicion {
     }
 //--------- METODOS --------------------
 
-    public String transicionCaracter(char caracterArchivo, Boolean unico){
-    	String codigoToken="";
+    public void transicionCaracter(char caracterArchivo){
     	int estadoAnterior = indexFila;
         indexCol = identificarCaracter(caracterArchivo);
         indexFila = matrizEstado[indexFila][indexCol];
@@ -100,7 +99,6 @@ public class MatrizTransicion {
         	indexCol=0;
         	indexFila=0;
         }
-        return  codigoToken;
     }
 
     public int identificarCaracter(Character character){

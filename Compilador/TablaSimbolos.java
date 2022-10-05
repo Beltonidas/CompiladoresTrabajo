@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import Compilador.AccionesSemanticas.AccionSemantica;
+
 public class TablaSimbolos {
 	
 	private static HashMap<String, TokenLexema> tabla = new HashMap<String,TokenLexema>();
@@ -21,7 +23,7 @@ public class TablaSimbolos {
                 simbolo = new StringBuilder(scanner.nextLine());
                 int simEspacio=simbolo.indexOf(" ")+1;
                 index=Integer.parseInt(simbolo.substring(simEspacio,simbolo.length()));
-                System.out.println("Palabra reservada: "+simbolo.substring(0,simEspacio-1)+" | Codigo: "+index);
+                //System.out.println("Palabra reservada: "+simbolo.substring(0,simEspacio-1)+" | Codigo: "+index);
                 palabrasReservadas.put(simbolo.substring(0,simEspacio-1), index);
             }
             scanner.close();
@@ -31,19 +33,20 @@ public class TablaSimbolos {
         }
 	}
 	
-	public static String addSimbolo(TokenLexema tok) {
-	    System.out.println(tok.toString());
+	public static int addSimbolo(TokenLexema tok) {
+	    //System.out.println(tok.toString());
 		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
-		    System.out.println("Token Previo Palabra Reservada");
-		    return tok.getLexema().toString();
+		    //System.out.println("Token Previo Palabra Reservada");
+		    AccionSemantica.getToken().setId(palabrasReservadas.get(tok.getLexema().toString()));
+		    return palabrasReservadas.get(tok.getLexema().toString());
 		}
 		if (tabla.containsKey(tok.getLexema().toString())) {
-		    System.out.println("Token Previo Existente");
-			return tok.getLexema().toString();
+		    //System.out.println("Token Previo Existente");
+		    return tok.getId();
 		}
-        System.out.println("Token Previo Nuevo: "+tok.getLexema().toString());
+        //System.out.println("Token Previo Nuevo: "+tok.getLexema().toString());
 		tabla.put(tok.getLexema().toString(), tok);
-		return tok.getLexema().toString();
+		return tok.getId();
 	}
 	
 	public static TokenLexema getSimbolo(String key) {
@@ -51,7 +54,7 @@ public class TablaSimbolos {
 	}
 	
 	public static void imprimirTabla() {
-	    System.out.println("////////////////////////////");
+	    //System.out.println("////////////////////////////");
 	    /*var setOfKeys=tabla.keySet();
 	    for (String key : setOfKeys) {
 	        System.out.println(tabla.get(key).toString()+" || "+key);

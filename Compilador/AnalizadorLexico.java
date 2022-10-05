@@ -2,6 +2,8 @@ package Compilador;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.Spring;
+
 import Compilador.AccionesSemanticas.AccionSemantica;
 
 
@@ -9,44 +11,60 @@ import Compilador.AccionesSemanticas.AccionSemantica;
 
 public class AnalizadorLexico {
 	
+    private TablaSimbolos teibol = new TablaSimbolos();
 	private MatrizTransicion matrizTransicion = new MatrizTransicion(this);
 	private List<List<Character>> archivoCodigoFuente;
 	private int iteradorLineaCaracteres = 0;
+	private int iteradorListaCaracteres = 0;
+    private Character simboloProcesar;
+    private List<Character> lineaProcesar = null;
+    private int tokenEntregar = -1;
+    public TokenLexema anteriorToken;
 	
-	public AnalizadorLexico(){
+	public AnalizadorLexico(String ruta) {
+	    archivoCodigoFuente = GestorArchivo.readCode(ruta);
+	    anteriorToken=AccionSemantica.getNewToken();
+	    lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
 	}
 	
 	public HashMap<String, Integer> getTablasSimbolos(){
         return matrizTransicion.getTablasSimbolos();
 	}
         
+	public int getLinea() {
+	    return iteradorListaCaracteres;
+	}
+	
+	public int getCaracter() {
+        return iteradorLineaCaracteres;
+    }
+	
+	public void entregarToken(int idToken) {
+	    tokenEntregar=idToken;
+	    anteriorToken=AccionSemantica.getToken();
+	}
+	
 	public void avanzarLectura() {
 		iteradorLineaCaracteres++;
 	}
 	
-	public void entregarToken(String token) {
-		//this.bufferTokens.add(token);
-		//System.out.println("El token entregao es: "+token);
-	}
-	
-    public void ejecutar(String ruta) {
-        //Cargamos el archivo
-        archivoCodigoFuente = GestorArchivo.readCode(ruta);
-        AccionSemantica.getNewToken();
-        //Procesamos el archivo
-        int iteradorListaCaracteres = 0;
-        iteradorLineaCaracteres = 0;
-        Character simboloProcesar;
-        List<Character> lineaProcesar = null;
-        while (iteradorListaCaracteres < archivoCodigoFuente.size()){
-            lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
-            while (iteradorLineaCaracteres < lineaProcesar.size()) {
+	public int siguienteToken() {
+	    tokenEntregar=-1;
+	    while (iteradorListaCaracteres < archivoCodigoFuente.size()) {
+	        while (iteradorLineaCaracteres < lineaProcesar.size()) {
                 simboloProcesar = lineaProcesar.get(iteradorLineaCaracteres);
-                System.out.println(simboloProcesar);
-                matrizTransicion.transicionCaracter(simboloProcesar, false);
+                //System.out.print(simboloProcesar);
+                matrizTransicion.transicionCaracter(simboloProcesar);
+                if (tokenEntregar!=-1){
+                    return tokenEntregar;
+                }
             }
-            iteradorLineaCaracteres = 0;   
-            iteradorListaCaracteres++;
-        }
-    }
+	        iteradorListaCaracteres++;
+	        if (iteradorListaCaracteres < archivoCodigoFuente.size()) {
+	            lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
+	        }
+	        iteradorLineaCaracteres = 0;
+	    }
+	    return tokenEntregar;
+	}
 }
