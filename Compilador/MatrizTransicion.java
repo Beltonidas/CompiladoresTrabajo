@@ -93,7 +93,7 @@ public class MatrizTransicion {
     	int estadoAnterior = indexFila;
         indexCol = identificarCaracter(caracterArchivo);
         indexFila = matrizEstado[indexFila][indexCol];
-        System.out.println("El tipo de caracter recibido nos hace pasar al estado: "+indexFila);
+        //System.out.println("El tipo de caracter recibido nos hace pasar al estado: "+indexFila);
         matrizAccionSemantica.dispararAccionSemantica(estadoAnterior, indexCol, caracterArchivo);
         if (indexFila<0) {
         	indexCol=0;
@@ -104,6 +104,15 @@ public class MatrizTransicion {
     public int identificarCaracter(Character character){
         //Si no es ninguno de los anteriores entonces, buscar en la tabla
         String aux = String.valueOf(character);
+        if (aux.equals(" ")) {
+            return 0;
+        }
+        if (aux.equals("    ")) {
+            return 1;
+        }
+        if (aux.equals("\n")) {
+            return 2;
+        }
         if (tablaSimbolos.containsKey(aux))
             return tablaSimbolos.get(aux);
         //Numero
@@ -113,8 +122,9 @@ public class MatrizTransicion {
         if (aux.isEmpty())
             return 0;
         //Mayuscula
-        if (aux.equals(aux.toLowerCase()))
+        if (aux.equals(aux.toLowerCase())) {
             return 3;
+        }
         //Minuscula
         if (aux.equals(aux.toUpperCase()))
             return 4;

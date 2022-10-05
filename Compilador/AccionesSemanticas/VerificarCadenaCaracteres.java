@@ -13,6 +13,7 @@ public class VerificarCadenaCaracteres extends AccionSemantica {
 			AccionSemantica.tokenActual.setId(259);
 			return -1;
 		} else {
+		    AccionSemantica.tokenActual.appendLexema(caracter);
 			AccionSemantica.tokenActual.setId(259);
 			return 1;
 		}

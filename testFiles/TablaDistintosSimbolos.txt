@@ -1,8 +1,8 @@
  
 0
-Tabulacion
+	
 1
-Salto_linea
+\n
 2
 Minuscula
 3

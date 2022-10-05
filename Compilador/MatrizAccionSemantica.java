@@ -73,15 +73,28 @@ public class MatrizAccionSemantica{
             respuesta = accionesSemanticas.get(accion).ejecutar(caracterArchivo);
         }
         if (respuesta < 0){
-            System.err.println("Error en linea: "+aLex.getLinea()+", caracter: "+aLex.getCaracter());
-            System.err.println(AccionSemantica.getToken().getLexema());
+            System.err.println("Error en linea: "+aLex.getLinea()+", caracter: "+aLex.getCaracter()+" | "+AccionSemantica.getToken().getLexema());
             aLex.entregarToken(respuesta*-1);
             AccionSemantica.getNewToken();
             aLex.avanzarLectura();
             return;
         }
         if (accion==-1) {
-            System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter: "+caracterArchivo+" no esperado.");
+            switch (caracterArchivo) {
+                case ' ':
+                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter espacio no esperado.");
+                    break;
+                case '\t':
+                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter tabulacion no esperada.");
+                    break;
+                case '\n':
+                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter salto de linea no esperado.");
+                    break;
+                default:
+                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter: "+caracterArchivo+" no esperado.");
+                    break;
+            }
+            
             aLex.avanzarLectura();
             return;
         }
