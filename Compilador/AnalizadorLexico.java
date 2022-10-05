@@ -32,11 +32,11 @@ public class AnalizadorLexico {
 	}
         
 	public int getLinea() {
-	    return iteradorListaCaracteres;
+	    return iteradorListaCaracteres+1;
 	}
 	
 	public int getCaracter() {
-        return iteradorLineaCaracteres;
+        return iteradorLineaCaracteres+1;
     }
 	
 	public void entregarToken(int idToken) {

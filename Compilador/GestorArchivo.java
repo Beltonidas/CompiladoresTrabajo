@@ -30,6 +30,7 @@ public class GestorArchivo {
                 for (int i = 0; i < cadenaCaracteres.length; i++) {
                     listaCaractereslinea.add(cadenaCaracteres[i]);
                 }
+                listaCaractereslinea.add('\n');
                 listaCaracteres.add(listaCaractereslinea);
             }
             fileReader.close();

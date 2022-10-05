@@ -1,12 +1,3 @@
-int iasjodaihjoduhwnoandoawdasdasggwafgwa = 32;
-int y = 58; !
-int z = y + x;
-int yh =: 89;
-if (z =! x){
-    << "hola esto es una prueba">>
-}
-else{
-    int j = 100;
-}
-32+58 = 44;
-Double Asig = 32;
+'hola como estas';
+'hola com estas 
+vos todo bien'

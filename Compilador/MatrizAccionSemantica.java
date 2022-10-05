@@ -31,7 +31,7 @@ public class MatrizAccionSemantica{
     
     private boolean correspondeEntregarToken(Integer accion) {
     	switch (accion) {
-    	case 6,1,-2,-1,7:
+    	case 6,1,-2,-1:
     		return false;
     	default:
     		return true;

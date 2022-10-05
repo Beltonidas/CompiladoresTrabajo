@@ -93,7 +93,7 @@ public class MatrizTransicion {
     	int estadoAnterior = indexFila;
         indexCol = identificarCaracter(caracterArchivo);
         indexFila = matrizEstado[indexFila][indexCol];
-        //System.out.println("El tipo de caracter recibido nos hace pasar al estado: "+indexFila);
+        System.out.println("El tipo de caracter recibido nos hace pasar al estado: "+indexFila);
         matrizAccionSemantica.dispararAccionSemantica(estadoAnterior, indexCol, caracterArchivo);
         if (indexFila<0) {
         	indexCol=0;
