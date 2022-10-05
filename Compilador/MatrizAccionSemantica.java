@@ -80,7 +80,7 @@ public class MatrizAccionSemantica{
             System.err.println(AccionSemantica.getToken().getLexema());
         }
         if (correspondeEntregarToken(accion)){
-        	aLex.entregarToken(AccionSemantica.getToken().getLexema().toString());
+        	aLex.entregarToken(TablaSimbolos.addSimbolo(AccionSemantica.getToken()));
         }
         if (respuesta == 1 || respuesta == -1 || accion == -2) {
     		aLex.avanzarLectura();

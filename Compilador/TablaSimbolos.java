@@ -14,34 +14,48 @@ public class TablaSimbolos {
 	public TablaSimbolos() {
 		palabrasReservadas = new HashMap<>();
 		try {
-            String simbolo;
-            int index;
+            StringBuilder simbolo;
+            int index=0;
             Scanner scanner = new Scanner(new File(ARCHIVO_RESERVADAS));
             while (scanner.hasNext()){
-                simbolo = scanner.nextLine();
-                index = Integer.parseInt(scanner.nextLine());
-                palabrasReservadas.put(simbolo, index);
+                simbolo = new StringBuilder(scanner.nextLine());
+                int simEspacio=simbolo.indexOf(" ")+1;
+                index=Integer.parseInt(simbolo.substring(simEspacio,simbolo.length()));
+                System.out.println("Palabra reservada: "+simbolo.substring(0,simEspacio-1)+" | Codigo: "+index);
+                palabrasReservadas.put(simbolo.substring(0,simEspacio-1), index);
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             System.err.println("No se ha podido leer el archivo localizado en: " + ARCHIVO_RESERVADAS);
-            e.printStackTrace();
+            e.printStackTrace();          
         }
 	}
 	
 	public static String addSimbolo(TokenLexema tok) {
-		if (palabrasReservadas.containsKey(tok.getLexema().toString().toLowerCase())) {
-			return tok.getLexema().toString().toLowerCase();
+	    System.out.println(tok.toString());
+		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
+		    System.out.println("Token Previo Palabra Reservada");
+		    return tok.getLexema().toString();
 		}
 		if (tabla.containsKey(tok.getLexema().toString())) {
+		    System.out.println("Token Previo Existente");
 			return tok.getLexema().toString();
 		}
+        System.out.println("Token Previo Nuevo: "+tok.getLexema().toString());
 		tabla.put(tok.getLexema().toString(), tok);
 		return tok.getLexema().toString();
 	}
 	
-	public TokenLexema getSimbolo(String key) {
+	public static TokenLexema getSimbolo(String key) {
 		return tabla.get(key);
 	}
 	
+	public static void imprimirTabla() {
+	    System.out.println("////////////////////////////");
+	    /*var setOfKeys=tabla.keySet();
+	    for (String key : setOfKeys) {
+	        System.out.println(tabla.get(key).toString()+" || "+key);
+	    }*/
+	    tabla.forEach((key, value)-> System.out.println(key + " =>>> " + value));
+	}
 }

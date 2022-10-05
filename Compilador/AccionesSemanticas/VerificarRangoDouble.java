@@ -51,6 +51,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 				return -1;
 			}
 		}
+		AccionSemantica.tokenActual.setId("Constante Double");
 		return 0;
 	}
 }

@@ -7,7 +7,6 @@ public class ComienzoComentario extends AccionSemantica {
 	
 	@Override
 	public int ejecutar(Character caracter) {
-		AccionSemantica.tokenActual.resetLexema();
 		return 1;
 	}
 

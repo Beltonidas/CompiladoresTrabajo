@@ -8,6 +8,9 @@ public class VerificarIdentificador extends AccionSemantica {
 	@Override
 	public int ejecutar(Character caracter) {
 		AccionSemantica.tokenActual.setId("Identificador");
+		if (AccionSemantica.tokenActual.getLexema().length()>25) {
+            AccionSemantica.tokenActual.getLexema().delete(25, AccionSemantica.tokenActual.getLexema().length());
+        }
 		return 0;
 	}
 

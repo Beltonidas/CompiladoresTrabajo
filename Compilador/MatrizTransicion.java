@@ -30,7 +30,7 @@ public class MatrizTransicion {
     private MatrizAccionSemantica matrizAccionSemantica;
 
     //Indice de simbolos
-    private HashMap<String, Integer> indexSimbolo;
+    private HashMap<String, Integer> tablaSimbolos;
 
     //Caracteres acumulados
     public List<Character> listaCaracteresAcumulados = new ArrayList<>();
@@ -61,7 +61,7 @@ public class MatrizTransicion {
     }
     
     public void cargarSimbolos(){
-        indexSimbolo = new HashMap<String, Integer>();
+        tablaSimbolos = new HashMap<String, Integer>();
         try {
             String simbolo;
             int index;
@@ -69,7 +69,7 @@ public class MatrizTransicion {
             while (scanner.hasNext()){
                 simbolo = scanner.nextLine();
                 index = Integer.parseInt(scanner.nextLine());
-                indexSimbolo.put(simbolo, index);
+                tablaSimbolos.put(simbolo, index);
             }
             scanner.close();
         } catch (FileNotFoundException e) {
@@ -78,8 +78,8 @@ public class MatrizTransicion {
         }
     }
     
-    public HashMap<String, Integer> getSimbolos(){
-        return indexSimbolo;
+    public HashMap<String, Integer> getTablasSimbolos(){
+        return tablaSimbolos;
     }
     
     public void setIndexFila(int value){
@@ -101,7 +101,6 @@ public class MatrizTransicion {
         if (indexFila<0) {
         	indexCol=0;
         	indexFila=0;
-        	AccionSemantica.getToken().resetLexema();
         }
         return  codigoToken;
     }
@@ -109,8 +108,8 @@ public class MatrizTransicion {
     public int identificarCaracter(Character character){
         //Si no es ninguno de los anteriores entonces, buscar en la tabla
         String aux = String.valueOf(character);
-        if (indexSimbolo.containsKey(aux))
-            return indexSimbolo.get(aux);
+        if (tablaSimbolos.containsKey(aux))
+            return tablaSimbolos.get(aux);
         //Numero
         if (aux.matches("[+-]?\\d*(\\.\\d+)?"))
             return 5;

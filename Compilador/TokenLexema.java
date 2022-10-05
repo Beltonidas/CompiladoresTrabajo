@@ -35,10 +35,6 @@ public class TokenLexema {
 		return lexema;
 	}
 	
-	public void resetLexema() {
-		this.lexema.delete(0, this.lexema.length());
-	}
-	
 	
 	@Override
 	public boolean equals(Object o) {
@@ -49,6 +45,11 @@ public class TokenLexema {
 		} catch (Exception e) {
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+        return "Id: "+this.id+" | Lexema: "+this.lexema.toString();
 	}
 
 }

@@ -1,4 +1,5 @@
 package Compilador;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -9,9 +10,12 @@ public class AnalizadorLexico {
 	private MatrizTransicion matrizTransicion = new MatrizTransicion(this);
 	private List<List<Character>> archivoCodigoFuente;
 	private int iteradorLineaCaracteres = 0;
-	//private BufferTokens bufferTokens = new BufferTokens();
 	
 	public AnalizadorLexico(){
+	}
+	
+	public HashMap<String, Integer> getTablasSimbolos(){
+        return matrizTransicion.getTablasSimbolos();
 	}
         
 	public void avanzarLectura() {
@@ -20,7 +24,7 @@ public class AnalizadorLexico {
 	
 	public void entregarToken(String token) {
 		//this.bufferTokens.add(token);
-		System.out.println("El token entregao es: "+token);
+		//System.out.println("El token entregao es: "+token);
 	}
 	
     public void ejecutar(String ruta) {
@@ -36,7 +40,7 @@ public class AnalizadorLexico {
             lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
             while (iteradorLineaCaracteres < lineaProcesar.size()) {
                 simboloProcesar = lineaProcesar.get(iteradorLineaCaracteres);
-                //System.out.println(simboloProcesar);
+                System.out.println(simboloProcesar);
                 matrizTransicion.transicionCaracter(simboloProcesar, false);
             }
             iteradorLineaCaracteres = 0;   

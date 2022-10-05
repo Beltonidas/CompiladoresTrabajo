@@ -7,12 +7,15 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		AnalizadorLexico aLex = new AnalizadorLexico();
+		TablaSimbolos teibol = new TablaSimbolos();
 		System.out.println("Ruta del archivo que desea ejecutar: ");
 		Scanner consola = new Scanner(System.in);
         String ruta = consola.nextLine();
         consola.close();
         System.out.println(ruta);
 		aLex.ejecutar(ruta);
+		aLex.getTablasSimbolos();
+		TablaSimbolos.imprimirTabla();
 	}
 
 }
