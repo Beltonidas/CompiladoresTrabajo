@@ -24,6 +24,10 @@ public class TokenLexema {
 	}
 	
 	public void setLexema(String lexema) {
+	    if (lexema==null) {
+	        this.lexema=null;
+	        return;
+	    }
 		this.lexema = new StringBuilder(lexema);
 	}
 

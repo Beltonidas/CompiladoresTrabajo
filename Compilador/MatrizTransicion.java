@@ -28,10 +28,10 @@ public class MatrizTransicion {
     //Indice de simbolos
     private HashMap<String, Integer> tablaSimbolos;
 
-    public MatrizTransicion(AnalizadorLexico al) {
+    public MatrizTransicion() {
         this.cargarMatrizTrans();
         this.cargarSimbolos();
-        this.matrizAccionSemantica = new MatrizAccionSemantica(al);
+        this.matrizAccionSemantica=new MatrizAccionSemantica();
     }
 
     public void cargarMatrizTrans() {

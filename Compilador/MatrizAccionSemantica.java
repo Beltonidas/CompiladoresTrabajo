@@ -16,15 +16,13 @@ import java.util.HashMap;
 
 public class MatrizAccionSemantica{
     
-	private AnalizadorLexico aLex;
     private int[][] matrizSemantica;
     private HashMap<Integer,AccionSemantica> accionesSemanticas = new HashMap<Integer,AccionSemantica>();
     private final String MATRIZ_SEM = "./testFiles/TablaSemantica.txt";
     private final int FILAS_SEM = 14;
     private final int COLUMNAS_SEM = 28;
 
-    public MatrizAccionSemantica(AnalizadorLexico al) {
-    	this.aLex=al;
+    public MatrizAccionSemantica() {
         this.cargarMatrizSemantica();
         this.inicializarAccionesSemanticas();
     }
@@ -73,37 +71,37 @@ public class MatrizAccionSemantica{
             respuesta = accionesSemanticas.get(accion).ejecutar(caracterArchivo);
         }
         if (respuesta < 0){
-            System.err.println("Error en linea: "+aLex.getLinea()+", caracter: "+aLex.getCaracter()+" | "+AccionSemantica.getToken().getLexema());
-            aLex.entregarToken(respuesta*-1);
+            System.err.println("Error en linea: "+AnalizadorLexico.getLinea()+", caracter: "+AnalizadorLexico.getCaracter()+" | "+AccionSemantica.getToken().getLexema());
+            AnalizadorLexico.entregarToken(respuesta*-1);
             AccionSemantica.getNewToken();
-            aLex.avanzarLectura();
+            AnalizadorLexico.avanzarLectura();
             return;
         }
         if (accion==-1) {
             switch (caracterArchivo) {
                 case ' ':
-                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter espacio no esperado.");
+                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter espacio no esperado.");
                     break;
                 case '\t':
-                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter tabulacion no esperada.");
+                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter tabulacion no esperada.");
                     break;
                 case '\n':
-                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter salto de linea no esperado.");
+                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter salto de linea no esperado.");
                     break;
                 default:
-                    System.err.println("!|!|!|!|!Error en linea: "+aLex.getLinea()+", el caracter nro: "+aLex.getCaracter()+"\nCaracter: "+caracterArchivo+" no esperado.");
+                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter: "+caracterArchivo+" no esperado.");
                     break;
             }
             
-            aLex.avanzarLectura();
+            AnalizadorLexico.avanzarLectura();
             return;
         }
         if (correspondeEntregarToken(accion)){
-        	aLex.entregarToken(TablaSimbolos.addSimbolo(AccionSemantica.getToken()));
+            AnalizadorLexico.entregarToken(TablaSimbolos.addSimbolo(AccionSemantica.getToken()));
         	AccionSemantica.getNewToken();
         }
         if (respuesta == 1 || respuesta == -1 || accion == -2) {
-    		aLex.avanzarLectura();
+            AnalizadorLexico.avanzarLectura();
     	}
     }
 

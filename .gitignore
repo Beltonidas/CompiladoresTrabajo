@@ -420,3 +420,5 @@ fabric.properties
 .vs/VSWorkspaceState.json
 Server/mundo_sintetico/.vscode/launch.json
 .vscode/settings.json
+/Parser.class
+/ParserVal.class

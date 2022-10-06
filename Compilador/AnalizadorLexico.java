@@ -8,45 +8,48 @@ import Compilador.AccionesSemanticas.AccionSemantica;
 
 
 public class AnalizadorLexico {
-	
-    private TablaSimbolos teibol = new TablaSimbolos();
-	private MatrizTransicion matrizTransicion = new MatrizTransicion(this);
-	private List<List<Character>> archivoCodigoFuente;
-	private int iteradorLineaCaracteres = 0;
-	private int iteradorListaCaracteres = 0;
-    private Character simboloProcesar;
-    private List<Character> lineaProcesar = null;
-    private int tokenEntregar = -1;
+    
+	private static MatrizTransicion matrizTransicion=new MatrizTransicion();
+	private static List<List<Character>> archivoCodigoFuente;
+	private static int iteradorLineaCaracteres = 0;
+	private static int iteradorListaCaracteres = 0;
+    private static Character simboloProcesar;
+    private static List<Character> lineaProcesar = null;
+    private static int tokenEntregar = -1;
     public static TokenLexema anteriorToken;
 	
-	public AnalizadorLexico(String ruta) {
-	    archivoCodigoFuente = GestorArchivo.readCode(ruta);
-	    anteriorToken=AccionSemantica.getNewToken();
-	    lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
+	public AnalizadorLexico() {
 	}
 	
-	public HashMap<String, Integer> getTablasSimbolos(){
+	public static void inic(String ruta) {
+	    archivoCodigoFuente = GestorArchivo.readCode(ruta);
+        anteriorToken = AccionSemantica.getNewToken();
+        lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
+        TablaSimbolos.inic();
+	}
+	
+	public static HashMap<String, Integer> getTablasSimbolos(){
         return matrizTransicion.getTablasSimbolos();
 	}
         
-	public int getLinea() {
+	public static int getLinea() {
 	    return iteradorListaCaracteres+1;
 	}
 	
-	public int getCaracter() {
+	public static int getCaracter() {
         return iteradorLineaCaracteres+1;
     }
 	
-	public void entregarToken(int idToken) {
+	public static void entregarToken(int idToken) {
 	    tokenEntregar=idToken;
 	    anteriorToken=AccionSemantica.getToken();
 	}
 	
-	public void avanzarLectura() {
+	public static void avanzarLectura() {
 		iteradorLineaCaracteres++;
 	}
 	
-	public int siguienteToken() {
+	public static int siguienteToken() {
 	    tokenEntregar=-1;
 	    while (iteradorListaCaracteres < archivoCodigoFuente.size()) {
 	        while (iteradorLineaCaracteres < lineaProcesar.size()) {
@@ -63,6 +66,7 @@ public class AnalizadorLexico {
 	        }
 	        iteradorLineaCaracteres = 0;
 	    }
+	    anteriorToken.setLexema(null);
 	    return tokenEntregar;
 	}
 }

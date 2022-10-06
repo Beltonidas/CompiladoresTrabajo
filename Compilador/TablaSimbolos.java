@@ -5,17 +5,18 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import Compilador.AccionesSemanticas.AccionSemantica;
-
 public class TablaSimbolos {
 	
 	private static HashMap<String, TokenLexema> tabla = new HashMap<String,TokenLexema>();
 	private static HashMap<String,Integer> palabrasReservadas;
-	private String ARCHIVO_RESERVADAS="./testFiles/palabras_reservadas.txt";
+	private static String ARCHIVO_RESERVADAS="./testFiles/palabras_reservadas.txt";
     
 	public TablaSimbolos() {
-		palabrasReservadas = new HashMap<>();
-		try {
+	}
+	
+	public static void inic() {
+	    palabrasReservadas = new HashMap<>();
+        try {
             StringBuilder simbolo;
             int index=0;
             Scanner scanner = new Scanner(new File(ARCHIVO_RESERVADAS));
@@ -37,14 +38,15 @@ public class TablaSimbolos {
 	    //System.out.println(tok.toString());
 		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
 		    //System.out.println("Token Previo Palabra Reservada");
-		    AccionSemantica.getToken().setId(palabrasReservadas.get(tok.getLexema().toString()));
-		    return palabrasReservadas.get(tok.getLexema().toString());
+		    tok.setId(palabrasReservadas.get(tok.getLexema().toString()));
+		    tok.setLexema(null);
+		    return tok.getId();
 		}
 		if (tabla.containsKey(tok.getLexema().toString())) {
 		    //System.out.println("Token Previo Existente");
 		    return tok.getId();
 		}
-        //System.out.println("Token Previo Nuevo: "+tok.getLexema().toString());
+        //System.out.println("Token Previo Nuevo");
 		tabla.put(tok.getLexema().toString(), tok);
 		return tok.getId();
 	}
