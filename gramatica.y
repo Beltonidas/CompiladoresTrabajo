@@ -21,37 +21,47 @@ import java.util.Scanner;;
 
 %% //Especificacion de la gramatica
 
-programa: nombre_programa sentencia
+programa: nombre_programa bloque_sentencias
 ;
 
 nombre_programa: id
+		| cte {errorEnXY("Nombre del programa invalido. Identificador esperado, constante recibida en cambio")}
+		| cadena {errorEnXY("Nombre del programa invalido. Identificador esperado, cadena recibida en cambio")}
 ;
 
-sentencia: sentencia '{' ejecutiva '}'
-            | sentencia '{' declarativa '}'
-            | '{' ejecutiva '}'
-            | '{' declarativa '}'
+bloque_sentencias: bloque_sentencias '{' sentencia '}'
+		| '{' sentencia '}' 
+		| '{' sentencia {errorEnXY("Esperando final de bloque")}
+		| sentencia '}' {errorEnXY("Esperando comienzo de bloque")}
+
+sentencia: declarativa
+		| ejecutable
+		| sentencia declarativa
+		| sentencia ejecutable
+;
 
 //REGLAS PARA LAS SENTENCIAS DECLARATIVAS
 declarativa: dec_variables
-            | dec_funcion
+		| dec_funcion
 ;
 
-dec_variables: dec_variables tipo list_variables ';'
-            | tipo list_variables ';'
+dec_variables: tipo list_variables ';'
+		| tipo list_variables {errorEnXY("; esperado al final de la sentencia")}
+		| list_variables ';' {errorEnXY("Tipo de la/s variable/s esperado al comienzo de la sentencia")}
 ;
 
 tipo: ui8
-            | f64 
+		| f64 
+		| id {System.err.println("Tipo de la/s variable/s invalido"}
 ;
 
 list_variables: id
-            | list_variables ',' id
+		| list_variables ',' id
 ;
 
 dec_funcion: header_funcion cola_funcion
-            | header_funcion parametro cola_funcion
-            | header_funcion parametro ',' parametro cola_funcion
+		| header_funcion parametro cola_funcion
+		| header_funcion parametro ',' parametro cola_funcion
 ;
 
 header_funcion: fun id '('
@@ -61,57 +71,63 @@ cola_funcion: ')' ':' tipo '{' cuerpo_fun '}'
 ;
 
 parametro: tipo id
+		| tipo {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion")}
 ;
 
 cuerpo_fun: sentencia return '(' expresion ')' ';'
+		| sentencia return '(' expresion ';' {errorEnXY("Parentesis esperados al final de la expresion")}
+		| sentencia return expresion ';' {errorEnXY("Parentesis esperados al comienzo y final de la expresion")}
+		| sentencia return expresion ')' ';' {errorEnXY("Parentesis esperados al final de la expresion")}
+		| sentencia return expresion {errorEnXY("Parentesis esperados al comienzo y final de la expresion y ; al final de linea")}
+		| sentencia return '(' expresion ')'  {errorEnXY("; esperados al final de linea")}
 ;
 
-//REGLAS PARA LAS SENTENCIAS EJECUTIVAS
-ejecutiva: ejecutiva inst_ejecutiva
-            | inst_ejecutiva
-            | ejecutiva defer inst_ejecutiva
-            | defer inst_ejecutiva
+//REGLAS PARA LAS SENTENCIAS EJECUTABLES
+ejecutable: inst_ejecutable
+		| defer inst_ejecutable
 ; 
 
-inst_ejecutiva: asignacion ';'
-            | seleccion ';'
-            | impresion ';'
-            | invocar_fun ';'
-            | for_continue ';'
-;//BORRAR COMENTARIO CUANDO SE ESTE SEGURO DE QUE ESTA REGLA ESTA BIEN
+inst_ejecutable: asignacion ';'
+		| seleccion ';'
+		| impresion ';'
+		| invocar_fun ';'
+		| for_continue ';'
+;
 
 asignacion: id SIMB_ASIGNACION expresion
-            | id SIMB_ASIGNACION '(' expresion ')'
+		| id SIMB_ASIGNACION '(' expresion ')'
+		| id SIMB_ASIGNACION '(' expresion {errorEnXY("Parentesis esperados al final de expresion")}
+		| id SIMB_ASIGNACION expresion ')' {errorEnXY("Parentesis esperados al comienzo de expresion")}
 ;
 
 expresion: expresion '+' termino
-            | expresion '-' termino
-            | termino
+		| expresion '-' termino
+		| termino
 ;
 
 termino: termino '*' factor
-            | termino '/' factor
-            | factor
+		| termino '/' factor
+		| factor
 ;
 
 factor: id
-            | cte
-            | '-' cte 
-            | id '(' ')'
-            | id '(' factor ')'
-            | id '(' factor ',' factor ')'
+		| cte
+		| '-' cte {verificarRangoDoubleNegativo();}
+		| id '(' ')'
+		| id '(' factor ')'
+		| id '(' factor ',' factor ')'
 ;
 
 seleccion: if condicion_if then_selec end_if ';'
-            | if condicion_if then_selec else_selecc end_if ';'
+		| if condicion_if then_selec else_selecc end_if ';'
 ;
 
-then_selec: then '{' ejecutiva_for '}'
-            | then inst_ejecutiva_for
+then_selec: then '{' ejecutable_for '}'
+		| then inst_ejecutable_for
 ;
 
-else_selecc: '{' ejecutiva_for '}'
-            | inst_ejecutiva_for
+else_selecc: '{' ejecutable_for '}'
+		| inst_ejecutable_for
 ;
 
 condicion_if: '(' expresion_booleana ')'
@@ -121,40 +137,96 @@ expresion_booleana: expresion comparador expresion
 ;
 
 comparador: SIMB_DISTINTO
-            | SIMB_MAY_IGUAL
-            | SIMB_MEN_IGUAL
-            | '='
-            | '<'
-            | '>'
+		| SIMB_MAY_IGUAL
+		| SIMB_MEN_IGUAL
+		| '='
+		| '<'
+		| '>'
 ;
 
 impresion: out '(' cadena ')'
+		| out cadena ')' {errorEnXY("Falta de parentesis al comienzo de la cadena del out")}
+		| out '(' cadena {errorEnXY("Falta de parentesis al final de la cadena del out")}
 ;
 
 invocar_fun: discard '(' factor ')' 
-            | '(' factor ')' //PONER ACCION QUE INFORME DE ERROR
+		| '(' factor ')' {errorEnXY("Funcion invocada sin discard del retorno")}
 ;
 
-for_continue: for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutiva_for '}'
-            | for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutiva_for
-            | cadena ':' for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutiva_for '}'
-            | cadena ':' for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutiva_for
+for_continue: for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($3.sval, $7.sval)}
+		| for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval)}
+		| cadena ':' for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($5.sval, $9.sval)}
+		| cadena ':' for '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval)}
 ;
 
 mas_o_menos: '+'
-            | '-'
+		| '-'
 ;
 
-ejecutiva_for: ejecutiva_for inst_ejecutiva_for
-            | inst_ejecutiva_for
+ejecutable_for: ejecutable_for inst_ejecutable_for
+		| inst_ejecutable_for
 ; 
 
-inst_ejecutiva_for: inst_ejecutiva
-            | break ';'
-            | break ':' cadena ';'
-            | continue ';'
+inst_ejecutable_for: inst_ejecutable
+		| break ';'
+		| break ':' cadena ';'
+		| continue ';'
 ;
 
 %%
 
-//codigo loco
+public void errorEnXY(String mensaje){
+	int linea,caracter=0;
+	linea = AnalizadorLexico.getLinea();
+	caracter = AnalizadorLexico.getCaracter();
+	System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". "+mensaje);
+}
+
+public void verificarIdIguales(String id_1, String id_2){
+	int linea,caracter=0;
+	linea = AnalizadorLexico.getLinea();
+	caracter = AnalizadorLexico.getCaracter();
+	if (id_1.equals(id_2)){
+		System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Identificadores no coincidentes");
+	}
+}
+
+public void verificarRangoDoubleNegativo(){
+	int linea,caracter=0;
+	linea = AnalizadorLexico.getLinea();
+	caracter = AnalizadorLexico.getCaracter();
+    Double parteDecimal=0.0;
+    int parteExponente=0;
+    StringBuilder lexema = new StringBuilder("-");
+    lexema.append(AnalizadorLexico.anteriorToken.getLexema().toString());
+    int indexPunto = lexema.indexOf(".");
+    int indexExponente = lexema.indexOf("D");
+    if (indexPunto==0) {
+        if (indexExponente!=-1) {
+            parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
+            if (parteExponente>=308||parteExponente<=-308) {
+                System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Exponente de la constante double fuera de rango.");
+            }
+            parteDecimal = Double.parseDouble("-0"+lexema.substring(indexPunto, indexExponente)+"E"+lexema.substring(indexExponente+1,lexema.length()));
+        }else {
+            parteDecimal = Double.parseDouble("-0"+lexema.substring(indexPunto, lexema.length()));
+        }
+        if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
+            System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Valor de la constante double fuera de rango.");
+            
+        }
+    } else {
+        if (indexExponente!=-1) {
+            parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
+            if (parteExponente>=308||parteExponente<=-308) {
+                System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Exponente de la constante double fuera de rango.");
+            }
+            parteDecimal = Double.parseDouble("-"+lexema.substring(0, indexExponente)+"0E"+lexema.substring(indexExponente+1,lexema.length()));
+        } else {
+            parteDecimal = Double.parseDouble("-"+lexema.substring(0, lexema.length())+"0");
+        }
+        if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
+            System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Valor de la constante double fuera de rango.");
+        }
+    }
+}

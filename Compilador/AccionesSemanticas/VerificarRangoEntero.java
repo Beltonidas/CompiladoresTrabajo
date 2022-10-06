@@ -1,7 +1,5 @@
 package Compilador.AccionesSemanticas;
 
-import Compilador.TokenLexema;
-
 public class VerificarRangoEntero extends AccionSemantica {
 
 	public VerificarRangoEntero() {

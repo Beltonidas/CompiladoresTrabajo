@@ -2,8 +2,6 @@ package Compilador;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.Spring;
-
 import Compilador.AccionesSemanticas.AccionSemantica;
 
 
@@ -19,7 +17,7 @@ public class AnalizadorLexico {
     private Character simboloProcesar;
     private List<Character> lineaProcesar = null;
     private int tokenEntregar = -1;
-    public TokenLexema anteriorToken;
+    public static TokenLexema anteriorToken;
 	
 	public AnalizadorLexico(String ruta) {
 	    archivoCodigoFuente = GestorArchivo.readCode(ruta);

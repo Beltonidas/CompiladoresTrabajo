@@ -1,9 +1,7 @@
 package Compilador;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
 public class MatrizTransicion {
@@ -19,8 +17,8 @@ public class MatrizTransicion {
     private static final String ARCHIVO_SIMBOLO = "./testFiles/TablaDistintosSimbolos.txt";
 
     //Posicion actual en la tabla
-    public int indexFila;
-    public int indexCol;
+    public int indexFila=0;
+    public int indexCol=0;
 
     //Matriz de transicion de estados
     private int matrizEstado [][];
@@ -30,14 +28,9 @@ public class MatrizTransicion {
     //Indice de simbolos
     private HashMap<String, Integer> tablaSimbolos;
 
-    //Caracteres acumulados
-    public List<Character> listaCaracteresAcumulados = new ArrayList<>();
-
     public MatrizTransicion(AnalizadorLexico al) {
         this.cargarMatrizTrans();
         this.cargarSimbolos();
-        this.indexCol = 0;
-        this.indexFila = 0;
         this.matrizAccionSemantica = new MatrizAccionSemantica(al);
     }
 
