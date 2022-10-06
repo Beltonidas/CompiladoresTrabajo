@@ -82,7 +82,7 @@ inst_ejecutable: asignacion ';' {System.out.println("inst_ejecutable 1era regla"
 		| seleccion ';' {System.out.println("inst_ejecutable 2era regla");}
 		| impresion ';' {System.out.println("inst_ejecutable 3era regla");}
 		| invocar_fun ';' {System.out.println("inst_ejecutable 4era regla");}
-		| for_continue ';' {System.out.println("inst_ejecutable 5era regla");}
+		| for_continue {System.out.println("inst_ejecutable 5era regla");}
 ;
 
 asignacion: id SIMB_ASIGNACION expresion {System.out.println("Asignacion 1era regla");}
@@ -145,10 +145,10 @@ invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($3.sval, $7.sval);}
-		| For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($5.sval, $9.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);}
+for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($3.sval, $7.sval);}
+		| For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);}
+		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($5.sval, $9.sval);}
+		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);}
 ;
 
 mas_o_menos: '+'
