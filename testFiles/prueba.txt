@@ -1,1 +1,6 @@
-pro {x =: 10;}
+pro {x =: 10;
+ui8 y, x, w;
+fun f1 (ui8 x):ui8{
+    f64 z;
+    return (x);
+}}

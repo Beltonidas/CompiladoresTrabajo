@@ -86,10 +86,7 @@ inst_ejecutable: asignacion ';' {System.out.println("inst_ejecutable 1era regla"
 ;
 
 asignacion: id SIMB_ASIGNACION expresion {System.out.println("Asignacion 1era regla");}
-		| id SIMB_ASIGNACION '(' expresion ')' {System.out.println("Asignacion 2era regla");}
-		| id SIMB_ASIGNACION '(' expresion {errorEnXY("Parentesis esperados al final de expresion");System.out.println("Asignacion 3era regla");}
-		| id SIMB_ASIGNACION expresion ')' {errorEnXY("Parentesis esperados al comienzo de expresion");System.out.println("Asignacion 4era regla");}
-;
+		;
 
 expresion: expresion '+' termino {System.out.println("Expresion 1era regla");}
 		| expresion '-' termino {System.out.println("Expresion 2era regla");}
@@ -105,9 +102,11 @@ factor: id {System.out.println("Factor 1era regla");}
 		| cte {System.out.println("Factor 2era regla");}
 		| '-' cte {verificarRangoDoubleNegativo();System.out.println("Factor 3era regla");}
 		| id '(' ')' {System.out.println("Factor 4era regla");}
-		| id '(' factor ')' {System.out.println("Factor 5era regla");}
-		| id '(' factor ',' factor ')' {System.out.println("Factor 6era regla");}
+		| id '(' parametro_real ')' {System.out.println("Factor 5era regla");}
+		| id '(' parametro_real ',' parametro_real ')' {System.out.println("Factor 6era regla");}
 ;
+
+parametro_real: id | cte;
 
 seleccion: If condicion_if then_selec end_if ';'
 		| If condicion_if then_selec else_selecc end_if ';'
