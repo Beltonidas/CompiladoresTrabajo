@@ -3,4 +3,24 @@ ui8 y, x, w;
 fun f1 (ui8 x):ui8{
     f64 z;
     return (x);
-}}
+}}{
+    f64 i;
+    i =: 9.D+3;
+    out('askjhdjla');
+    << Hola como estas>> 
+    if (30 < 20) then {
+        i =: 49;
+    }else{
+
+        i =: 50;
+    } end_if;
+
+    if (30 < 20) then
+        i =: 50; 
+        end_if;
+
+
+    discard fi(2);
+    discard fi();
+    discard fi(2, x);
+}

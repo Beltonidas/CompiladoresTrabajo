@@ -101,15 +101,17 @@ termino: termino '*' factor {System.out.println("Termino 1era regla");}
 factor: id {System.out.println("Factor 1era regla");}
 		| cte {System.out.println("Factor 2era regla");}
 		| '-' cte {verificarRangoDoubleNegativo();System.out.println("Factor 3era regla");}
-		| id '(' ')' {System.out.println("Factor 4era regla");}
+;
+
+retorno_funcion: id '(' ')' {System.out.println("Factor 4era regla");}
 		| id '(' parametro_real ')' {System.out.println("Factor 5era regla");}
 		| id '(' parametro_real ',' parametro_real ')' {System.out.println("Factor 6era regla");}
 ;
 
 parametro_real: id | cte;
 
-seleccion: If condicion_if then_selec end_if ';'
-		| If condicion_if then_selec else_selecc end_if ';'
+seleccion: If condicion_if then_selec end_if
+		| If condicion_if then_selec else_selecc end_if
 ;
 
 then_selec: then '{' ejecutable_for '}'
@@ -139,8 +141,8 @@ impresion: out '(' cadena ')'
 		| out '(' cadena {errorEnXY("Falta de parentesis al final de la cadena del out");}
 ;
 
-invocar_fun: discard '(' factor ')' 
-		| '(' factor ')' {errorEnXY("Funcion invocada sin discard del retorno");}
+invocar_fun: discard retorno_funcion
+		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
 for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($3.sval, $7.sval);}
