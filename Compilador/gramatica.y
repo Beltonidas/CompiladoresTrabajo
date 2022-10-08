@@ -101,14 +101,18 @@ termino: termino '*' factor {System.out.println("Termino 1era regla");}
 factor: id {System.out.println("Factor 1era regla");}
 		| cte {System.out.println("Factor 2era regla");}
 		| '-' cte {verificarRangoDoubleNegativo();System.out.println("Factor 3era regla");}
+		| retorno_funcion {System.out.println("Factor 4ta regla");}
 ;
 
-retorno_funcion: id '(' ')' {System.out.println("Factor 4era regla");}
-		| id '(' parametro_real ')' {System.out.println("Factor 5era regla");}
-		| id '(' parametro_real ',' parametro_real ')' {System.out.println("Factor 6era regla");}
+retorno_funcion: id '(' ')' {System.out.println("Retorno funcion 1ra regla");}
+		| id '(' parametro_real ')' {System.out.println("Retorno funcion 2ra regla");}
+		| id '(' parametro_real ',' parametro_real ')' {System.out.println("Retorno funcion 3ra regla");}
 ;
 
-parametro_real: id | cte;
+parametro_real: id 
+		| cte
+		| '-' cte {verificarRangoDoubleNegativo();System.out.println("parametro real");}
+;
 
 seleccion: If condicion_if then_selec end_if
 		| If condicion_if then_selec else_selecc end_if
@@ -145,9 +149,9 @@ invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($3.sval, $7.sval);}
+for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($3.sval, $7.sval);}
 		| For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' {verificarIdIguales($5.sval, $9.sval);}
+		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($5.sval, $9.sval);}
 		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);}
 ;
 
@@ -192,6 +196,9 @@ public void verificarRangoDoubleNegativo(){
     StringBuilder lexema = new StringBuilder("-");
     lexema.append(AnalizadorLexico.anteriorToken.getLexema().toString());
     int indexPunto = lexema.indexOf(".");
+	if (indexPunto== -1)
+		return;
+	
     int indexExponente = lexema.indexOf("D");
     if (indexPunto==0) {
         if (indexExponente!=-1) {

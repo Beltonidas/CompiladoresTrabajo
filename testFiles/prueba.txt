@@ -22,16 +22,20 @@ fun f1 (ui8 x):ui8{
 
     discard fi(2);
     discard fi();
+    discard fi();
     defer out('askjhdjla');
 
     for (i =: 30; i<20; +34 ){
 
         i =: 50;
     };
+
+    for (i =: 30; i<20; +34 )
+        x =: 40;
+    
     'outer': for (i =: 30; i<20; +34 ){
         i =: 50;
         break :'outer';
-
-
     };
+    x =: fi(2);
 }
