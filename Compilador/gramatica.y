@@ -13,7 +13,7 @@ package Compilador;
 
 %% //Especificacion de la gramatica 
 
-programa: nombre_programa bloque_sentencias {System.out.println("Programa listo");}
+programa: nombre_programa bloque_sentencias {System.out.println("////////////////////");System.out.println("Programa Listo");}
 ;
 
 nombre_programa: id
@@ -26,10 +26,10 @@ bloque_sentencias: bloque_sentencias '{' sentencia '}'
 		| '{' sentencia {errorEnXY("Esperando final de bloque");}
 		| sentencia '}' {errorEnXY("Esperando comienzo de bloque");}
 
-sentencia: declarativa {System.out.println("Sentencia 1");}
-		| ejecutable {System.out.println("Sentencia 2");}
-		| sentencia declarativa {System.out.println("Sentencia 3");}
-		| sentencia ejecutable {System.out.println("Sentencia 4");}
+sentencia: declarativa
+		| ejecutable
+		| sentencia declarativa
+		| sentencia ejecutable
 ;
 
 //REGLAS PARA LAS SENTENCIAS DECLARATIVAS
@@ -48,6 +48,7 @@ tipo: ui8
 
 list_variables: id
 		| list_variables ',' id
+		| error {errorEnXY("Se esperaba un identificador o una lista de Identificadores separados por ,");}
 ;
 
 dec_funcion: header_funcion cola_funcion
@@ -56,9 +57,11 @@ dec_funcion: header_funcion cola_funcion
 ;
 
 header_funcion: fun id '('
+		| fun '(' {errorEnXY("La declaracion necesita un nombre de funcion");}
 ;
 
 cola_funcion: ')' ':' tipo '{' cuerpo_fun '}'
+		| error {errorEnXY("En la declaracion de una funcion falta: ),:,{ o }");}
 ;
 
 parametro: tipo id
@@ -86,7 +89,9 @@ inst_ejecutable: asignacion ';' {System.out.println("inst_ejecutable 1era regla"
 ;
 
 asignacion: id SIMB_ASIGNACION expresion {System.out.println("Asignacion 1era regla");}
-		;
+		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada");}
+		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
+;
 
 expresion: expresion '+' termino {System.out.println("Expresion 1era regla");}
 		| expresion '-' termino {System.out.println("Expresion 2era regla");}
