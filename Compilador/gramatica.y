@@ -13,7 +13,7 @@ package Compilador;
 
 %% //Especificacion de la gramatica 
 
-programa: nombre_programa bloque_sentencias {System.out.println("////////////////////");System.out.println("Programa Listo");}
+programa: nombre_programa bloque_sentencias {programaListo();}
 ;
 
 nombre_programa: id
@@ -33,12 +33,12 @@ sentencia: declarativa
 ;
 
 //REGLAS PARA LAS SENTENCIAS DECLARATIVAS
-declarativa: dec_variables {System.out.println("Declarativa 1");}
-		| dec_funcion {System.out.println("Declarativa 2");}
+declarativa: dec_variables {imprimirMSGEstructura("Declaracion de variable/s");}
+		| dec_funcion {imprimirMSGEstructura("Declaracion de funcion");}
 ;
 
-dec_variables: tipo list_variables ';' {System.out.println("Declarativa var 1");}
-		| list_variables ';' {errorEnXY("Tipo de la/s variable/s esperado al comienzo de la sentencia");System.out.println("Declarativa var 2");}
+dec_variables: tipo list_variables ';'
+		| list_variables ';' {errorEnXY("Tipo de la/s variable/s esperado al comienzo de la sentencia");}
 ;
 
 tipo: ui8
@@ -48,7 +48,7 @@ tipo: ui8
 
 list_variables: id
 		| list_variables ',' id
-		| error {errorEnXY("Se esperaba un identificador o una lista de Identificadores separados por ,");}
+		| error {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 ;
 
 dec_funcion: header_funcion cola_funcion
@@ -57,11 +57,11 @@ dec_funcion: header_funcion cola_funcion
 ;
 
 header_funcion: fun id '('
-		| fun '(' {errorEnXY("La declaracion necesita un nombre de funcion");}
+		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
 cola_funcion: ')' ':' tipo '{' cuerpo_fun '}'
-		| error {errorEnXY("En la declaracion de una funcion falta: ),:,{ o }");}
+		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
 parametro: tipo id
@@ -77,46 +77,46 @@ cuerpo_fun: sentencia Return '(' expresion ')' ';'
 ;
 
 //REGLAS PARA LAS SENTENCIAS EJECUTABLES
-ejecutable: inst_ejecutable {System.out.println("ejecutable 1era regla");}
-		| defer inst_ejecutable {System.out.println("ejecutable 2era regla");}
+ejecutable: inst_ejecutable
+		| defer inst_ejecutable {imprimirMSGEstructura("Defer de instruccion ejecutable");}
 ; 
 
-inst_ejecutable: asignacion ';' {System.out.println("inst_ejecutable 1era regla");}
-		| seleccion ';' {System.out.println("inst_ejecutable 2era regla");}
-		| impresion ';' {System.out.println("inst_ejecutable 3era regla");}
-		| invocar_fun ';' {System.out.println("inst_ejecutable 4era regla");}
-		| for_continue {System.out.println("inst_ejecutable 5era regla");}
+inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
+		| seleccion ';' {imprimirMSGEstructura("Seleccion If");}
+		| impresion ';' {imprimirMSGEstructura("Impresion a Consola");}
+		| invocar_fun ';' {imprimirMSGEstructura("Invocacion de Funcion");}
+		| for_continue {imprimirMSGEstructura("Loop For");}
 ;
 
-asignacion: id SIMB_ASIGNACION expresion {System.out.println("Asignacion 1era regla");}
-		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada");}
+asignacion: id SIMB_ASIGNACION expresion
+		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada despues de la asignacion");}
 		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 ;
 
-expresion: expresion '+' termino {System.out.println("Expresion 1era regla");}
-		| expresion '-' termino {System.out.println("Expresion 2era regla");}
-		| termino {System.out.println("Expresion 3era regla");}
+expresion: expresion '+' termino
+		| expresion '-' termino
+		| termino
 ;
 
-termino: termino '*' factor {System.out.println("Termino 1era regla");}
-		| termino '/' factor {System.out.println("Termino 2era regla");}
-		| factor {System.out.println("Termino 3era regla");}
+termino: termino '*' factor
+		| termino '/' factor
+		| factor
 ;
 
-factor: id {System.out.println("Factor 1era regla");}
-		| cte {System.out.println("Factor 2era regla");}
-		| '-' cte {verificarRangoDoubleNegativo();System.out.println("Factor 3era regla");}
-		| retorno_funcion {System.out.println("Factor 4ta regla");}
+factor: id
+		| cte
+		| '-' cte {verificarRangoDoubleNegativo();}
+		| retorno_funcion
 ;
 
-retorno_funcion: id '(' ')' {System.out.println("Retorno funcion 1ra regla");}
-		| id '(' parametro_real ')' {System.out.println("Retorno funcion 2ra regla");}
-		| id '(' parametro_real ',' parametro_real ')' {System.out.println("Retorno funcion 3ra regla");}
+retorno_funcion: id '(' ')'
+		| id '(' parametro_real ')'
+		| id '(' parametro_real ',' parametro_real ')'
 ;
 
 parametro_real: id 
 		| cte
-		| '-' cte {verificarRangoDoubleNegativo();System.out.println("parametro real");}
+		| '-' cte {verificarRangoDoubleNegativo();}
 ;
 
 seleccion: If condicion_if then_selec end_if
@@ -176,73 +176,75 @@ inst_ejecutable_for: inst_ejecutable
 
 %%
 
-public void errorEnXY(String mensaje){
+public static final String ANSI_RESET ="\u001B[0m";
+public static final String ANSI_RED = "\u001B[31m";
+public static final String ANSI_GREEN = "\u001B[32m";
+public static final String ANSI_YELLOW = "\u001B[33m";
+public static final String ANSI_BLUE = "\u001B[34m";
+
+public void errorEnXY(String msg){
 	int linea,caracter=0;
 	linea = AnalizadorLexico.getLinea();
 	caracter = AnalizadorLexico.getCaracter();
-	System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". "+mensaje);
+	yynerrs++;
+	System.out.println(ANSI_RED+"!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Errores hasta ahora: "+yynerrs+"\n"+msg+ANSI_RESET);
 }
 
 public void verificarIdIguales(String id_1, String id_2){
-	int linea,caracter=0;
-	linea = AnalizadorLexico.getLinea();
-	caracter = AnalizadorLexico.getCaracter();
-	if (id_1.equals(id_2)){
-		System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Identificadores no coincidentes");
+	if (!id_1.equals(id_2)){
+		errorEnXY("Identificadores no coincidentes");
 	}
 }
 
 public void verificarRangoDoubleNegativo(){
-	int linea,caracter=0;
-	linea = AnalizadorLexico.getLinea();
-	caracter = AnalizadorLexico.getCaracter();
-    Double parteDecimal=0.0;
-    int parteExponente=0;
-    StringBuilder lexema = new StringBuilder("-");
-    lexema.append(AnalizadorLexico.anteriorToken.getLexema().toString());
+	StringBuilder lexema = new StringBuilder(AnalizadorLexico.anteriorToken.getLexema().toString());
     int indexPunto = lexema.indexOf(".");
-	if (indexPunto== -1)
-		return;
-	
+    if (indexPunto== -1)
+        return;
     int indexExponente = lexema.indexOf("D");
-    if (indexPunto==0) {
-        if (indexExponente!=-1) {
-            parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
-            if (parteExponente>=308||parteExponente<=-308) {
-                System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Exponente de la constante double fuera de rango.");
-            }
-            parteDecimal = Double.parseDouble("-0"+lexema.substring(indexPunto, indexExponente)+"E"+lexema.substring(indexExponente+1,lexema.length()));
-        }else {
-            parteDecimal = Double.parseDouble("-0"+lexema.substring(indexPunto, lexema.length()));
-        }
-        if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
-            System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Valor de la constante double fuera de rango.");
-            
-        }
-    } else {
-        if (indexExponente!=-1) {
-            parteExponente = Integer.parseInt(lexema.substring(indexExponente+1,lexema.length()));
-            if (parteExponente>=308||parteExponente<=-308) {
-                System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Exponente de la constante double fuera de rango.");
-            }
-            parteDecimal = Double.parseDouble("-"+lexema.substring(0, indexExponente)+"0E"+lexema.substring(indexExponente+1,lexema.length()));
-        } else {
-            parteDecimal = Double.parseDouble("-"+lexema.substring(0, lexema.length())+"0");
-        }
-        if (Double.MIN_VALUE > parteDecimal || parteDecimal > Double.MAX_VALUE) {
-            System.err.println("!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Valor de la constante double fuera de rango.");
-        }
+    if (indexExponente!=-1) {
+        lexema.deleteCharAt(indexExponente);
+        lexema.insert(indexExponente, 'E');
     }
+    Double parteDecimal=Double.parseDouble("-"+lexema.toString());
+    if (parteDecimal==0.0 || (Double.parseDouble("-2.2250738585072014E-308") > parteDecimal && parteDecimal > Double.parseDouble("-1.7976931348623157E308"))) {
+        return;
+    }
+    errorEnXY("Valor de la constante double fuera de rango");
 }
 
 private void yyerror(String msg){
 	errorEnXY(msg);
+	yynerrs--;
+	//Esto es porque en parser se aumenta el numero de errores una vez finalizada la llamada al metodo yyerror y 
+	//veniamos modificandolo de tal manera que lo haga antes pero decidimos hacer esto por si alguna vez se nos olvidaba
+}
+
+public void warningEnXY(String msg){
+	int linea,caracter=0;
+	linea = AnalizadorLexico.getLinea();
+	caracter = AnalizadorLexico.getCaracter();
+	System.out.println(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+ANSI_RESET);
+}
+
+private void imprimirMSGEstructura(String msg){
+	int linea=0;
+	linea = AnalizadorLexico.getLinea();
+	System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+"."+ANSI_RESET);
+}
+
+private void programaListo(){
+	if (yynerrs!=0){
+		System.out.println(ANSI_RED+"!|!|!|!: El programa encontro "+yynerrs+" errores al compilarse, pero al menos compilo UwU"+ANSI_RESET);
+		return;
+	}
+	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores. ¡¡¡Felicitaciones!!!"+ANSI_RESET);
 }
 
 private int yylex(){
 	int rta=0;
     rta=AnalizadorLexico.siguienteToken();
-    System.out.println("Siguiente token: "+rta+", valor: "+AnalizadorLexico.anteriorToken.getId());
+    //System.out.println("Siguiente token: "+rta+", valor: "+AnalizadorLexico.anteriorToken.getId());
     if (rta!=-1) {
         if (AnalizadorLexico.anteriorToken.getLexema() != null){
             yylval = new ParserVal(AnalizadorLexico.anteriorToken.getLexema().toString());

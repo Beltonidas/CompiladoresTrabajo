@@ -17,6 +17,7 @@ public class AnalizadorLexico {
     private static List<Character> lineaProcesar = null;
     private static int tokenEntregar = -1;
     public static TokenLexema anteriorToken;
+    public static Parser paruser;
 	
 	public AnalizadorLexico() {
 	}
@@ -69,4 +70,5 @@ public class AnalizadorLexico {
 	    anteriorToken.setLexema(null);
 	    return tokenEntregar;
 	}
+
 }

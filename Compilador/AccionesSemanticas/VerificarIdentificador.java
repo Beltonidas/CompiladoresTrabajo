@@ -1,5 +1,7 @@
 package Compilador.AccionesSemanticas;
 
+import Compilador.AnalizadorLexico;
+
 public class VerificarIdentificador extends AccionSemantica {
 
 	public VerificarIdentificador() {
@@ -11,7 +13,7 @@ public class VerificarIdentificador extends AccionSemantica {
 		if (AccionSemantica.tokenActual.getLexema().length()>25) {
 		    String ant = AccionSemantica.tokenActual.getLexema().toString();
 		    String neu = AccionSemantica.tokenActual.getLexema().delete(25, AccionSemantica.tokenActual.getLexema().length()).toString();
-		    System.err.println("|/|/|/| Warning: Identificador: "+ant+"\n|/|/|/| Warning: Truncado a: "+neu+", por superar longitud de 25 caracteres.");
+            AnalizadorLexico.paruser.warningEnXY("Identificador: "+ant+", truncado a: "+neu+", por superar longitud de 25 caracteres.");
         }
 		return 0;
 	}

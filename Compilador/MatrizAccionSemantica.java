@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
+
 public class MatrizAccionSemantica{
     
     private int[][] matrizSemantica;
@@ -57,7 +58,7 @@ public class MatrizAccionSemantica{
                 }
                 s.close();
         } catch (FileNotFoundException e) {
-            System.out.println("No se ha podido leer el archivo localizado en: " + MATRIZ_SEM);
+            System.out.println(Parser.ANSI_RED+"No se ha podido leer el archivo localizado en: " + MATRIZ_SEM + Parser.ANSI_RESET);
             e.printStackTrace();
         }
     }
@@ -71,8 +72,8 @@ public class MatrizAccionSemantica{
             respuesta = accionesSemanticas.get(accion).ejecutar(caracterArchivo);
         }
         if (respuesta < 0){
-            System.err.println("Error en linea: "+AnalizadorLexico.getLinea()+", caracter: "+AnalizadorLexico.getCaracter()+" | "+AccionSemantica.getToken().getLexema());
-            AnalizadorLexico.entregarToken(respuesta*-1);
+            AnalizadorLexico.paruser.errorEnXY("El token entregado puede estar incompleto debido al error");
+            AnalizadorLexico.entregarToken(TablaSimbolos.addSimbolo(AccionSemantica.getToken()));
             AccionSemantica.getNewToken();
             AnalizadorLexico.avanzarLectura();
             return;
@@ -80,19 +81,18 @@ public class MatrizAccionSemantica{
         if (accion==-1) {
             switch (caracterArchivo) {
                 case ' ':
-                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter espacio no esperado.");
+                    AnalizadorLexico.paruser.errorEnXY("Caracter espacio no esperado.");
                     break;
                 case '\t':
-                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter tabulacion no esperada.");
+                    AnalizadorLexico.paruser.errorEnXY("Caracter tabulacion no esperada.");
                     break;
                 case '\n':
-                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter salto de linea no esperado.");
+                    AnalizadorLexico.paruser.errorEnXY("Caracter salto de linea no esperado.");
                     break;
                 default:
-                    System.err.println("!|!|!|!|!Error en linea: "+AnalizadorLexico.getLinea()+", el caracter nro: "+AnalizadorLexico.getCaracter()+"\nCaracter: "+caracterArchivo+" no esperado.");
+                    AnalizadorLexico.paruser.errorEnXY("Caracter: "+caracterArchivo+" no esperado.");
                     break;
             }
-            
             AnalizadorLexico.avanzarLectura();
             return;
         }

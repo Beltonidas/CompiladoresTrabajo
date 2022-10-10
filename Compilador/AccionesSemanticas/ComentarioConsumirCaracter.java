@@ -1,7 +1,5 @@
 package Compilador.AccionesSemanticas;
 
-import Compilador.AnalizadorLexico;
-
 public class ComentarioConsumirCaracter extends AccionSemantica {
 
 	public ComentarioConsumirCaracter() {
