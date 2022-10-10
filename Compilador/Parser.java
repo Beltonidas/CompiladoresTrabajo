@@ -570,10 +570,10 @@ private void imprimirMSGEstructura(String msg){
 
 private void programaListo(){
 	if (yynerrs!=0){
-		System.out.println(ANSI_RED+"!|!|!|!: El programa encontro "+yynerrs+" errores al compilarse, pero al menos compilo UwU"+ANSI_RESET);
+		System.out.println(ANSI_RED+"!|!|!|!: El programa encontro "+yynerrs+" errores al compilarse."+ANSI_RESET);
 		return;
 	}
-	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores. ¡¡¡Felicitaciones!!!"+ANSI_RESET);
+	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
 }
 
 private int yylex(){
