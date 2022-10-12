@@ -3,8 +3,9 @@ pro {
         f64 z;
         return x);
     }
-
-    insta := 89;
+	i=:3.0D;
+	i=:3.0D-;
+    insta := 89 ! ;
     ui8 13;
     13 =: a;
     ui8 y, x, w;
@@ -12,7 +13,12 @@ fun f1 (ui8 x):ui8{
     f64 z;
     return (x);
 }}{
-    f64 ihgouahwfoiuanowdnaowndoawufhnaownoa;
+    f64 una_variable_demasiado_larga_a_ser_truncada;
+    f64 una_variable_demas!;
+    f64 una_variab!le_demas;
+    f64 Return;
+    f64 return;
+    
     i =: 340;
     i =: 9.D+3;
     i =: .05125D+10;
@@ -31,6 +37,10 @@ fun f1 (ui8 x):ui8{
     i=:1.2D10;
     out('askjhdjla');
     << Hola como estas>> 
+    << Un 
+    comentario
+    multilinea 
+    cualquiera>> 
     if (30 < 20) then {
         i =: 49;
     }else{
@@ -45,18 +55,27 @@ fun f1 (ui8 x):ui8{
 
     discard fi(2);
     discard fi();
-    discard fi();
+    discard fi(3,2);
     defer out('askjhdjla');
 
-    for (i =: 30; i<20; +34 ){
+    for (i =: 30; j<20; +34 ){
 
+        i =: 50;
+    };
+    
+    for (i =: 30; j<20; +34 ){
+		if (30 < 20) then {
+        	i =: 50;
+        	continue; 
+        }end_if;
         i =: 50;
     };
 
     for (i =: 30; i<20; +34 )
         x =: 40;
-    
-    'outer': for (i =: 30; i<20; +34 ){
+    defer for (i =: 30; i<20; +34 )
+        x =: 40;
+    'outer': for (i =: 30.0; i<20; +34.0 ){
         i =: 50;
         break :'outer';
     };

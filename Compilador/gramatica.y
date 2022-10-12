@@ -154,10 +154,10 @@ invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($3.sval, $7.sval);}
-		| For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($5.sval, $9.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);}
+for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($3.sval, $7.sval);verificarConstanteEntera($5.sval);verificarConstanteEntera($12.sval);}
+		| For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);verificarConstanteEntera($5.sval);verificarConstanteEntera($12.sval);}
+		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
+		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
 ;
 
 mas_o_menos: '+'
@@ -181,18 +181,26 @@ public static final String ANSI_RED = "\u001B[31m";
 public static final String ANSI_GREEN = "\u001B[32m";
 public static final String ANSI_YELLOW = "\u001B[33m";
 public static final String ANSI_BLUE = "\u001B[34m";
+public static final String ANSI_PURPLE ="\u001B[35m";
+public static final String ANSI_CYAN = "\u001B[36m";
 
 public void errorEnXY(String msg){
 	int linea,caracter=0;
 	linea = AnalizadorLexico.getLinea();
 	caracter = AnalizadorLexico.getCaracter();
 	yynerrs++;
-	System.out.println(ANSI_RED+"!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Errores hasta ahora: "+yynerrs+"\n"+msg+ANSI_RESET);
+	System.out.println(ANSI_RED+"!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Errores hasta ahora: "+yynerrs+"\n"+msg+"\n"+ANSI_RESET);
 }
 
 public void verificarIdIguales(String id_1, String id_2){
 	if (!id_1.equals(id_2)){
 		errorEnXY("Identificadores no coincidentes");
+	}
+}
+
+public void verificarConstanteEntera(String lexema){
+	if (lexema.contains(".")){
+		errorEnXY("La constante "+lexema+" debe ser de tipo entero");
 	}
 }
 
@@ -224,13 +232,13 @@ public void warningEnXY(String msg){
 	int linea,caracter=0;
 	linea = AnalizadorLexico.getLinea();
 	caracter = AnalizadorLexico.getCaracter();
-	System.out.println(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+ANSI_RESET);
+	System.out.println(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+"\n"+ANSI_RESET);
 }
 
 private void imprimirMSGEstructura(String msg){
 	int linea=0;
 	linea = AnalizadorLexico.getLinea();
-	System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+"."+ANSI_RESET);
+	System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+".\n"+ANSI_RESET);
 }
 
 private void programaListo(){

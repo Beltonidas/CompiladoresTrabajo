@@ -56,11 +56,7 @@ public class TablaSimbolos {
 	}
 	
 	public static void imprimirTabla() {
-	    //System.out.println("////////////////////////////");
-	    /*var setOfKeys=tabla.keySet();
-	    for (String key : setOfKeys) {
-	        System.out.println(tabla.get(key).toString()+" || "+key);
-	    }*/
-	    tabla.forEach((key, value)-> System.out.println(key + " =>>> " + value));
+	    System.out.println(Parser.ANSI_CYAN+"Imprimiendo tabla de simbolos resultante..."+Parser.ANSI_RESET);
+	    tabla.forEach((key, value)-> System.out.println(Parser.ANSI_CYAN+value+Parser.ANSI_RESET));
 	}
 }

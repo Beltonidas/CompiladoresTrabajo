@@ -111,10 +111,10 @@
   81  invocar_fun : discard retorno_funcion
   82              | retorno_funcion
 
-  83  for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'
-  84               | For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for
-  85               | cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'
-  86               | cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for
+  83  for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'
+  84               | For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for
+  85               | cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'
+  86               | cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for
 
   87  mas_o_menos : '+'
   88              | '-'
@@ -224,8 +224,8 @@ state 7
 
 
 state 8
-	for_continue : cadena . ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena . ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena . ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena . ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	':'  shift 37
 	.  error
@@ -282,8 +282,8 @@ state 14
 
 
 state 15
-	for_continue : For . '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For . '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For . '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For . '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	'('  shift 46
 	.  error
@@ -529,8 +529,8 @@ state 36
 
 
 state 37
-	for_continue : cadena ':' . For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' . For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' . For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' . For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	For  shift 81
 	.  error
@@ -605,8 +605,8 @@ state 45
 
 
 state 46
-	for_continue : For '(' . id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' . id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' . id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' . id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	id  shift 89
 	.  error
@@ -945,8 +945,8 @@ state 80
 
 
 state 81
-	for_continue : cadena ':' For . '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For . '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For . '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For . '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	'('  shift 107
 	.  error
@@ -1034,8 +1034,8 @@ state 88
 
 
 state 89
-	for_continue : For '(' id . SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id . SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id . SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id . SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	SIMB_ASIGNACION  shift 125
 	.  error
@@ -1219,8 +1219,8 @@ state 106
 
 
 state 107
-	for_continue : cadena ':' For '(' . id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' . id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' . id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' . id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	id  shift 134
 	.  error
@@ -1379,8 +1379,8 @@ state 124
 
 
 state 125
-	for_continue : For '(' id SIMB_ASIGNACION . cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION . cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION . cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION . cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	cte  shift 144
 	.  error
@@ -1469,8 +1469,8 @@ state 133
 
 
 state 134
-	for_continue : cadena ':' For '(' id . SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id . SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id . SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id . SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	SIMB_ASIGNACION  shift 148
 	.  error
@@ -1573,8 +1573,8 @@ state 143
 
 
 state 144
-	for_continue : For '(' id SIMB_ASIGNACION cte . ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte . ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte . ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte . ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	';'  shift 153
 	.  error
@@ -1627,8 +1627,8 @@ state 147
 
 
 state 148
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION . cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION . cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION . cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION . cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	cte  shift 156
 	.  error
@@ -1679,8 +1679,8 @@ state 152
 
 
 state 153
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' . id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' . id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' . id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' . id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	id  shift 159
 	.  error
@@ -1734,8 +1734,8 @@ state 155
 
 
 state 156
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte . ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte . ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte . ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte . ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	';'  shift 162
 	.  error
@@ -1754,8 +1754,8 @@ state 158
 
 
 state 159
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id . comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id . comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id . comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id . comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	SIMB_MAY_IGUAL  shift 108
 	SIMB_MEN_IGUAL  shift 109
@@ -1795,19 +1795,26 @@ state 161
 
 
 state 162
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' . id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' . id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' . id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' . id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	id  shift 166
 	.  error
 
 
 state 163
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador . cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador . cte ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador . expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador . expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
-	cte  shift 167
+	id  shift 68
+	cte  shift 69
+	'-'  shift 70
 	.  error
+
+	expresion  goto 167
+	termino  goto 72
+	factor  goto 73
+	retorno_funcion  goto 74
 
 
 state 164
@@ -1841,8 +1848,8 @@ state 165
 
 
 state 166
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id . comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id . comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id . comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id . comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	SIMB_MAY_IGUAL  shift 108
 	SIMB_MEN_IGUAL  shift 109
@@ -1856,9 +1863,13 @@ state 166
 
 
 state 167
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte . ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte . ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
+	expresion : expresion . '+' termino  (48)
+	expresion : expresion . '-' termino  (49)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion . ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion . ';' mas_o_menos cte ')' inst_ejecutable_for  (84)
 
+	'+'  shift 99
+	'-'  shift 100
 	';'  shift 172
 	.  error
 
@@ -1891,16 +1902,23 @@ state 170
 
 
 state 171
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador . cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador . cte ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador . expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador . expresion ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
-	cte  shift 176
+	id  shift 68
+	cte  shift 69
+	'-'  shift 70
 	.  error
+
+	expresion  goto 176
+	termino  goto 72
+	factor  goto 73
+	retorno_funcion  goto 74
 
 
 state 172
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' . mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' . mas_o_menos cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' . mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' . mas_o_menos cte ')' inst_ejecutable_for  (84)
 
 	'+'  shift 177
 	'-'  shift 178
@@ -1930,9 +1948,13 @@ state 175
 
 
 state 176
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte . ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte . ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
+	expresion : expresion . '+' termino  (48)
+	expresion : expresion . '-' termino  (49)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion . ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion . ';' mas_o_menos cte ')' inst_ejecutable_for  (86)
 
+	'+'  shift 99
+	'-'  shift 100
 	';'  shift 181
 	.  error
 
@@ -1950,8 +1972,8 @@ state 178
 
 
 state 179
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos . cte ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos . cte ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos . cte ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos . cte ')' inst_ejecutable_for  (84)
 
 	cte  shift 182
 	.  error
@@ -1964,8 +1986,8 @@ state 180
 
 
 state 181
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' . mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' . mas_o_menos cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' . mas_o_menos cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' . mas_o_menos cte ')' inst_ejecutable_for  (86)
 
 	'+'  shift 177
 	'-'  shift 178
@@ -1975,24 +1997,24 @@ state 181
 
 
 state 182
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte . ')' '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte . ')' inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte . ')' '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte . ')' inst_ejecutable_for  (84)
 
 	')'  shift 184
 	.  error
 
 
 state 183
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos . cte ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos . cte ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos . cte ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos . cte ')' inst_ejecutable_for  (86)
 
 	cte  shift 185
 	.  error
 
 
 state 184
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' . '{' ejecutable_for '}' ';'  (83)
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' . inst_ejecutable_for  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' . '{' ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' . inst_ejecutable_for  (84)
 
 	id  shift 47
 	cadena  shift 8
@@ -2016,15 +2038,15 @@ state 184
 
 
 state 185
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte . ')' '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte . ')' inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte . ')' '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte . ')' inst_ejecutable_for  (86)
 
 	')'  shift 188
 	.  error
 
 
 state 186
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' . ejecutable_for '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' . ejecutable_for '}' ';'  (83)
 
 	id  shift 47
 	cadena  shift 8
@@ -2048,14 +2070,14 @@ state 186
 
 
 state 187
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for .  (84)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for .  (84)
 
 	.  reduce 84
 
 
 state 188
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' . '{' ejecutable_for '}' ';'  (85)
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' . inst_ejecutable_for  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' . '{' ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' . inst_ejecutable_for  (86)
 
 	id  shift 47
 	cadena  shift 8
@@ -2079,7 +2101,7 @@ state 188
 
 
 state 189
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for . '}' ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for . '}' ';'  (83)
 	ejecutable_for : ejecutable_for . inst_ejecutable_for  (89)
 
 	id  shift 47
@@ -2104,7 +2126,7 @@ state 189
 
 
 state 190
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' . ejecutable_for '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' . ejecutable_for '}' ';'  (85)
 
 	id  shift 47
 	cadena  shift 8
@@ -2128,20 +2150,20 @@ state 190
 
 
 state 191
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' inst_ejecutable_for .  (86)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for .  (86)
 
 	.  reduce 86
 
 
 state 192
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' . ';'  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' . ';'  (83)
 
 	';'  shift 194
 	.  error
 
 
 state 193
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for . '}' ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for . '}' ';'  (85)
 	ejecutable_for : ejecutable_for . inst_ejecutable_for  (89)
 
 	id  shift 47
@@ -2166,20 +2188,20 @@ state 193
 
 
 state 194
-	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' .  (83)
+	for_continue : For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' .  (83)
 
 	.  reduce 83
 
 
 state 195
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' . ';'  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' . ';'  (85)
 
 	';'  shift 196
 	.  error
 
 
 state 196
-	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador cte ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' .  (85)
+	for_continue : cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' .  (85)
 
 	.  reduce 85
 

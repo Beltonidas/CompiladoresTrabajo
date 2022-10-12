@@ -53,7 +53,11 @@ public class TokenLexema {
 	
 	@Override
 	public String toString() {
-        return "Id: "+this.id+" | Lexema: "+this.lexema.toString();
+	    if (lexema!=null) {
+	        return "Id: "+this.id+" | Lexema: \""+this.lexema.toString()+"\"";
+	    }else {
+	        return "Id: "+this.id+" | Lexema nulo";
+	    }
 	}
 
 }
