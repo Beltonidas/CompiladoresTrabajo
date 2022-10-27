@@ -93,6 +93,7 @@ public class MatrizAccionSemantica{
                     AnalizadorLexico.paruser.errorEnXY("Caracter: "+caracterArchivo+" no esperado.");
                     break;
             }
+            AccionSemantica.getNewToken();
             AnalizadorLexico.avanzarLectura();
             return;
         }

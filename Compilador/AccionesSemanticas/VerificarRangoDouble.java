@@ -18,6 +18,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 		AccionSemantica.tokenActual.setId(258);
 		Double parteDecimal=Double.parseDouble(lexema.toString());
 	    if (parteDecimal==0.0 ||(Double.parseDouble("2.2250738585072014E-308") < parteDecimal && parteDecimal < Double.parseDouble("1.7976931348623157E308"))) {
+	        AccionSemantica.tokenActual.setLexema(parteDecimal.toString());
 	        return 0;
 	    }
 	    AccionSemantica.tokenActual.setLexema("0.0");

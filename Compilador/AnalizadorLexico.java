@@ -44,7 +44,7 @@ public class AnalizadorLexico {
 	public static void entregarToken(int idToken) {
 	    tokenEntregar=idToken;
 	    anteriorToken=AccionSemantica.getToken();
-	    System.out.println(Parser.ANSI_PURPLE+"Token con: {"+anteriorToken+"}\nDetectado en linea: "+iteradorListaCaracteres+", caracter: "+iteradorLineaCaracteres+".\n"+Parser.ANSI_RESET);
+	    System.out.println(Parser.ANSI_PURPLE+"Token con: {"+anteriorToken+"}\nDetectado en linea: "+getLinea()+", caracter: "+getCaracter()+".\n"+Parser.ANSI_RESET);
 	}
 	
 	public static void avanzarLectura() {

@@ -6,9 +6,6 @@ package Compilador;
 %token id cte cadena If then Else end_if out fun Return Break ui8 f64 discard For Continue defer SIMB_ASIGNACION SIMB_MAY_IGUAL
  SIMB_MEN_IGUAL SIMB_DISTINTO SIMB_COM_I SIMB_COM_F
 
-%left '+' '-'
-%left '*' '/'
-
 %start programa
 
 %% //Especificacion de la gramatica 
@@ -156,8 +153,8 @@ invocar_fun: discard retorno_funcion
 
 for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($3.sval, $7.sval);verificarConstanteEntera($5.sval);verificarConstanteEntera($12.sval);}
 		| For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);verificarConstanteEntera($5.sval);verificarConstanteEntera($12.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
-		| cadena ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
+		| id ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
+		| id ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
 ;
 
 mas_o_menos: '+'
@@ -170,7 +167,7 @@ ejecutable_for: ejecutable_for inst_ejecutable_for
 
 inst_ejecutable_for: inst_ejecutable
 		| Break ';'
-		| Break ':' cadena ';'
+		| Break ':' id ';'
 		| Continue ';'
 ;
 
