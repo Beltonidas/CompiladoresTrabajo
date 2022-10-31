@@ -1,6 +1,10 @@
 pro {ui8 y, x, w;
 fun f1 (ui8 x):ui8{
     f64 z;
+	fun f2 (ui8 x):f64{
+	    f64 z;
+	    return (x);
+	}
     return (x);
 }}{
     f64 i;

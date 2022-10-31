@@ -10,6 +10,7 @@ public class VerificarRangoDouble extends AccionSemantica {
 	@Override
 	public int ejecutar(Character caracter) {
 		StringBuilder lexema = AccionSemantica.tokenActual.getLexema();
+		AccionSemantica.tokenActual.setTipo("f64");
 		int indexExponente = lexema.indexOf("D");
 		if (indexExponente!=-1) {
 	        lexema.deleteCharAt(indexExponente);

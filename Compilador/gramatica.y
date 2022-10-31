@@ -1,6 +1,9 @@
 %{
 package Compilador;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 %}
 
 //Declaracion de tokens:
@@ -39,13 +42,13 @@ dec_variables: tipo list_variables ';'
 		| list_variables ';' {errorEnXY("Tipo de la/s variable/s esperado al comienzo de la sentencia");}
 ;
 
-tipo: ui8
-		| f64 
+tipo: ui8 {tipoAux=$1.sval;}
+		| f64 {tipoAux=$1.sval;}
 		| id {errorEnXY("Tipo de la/s variable/s invalido");}
 ;
 
-list_variables: id
-		| list_variables ',' id
+list_variables: id {setearTipo($1.sval);}
+		| list_variables ',' id {System.out.println("list_variables");setearTipo($3.sval);}
 		| error {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 ;
 
@@ -54,11 +57,11 @@ dec_funcion: header_funcion cola_funcion
 		| header_funcion parametro ',' parametro cola_funcion
 ;
 
-header_funcion: fun id '('
+header_funcion: fun id '(' {tokens.push(TablaSimbolos.getSimbolo($2.sval));}
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
-cola_funcion: ')' ':' tipo '{' cuerpo_fun '}'
+cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokens.pop().setTipo($3.sval);}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
@@ -103,7 +106,7 @@ termino: termino '*' factor
 
 factor: id
 		| cte
-		| '-' cte {verificarRangoDoubleNegativo();}
+		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));}
 		| retorno_funcion
 ;
 
@@ -114,19 +117,22 @@ retorno_funcion: id '(' ')'
 
 parametro_real: id 
 		| cte
-		| '-' cte {verificarRangoDoubleNegativo();}
+		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));}
 ;
 
-seleccion: If condicion_if then_selec end_if
-		| If condicion_if then_selec else_selecc end_if
+seleccion: If condicion_if cuerpo_if 
+;
+
+cuerpo_if: then_selec Else else_selecc end_if
+		| then_selec end_if
 ;
 
 then_selec: then '{' ejecutable_for '}'
 		| then inst_ejecutable_for
 ;
 
-else_selecc: Else '{' ejecutable_for '}'
-		| Else inst_ejecutable_for
+else_selecc: '{' ejecutable_for '}'
+		| inst_ejecutable_for
 ;
 
 condicion_if: '(' expresion_booleana ')'
@@ -159,12 +165,7 @@ for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
 for_inic: id SIMB_ASIGNACION cte {for_ids.add($1.sval);}
 ;
 
-for_cond: id comparador expresion {for_ids.add($1.sval);
-									if (for_ids.size() > 1)
-										verificarIdIguales(for_ids.get(0), for_ids.get(1));
-									else
-										errorEnXY("Falta identificador en el inicio o en la condicion del for");
-									for_ids.removeAllElements();}
+for_cond: id comparador expresion {verificarForIds($1.sval);}
 ;
 
 for_act: mas_o_menos cte
@@ -200,6 +201,14 @@ public static final String ANSI_PURPLE ="\u001B[35m";
 public static final String ANSI_CYAN = "\u001B[36m";
 
 public Vector<String> for_ids = new Vector<String>();
+public List<Terceto> tercetos = new ArrayList<Terceto>();
+public String tipoAux="";
+public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
+
+public void setearTipo(String arg){
+	TokenLexema x = TablaSimbolos.getSimbolo(arg);
+	x.setTipo(tipoAux);
+}
 
 public void errorEnXY(String msg){
 	int linea,caracter=0;
@@ -219,6 +228,15 @@ public void verificarConstanteEntera(String lexema){
 	if (lexema.contains(".")){
 		errorEnXY("La constante "+lexema+" debe ser de tipo entero");
 	}
+}
+
+public void verificarForIds(String arg1){
+	for_ids.add(arg1);
+	if (for_ids.size() > 1)
+		verificarIdIguales(for_ids.get(0), for_ids.get(1));
+	else
+		errorEnXY("Falta identificador en el inicio o en la condicion del for");
+	for_ids.removeAllElements();
 }
 
 public void verificarRangoDoubleNegativo(){

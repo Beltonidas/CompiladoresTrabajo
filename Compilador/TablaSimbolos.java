@@ -5,12 +5,13 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+
+
 public class TablaSimbolos {
 	
 	private static HashMap<String, TokenLexema> tabla = new HashMap<String,TokenLexema>();
 	private static HashMap<String,Integer> palabrasReservadas;
 	private static String ARCHIVO_RESERVADAS="./testFiles/palabras_reservadas.txt";
-    
 	public TablaSimbolos() {
 	}
 	
@@ -39,9 +40,6 @@ public class TablaSimbolos {
 		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
 		    //System.out.println("Token Previo Palabra Reservada");
 		    tok.setId(palabrasReservadas.get(tok.getLexema().toString()));
-		    //tok.setLexema(null);
-			//System.out.println(tok.getId());
-			//System.out.println(tok.getLexema().toString());
 		    return tok.getId();
 		}
 		if (tabla.containsKey(tok.getLexema().toString())) {

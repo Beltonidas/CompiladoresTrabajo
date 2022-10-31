@@ -1,7 +1,7 @@
 pro {
     for (i =: 30; j<20; 34 ){
 		if (30 < 20) then {
-        	i =: 50;
+        	i =: -50.0;
         	continue; 
         }end_if;
         i =: 50;
