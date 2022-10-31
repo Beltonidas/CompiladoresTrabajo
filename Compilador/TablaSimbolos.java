@@ -38,8 +38,10 @@ public class TablaSimbolos {
 	    //System.out.println(tok.toString());
 		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
 		    //System.out.println("Token Previo Palabra Reservada");
-		    //tok.setId(palabrasReservadas.get(tok.getLexema().toString()));
+		    tok.setId(palabrasReservadas.get(tok.getLexema().toString()));
 		    //tok.setLexema(null);
+			//System.out.println(tok.getId());
+			//System.out.println(tok.getLexema().toString());
 		    return tok.getId();
 		}
 		if (tabla.containsKey(tok.getLexema().toString())) {

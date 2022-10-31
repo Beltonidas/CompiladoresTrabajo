@@ -1,5 +1,6 @@
 %{
 package Compilador;
+import java.util.Vector;
 %}
 
 //Declaracion de tokens:
@@ -151,10 +152,27 @@ invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($3.sval, $7.sval);verificarConstanteEntera($5.sval);verificarConstanteEntera($12.sval);}
-		| For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($3.sval, $7.sval);verificarConstanteEntera($5.sval);verificarConstanteEntera($12.sval);}
-		| id ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' '{' ejecutable_for '}' ';' {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
-		| id ':' For '(' id SIMB_ASIGNACION cte ';' id comparador expresion ';' mas_o_menos cte ')' inst_ejecutable_for {verificarIdIguales($5.sval, $9.sval);verificarConstanteEntera($7.sval);verificarConstanteEntera($14.sval);}
+for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
+		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
+;
+
+for_inic: id SIMB_ASIGNACION cte {for_ids.add($1.sval);}
+;
+
+for_cond: id comparador expresion {for_ids.add($1.sval);
+									if (for_ids.size() > 1)
+										verificarIdIguales(for_ids.get(0), for_ids.get(1));
+									else
+										errorEnXY("Falta identificador en el inicio o en la condicion del for");
+									for_ids.removeAllElements();}
+;
+
+for_act: mas_o_menos cte
+		| cte {errorEnXY("Falta +/- para actualizar for");}
+;
+
+for_cuerpo: '{' ejecutable_for '}' ';'
+		| inst_ejecutable_for
 ;
 
 mas_o_menos: '+'
@@ -180,6 +198,8 @@ public static final String ANSI_YELLOW = "\u001B[33m";
 public static final String ANSI_BLUE = "\u001B[34m";
 public static final String ANSI_PURPLE ="\u001B[35m";
 public static final String ANSI_CYAN = "\u001B[36m";
+
+public Vector<String> for_ids = new Vector<String>();
 
 public void errorEnXY(String msg){
 	int linea,caracter=0;
