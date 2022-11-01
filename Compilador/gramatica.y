@@ -17,7 +17,7 @@ import java.util.Stack;
 programa: nombre_programa bloque_sentencias {programaListo();}
 ;
 
-nombre_programa: id
+nombre_programa: id {setearUso($1.sval,"Nombre Programa");}
 		| cte {errorEnXY("Nombre del programa invalido. Identificador esperado, constante recibida en cambio");}
 		| cadena {errorEnXY("Nombre del programa invalido. Identificador esperado, cadena recibida en cambio");}
 ;
@@ -47,29 +47,29 @@ tipo: ui8 {tipoAux=$1.sval;}
 		| id {errorEnXY("Tipo de la/s variable/s invalido");}
 ;
 
-list_variables: id {setearTipo($1.sval);}
-		| list_variables ',' id {System.out.println("list_variables");setearTipo($3.sval);}
+list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");}
+		| list_variables ',' id {setearTipo($3.sval);setearUso($3.sval,"Variable");}
 		| error {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 ;
 
 dec_funcion: header_funcion cola_funcion
-		| header_funcion parametro cola_funcion
+		| header_funcion parametro cola_funcion 
 		| header_funcion parametro ',' parametro cola_funcion
 ;
 
-header_funcion: fun id '(' {tokens.push(TablaSimbolos.getSimbolo($2.sval));}
+header_funcion: fun id '(' {tokens.push(TablaSimbolos.getSimbolo($2.sval));setearUso($2.sval,"Nombre de Funcion");}
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
-cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokens.pop().setTipo($3.sval);}
+cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();tokenAux.setTipo($3.sval);verificarTipos(tokenAux.getLexema().toString(),$5.sval);}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
-parametro: tipo id
+parametro: tipo id {setearUso($2.sval,"Nombre de Parametro");}
 		| tipo {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 ;
 
-cuerpo_fun: sentencia Return '(' expresion ')' ';'
+cuerpo_fun: sentencia Return '(' expresion ')' ';' {$$.sval=$4.sval;}
 		| sentencia Return '(' expresion ';' {errorEnXY("Parentesis esperados al final de la expresion");}
 		| sentencia Return expresion ';' {errorEnXY("Parentesis esperados al comienzo y final de la expresion");}
 		| sentencia Return expresion ')' ';' {errorEnXY("Parentesis esperados al final de la expresion");}
@@ -89,24 +89,24 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 		| for_continue {imprimirMSGEstructura("Loop For");}
 ;
 
-asignacion: id SIMB_ASIGNACION expresion
+asignacion: id SIMB_ASIGNACION expresion {verificarTipos($1.sval,$3.sval);}
 		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada despues de la asignacion");}
 		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 ;
 
-expresion: expresion '+' termino
-		| expresion '-' termino
+expresion: expresion '+' termino {verificarTipos($1.sval,$3.sval);}
+		| expresion '-' termino {verificarTipos($1.sval,$3.sval);}
 		| termino
 ;
 
-termino: termino '*' factor
-		| termino '/' factor
+termino: termino '*' factor {verificarTipos($1.sval,$3.sval);}
+		| termino '/' factor {verificarTipos($1.sval,$3.sval);}
 		| factor
 ;
 
 factor: id
 		| cte
-		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));}
+		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
 		| retorno_funcion
 ;
 
@@ -117,7 +117,7 @@ retorno_funcion: id '(' ')'
 
 parametro_real: id 
 		| cte
-		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));}
+		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
 ;
 
 seleccion: If condicion_if cuerpo_if 
@@ -138,7 +138,7 @@ else_selecc: '{' ejecutable_for '}'
 condicion_if: '(' expresion_booleana ')'
 ;
 
-expresion_booleana: expresion comparador expresion
+expresion_booleana: expresion comparador expresion {verificarTipos($1.sval,$3.sval);}
 ;
 
 comparador: SIMB_DISTINTO
@@ -158,17 +158,17 @@ invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
-		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
+for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($3.sval,$5.sval);verificarTipos($3.sval,$5.sval);verificarTipos($3.sval,$7.sval);}
+		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($5.sval,$7.sval);verificarTipos($5.sval,$7.sval);verificarTipos($5.sval,$9.sval);setearUso($1.sval,"Etiqueta");}
 ;
 
-for_inic: id SIMB_ASIGNACION cte {for_ids.add($1.sval);}
+for_inic: id SIMB_ASIGNACION cte {verificarEntero($1.sval);verificarTipos($1.sval,$3.sval);}
 ;
 
-for_cond: id comparador expresion {verificarForIds($1.sval);}
+for_cond: id comparador expresion {verificarTipos($1.sval,$3.sval);}
 ;
 
-for_act: mas_o_menos cte
+for_act: mas_o_menos cte {$$.sval=$2.sval;}
 		| cte {errorEnXY("Falta +/- para actualizar for");}
 ;
 
@@ -182,7 +182,7 @@ mas_o_menos: '+'
 
 ejecutable_for: ejecutable_for inst_ejecutable_for
 		| inst_ejecutable_for
-; 
+;
 
 inst_ejecutable_for: inst_ejecutable
 		| Break ';'
@@ -204,10 +204,29 @@ public Vector<String> for_ids = new Vector<String>();
 public List<Terceto> tercetos = new ArrayList<Terceto>();
 public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
+public TokenLexema tokenAux;
 
 public void setearTipo(String arg){
 	TokenLexema x = TablaSimbolos.getSimbolo(arg);
 	x.setTipo(tipoAux);
+}
+
+public void verificarEntero(String arg){
+	if (TablaSimbolos.getSimbolo(arg).getTipo().equals("ui8")){
+		return;
+	}
+	errorEnXY("Se requiere que sea de un tipo entero");
+}
+
+public void setearUso(String arg, String arg2){
+	TokenLexema x = TablaSimbolos.getSimbolo(arg);
+	x.setUso(arg2);
+}
+
+public void verificarTipos(String arg1,String arg2){
+	if (TablaSimbolos.getSimbolo(arg1).getTipo().equals(TablaSimbolos.getSimbolo(arg2).getTipo()))
+		return;
+	errorEnXY("No se puede realizar una operacion entre "+arg1+", "+arg2);
 }
 
 public void errorEnXY(String msg){
@@ -228,15 +247,6 @@ public void verificarConstanteEntera(String lexema){
 	if (lexema.contains(".")){
 		errorEnXY("La constante "+lexema+" debe ser de tipo entero");
 	}
-}
-
-public void verificarForIds(String arg1){
-	for_ids.add(arg1);
-	if (for_ids.size() > 1)
-		verificarIdIguales(for_ids.get(0), for_ids.get(1));
-	else
-		errorEnXY("Falta identificador en el inicio o en la condicion del for");
-	for_ids.removeAllElements();
 }
 
 public void verificarRangoDoubleNegativo(){

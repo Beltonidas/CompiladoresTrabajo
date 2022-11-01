@@ -1,7 +1,11 @@
 pro {ui8 y, x, w;
 fun f1 (ui8 x):ui8{
     f64 z;
-	fun f2 (ui8 x):f64{
+	fun f2 (ui8 x):ui8{
+	    f64 z;
+	    return (x);
+	}
+	fun fi (ui8 x):ui8{
 	    f64 z;
 	    return (x);
 	}
@@ -12,14 +16,14 @@ fun f1 (ui8 x):ui8{
     out('askjhdjla');
     << Hola como estas>> 
     if (30 < 20) then {
-        i =: 49;
+        i =: 49.0;
     }else{
 
-        i =: 50;
+        i =: 50.0+50.0;
     } end_if;
 
     if (30 < 20) then
-        i =: 50; 
+        i =: 50.0; 
         end_if;
 
 
@@ -28,9 +32,9 @@ fun f1 (ui8 x):ui8{
     discard fi();
     defer out('askjhdjla');
 
-    for (i =: 30; i<20; +34 ){
+    for (x =: 30; x<20; +34 ){
 
-        i =: 50;
+        i =: 50.0;
     };
 	
 	i =: 1.;
@@ -43,11 +47,11 @@ fun f1 (ui8 x):ui8{
     i=: 0.;
     i=:1.2D10;
     
-    for (i =: 30; i<20; +34 )
+    for (x =: 30; x<20; +34 )
         x =: 40;
     
-    outer: for (i =: 30; i<20; +34 ){
-        i =: 50;
+    outer: for (x =: 30; x<20; +34 ){
+        z =: 50.0;
         break :outer;
     };
     x =: fi(2);

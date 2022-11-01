@@ -71,11 +71,6 @@ public class TokenLexema {
 		this.id = 0;
 		this.lexema = new StringBuilder(lexema);
 	}
-	
-	public Object castearLexema() {
-	    //Quedaria definirla mejor
-	    return lexema;
-	}
 
 	public int getId() {
 		return id;
@@ -115,17 +110,17 @@ public class TokenLexema {
 	
 	@Override
 	public String toString() {
-	    if (lexema!=null) {
-	        if (tipo!=null) {
-                return "Id: "+this.id+" | Lexema: \""+this.lexema.toString()+"\" | Tipo: "+this.tipo;
-            }
-	        return "Id: "+this.id+" | Lexema: \""+this.lexema.toString()+"\" | Tipo: nulo";
-	    }else {
-	        if (tipo!=null) {
-	            return "Id: "+this.id+" | Lexema nulo | Tipo: "+this.tipo;
-	        }
-	        return "Id: "+this.id+" | Lexema nulo | Tipo: nulo";
+	    String msg="ID: "+this.id;
+	    if (this.lexema!=null) {
+	        msg+=" | Lexema: "+this.lexema;
 	    }
+	    if (this.tipo!=null) {
+            msg+=" | Tipo: "+this.tipo;
+        }
+	    if (this.uso!=null) {
+            msg+=" | Uso: "+this.uso;
+        }
+	    return msg;
 	}
 
 }

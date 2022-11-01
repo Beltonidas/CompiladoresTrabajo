@@ -526,10 +526,29 @@ public Vector<String> for_ids = new Vector<String>();
 public List<Terceto> tercetos = new ArrayList<Terceto>();
 public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
+public TokenLexema tokenAux;
 
 public void setearTipo(String arg){
 	TokenLexema x = TablaSimbolos.getSimbolo(arg);
 	x.setTipo(tipoAux);
+}
+
+public void verificarEntero(String arg){
+	if (TablaSimbolos.getSimbolo(arg).getTipo().equals("ui8")){
+		return;
+	}
+	errorEnXY("Se requiere que sea de un tipo entero");
+}
+
+public void setearUso(String arg, String arg2){
+	TokenLexema x = TablaSimbolos.getSimbolo(arg);
+	x.setUso(arg2);
+}
+
+public void verificarTipos(String arg1,String arg2){
+	if (TablaSimbolos.getSimbolo(arg1).getTipo().equals(TablaSimbolos.getSimbolo(arg2).getTipo()))
+		return;
+	errorEnXY("No se puede realizar una operacion entre "+arg1+", "+arg2);
 }
 
 public void errorEnXY(String msg){
@@ -550,15 +569,6 @@ public void verificarConstanteEntera(String lexema){
 	if (lexema.contains(".")){
 		errorEnXY("La constante "+lexema+" debe ser de tipo entero");
 	}
-}
-
-public void verificarForIds(String arg1){
-	for_ids.add(arg1);
-	if (for_ids.size() > 1)
-		verificarIdIguales(for_ids.get(0), for_ids.get(1));
-	else
-		errorEnXY("Falta identificador en el inicio o en la condicion del for");
-	for_ids.removeAllElements();
 }
 
 public void verificarRangoDoubleNegativo(){
@@ -620,7 +630,7 @@ private int yylex(){
     }
     return 0;
 }
-//#line 552 "Parser.java"
+//#line 562 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -778,6 +788,10 @@ case 1:
 //#line 17 "gramatica.y"
 {programaListo();}
 break;
+case 2:
+//#line 20 "gramatica.y"
+{setearUso(val_peek(0).sval,"Nombre Programa");}
+break;
 case 3:
 //#line 21 "gramatica.y"
 {errorEnXY("Nombre del programa invalido. Identificador esperado, constante recibida en cambio");}
@@ -820,11 +834,11 @@ case 19:
 break;
 case 20:
 //#line 50 "gramatica.y"
-{setearTipo(val_peek(0).sval);}
+{setearTipo(val_peek(0).sval);setearUso(val_peek(0).sval,"Variable");}
 break;
 case 21:
 //#line 51 "gramatica.y"
-{System.out.println("list_variables");setearTipo(val_peek(0).sval);}
+{setearTipo(val_peek(0).sval);setearUso(val_peek(0).sval,"Variable");}
 break;
 case 22:
 //#line 52 "gramatica.y"
@@ -832,7 +846,7 @@ case 22:
 break;
 case 26:
 //#line 60 "gramatica.y"
-{tokens.push(TablaSimbolos.getSimbolo(val_peek(1).sval));}
+{tokens.push(TablaSimbolos.getSimbolo(val_peek(1).sval));setearUso(val_peek(1).sval,"Nombre de Funcion");}
 break;
 case 27:
 //#line 61 "gramatica.y"
@@ -840,15 +854,23 @@ case 27:
 break;
 case 28:
 //#line 64 "gramatica.y"
-{tokens.pop().setTipo(val_peek(3).sval);}
+{tokenAux=tokens.pop();tokenAux.setTipo(val_peek(3).sval);verificarTipos(tokenAux.getLexema().toString(),val_peek(1).sval);}
 break;
 case 29:
 //#line 65 "gramatica.y"
 {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 break;
+case 30:
+//#line 68 "gramatica.y"
+{setearUso(val_peek(0).sval,"Nombre de Parametro");}
+break;
 case 31:
 //#line 69 "gramatica.y"
 {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
+break;
+case 32:
+//#line 72 "gramatica.y"
+{yyval.sval=val_peek(2).sval;}
 break;
 case 33:
 //#line 73 "gramatica.y"
@@ -894,6 +916,10 @@ case 44:
 //#line 89 "gramatica.y"
 {imprimirMSGEstructura("Loop For");}
 break;
+case 45:
+//#line 92 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+break;
 case 46:
 //#line 93 "gramatica.y"
 {errorEnXY("Expresion esperada despues de la asignacion");}
@@ -902,13 +928,33 @@ case 47:
 //#line 94 "gramatica.y"
 {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 break;
+case 48:
+//#line 97 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+break;
+case 49:
+//#line 98 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+break;
+case 51:
+//#line 102 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+break;
+case 52:
+//#line 103 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+break;
 case 56:
 //#line 109 "gramatica.y"
-{verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));}
+{verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
 break;
 case 63:
 //#line 120 "gramatica.y"
-{verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));}
+{verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
+break;
+case 72:
+//#line 141 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
 break;
 case 80:
 //#line 153 "gramatica.y"
@@ -922,19 +968,31 @@ case 83:
 //#line 158 "gramatica.y"
 {errorEnXY("Funcion invocada sin discard del retorno");}
 break;
+case 84:
+//#line 161 "gramatica.y"
+{verificarIdIguales(val_peek(6).sval,val_peek(4).sval);verificarTipos(val_peek(6).sval,val_peek(4).sval);verificarTipos(val_peek(6).sval,val_peek(2).sval);}
+break;
+case 85:
+//#line 162 "gramatica.y"
+{verificarIdIguales(val_peek(6).sval,val_peek(4).sval);verificarTipos(val_peek(6).sval,val_peek(4).sval);verificarTipos(val_peek(6).sval,val_peek(2).sval);setearUso(val_peek(10).sval,"Etiqueta");}
+break;
 case 86:
 //#line 165 "gramatica.y"
-{for_ids.add(val_peek(2).sval);}
+{verificarEntero(val_peek(2).sval);verificarTipos(val_peek(2).sval,val_peek(0).sval);}
 break;
 case 87:
 //#line 168 "gramatica.y"
-{verificarForIds(val_peek(2).sval);}
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+break;
+case 88:
+//#line 171 "gramatica.y"
+{yyval.sval=val_peek(0).sval;}
 break;
 case 89:
 //#line 172 "gramatica.y"
 {errorEnXY("Falta +/- para actualizar for");}
 break;
-//#line 861 "Parser.java"
+//#line 919 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
