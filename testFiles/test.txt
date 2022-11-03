@@ -1,16 +1,17 @@
 pro {ui8 y, x, w;
-fun f1 (ui8 x):ui8{
-    f64 z;
-	fun f2 (ui8 x):ui8{
-	    f64 z;
-	    return (x);
-	}
-	fun fi (ui8 x):ui8{
-	    f64 z;
-	    return (x);
-	}
-    return (x);
-}}{
+    fun f1 (ui8 x):ui8{
+        f64 z;
+        fun f2 (ui8 x):ui8{
+            f64 z;
+            return (x);
+        }
+        fun fi (ui8 x):ui8{
+            f64 z;
+            return (x);
+        }
+        return (x);
+    }
+
     f64 i;
     i =: 9.D+3;
     out('askjhdjla');

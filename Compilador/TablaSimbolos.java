@@ -51,10 +51,31 @@ public class TablaSimbolos {
 		return tok.getId();
 	}
 	
+	public static void removeSimbolo(String key){
+		tabla.remove(key);
+	}
+
 	public static TokenLexema getSimbolo(String key) {
 		return tabla.get(key);
 	}
 	
+	public static boolean contieneSimbolo(String key) {
+		return tabla.containsKey(key);
+	}
+
+	public static void cambiarNombreKey(String vie, String nue){
+		if (tabla.containsKey(nue)){
+			AnalizadorLexico.paruser.errorEnXY("Variable/Funcion "+nue+" redeclarada");
+			return;
+		}
+		TokenLexema aux = tabla.get(vie);
+		aux.setLexema(nue);
+		tabla.put(nue, tabla.get(vie));
+		tabla.get(nue).setTipo(tabla.get(vie).getTipo());
+		tabla.get(nue).setUso(tabla.get(vie).getUso());
+		tabla.remove(vie);
+	}
+
 	public static void imprimirTabla() {
 	    System.out.println(Parser.ANSI_CYAN+"Imprimiendo tabla de simbolos resultante..."+Parser.ANSI_RESET);
 	    tabla.forEach((key, value)-> System.out.println(Parser.ANSI_CYAN+value+Parser.ANSI_RESET));
