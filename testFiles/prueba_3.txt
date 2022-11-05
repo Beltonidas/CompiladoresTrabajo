@@ -1,18 +1,18 @@
 programa
 {
-    f64 x, z, y, v, l;
-    fun fi (f64 xx):ui8{
-	    ui8 z;
-	    return (z);
-	}
-    y =: 3.0;
+    f64 z, v;
+    
 
-    fun f20 (f64 xx):f64{
-        ui8 pepe;
-        fun f20 (f64 xx):ui8{
-            f64 pepito;
-            return (pepe);
-        }
-	    return (z);
-	}
+    ui8 x, a;
+    z =: 3.;
+    v =: 3.;
+
+    ui8 i;
+    for (i =: 0; i<10; +1 ){
+        a =: a*2;
+        x =: a;
+    };
+
+    z =: 3.;
+    v =: 3.;
 }

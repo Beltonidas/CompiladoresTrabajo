@@ -98,18 +98,18 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 		| for_continue {imprimirMSGEstructura("Loop For");}
 ;
 
-asignacion: id SIMB_ASIGNACION expresion {verificarTipos($1.sval+Ambito.getNaming(),$3.sval);comprobarBinding($1.sval,"Variable no declarada");}
+asignacion: id SIMB_ASIGNACION expresion {verificarTipos($1.sval+Ambito.getNaming(),$3.sval);comprobarBinding($1.sval,"Variable no declarada");ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada despues de la asignacion");}
 		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 ;
 
-expresion: expresion '+' termino {verificarTipos($1.sval,$3.sval);}
-		| expresion '-' termino {verificarTipos($1.sval,$3.sval);}
+expresion: expresion '+' termino {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+		| expresion '-' termino {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| termino
 ;
 
-termino: termino '*' factor {verificarTipos($1.sval,$3.sval);}
-		| termino '/' factor {verificarTipos($1.sval,$3.sval);}
+termino: termino '*' factor {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+		| termino '/' factor {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| factor
 ;
 
@@ -129,25 +129,25 @@ parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro indica
 		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
 ;
 
-seleccion: If condicion_if cuerpo_if 
+seleccion: If condicion_if cuerpo_if {ListaTercetos.add_seleccion_final();}
 ;
 
 cuerpo_if: then_selec Else else_selecc end_if
 		| then_selec end_if
 ;
 
-then_selec: then '{' ejecutable_for '}'
-		| then inst_ejecutable_for
+then_selec: then '{' ejecutable_for '}' {ListaTercetos.add_seleccion_then();}
+		| then inst_ejecutable_for {ListaTercetos.add_seleccion_then();}
 ;
 
 else_selecc: '{' ejecutable_for '}'
 		| inst_ejecutable_for
 ;
 
-condicion_if: '(' expresion_booleana ')'
+condicion_if: '(' expresion_booleana ')' {ListaTercetos.add_seleccion_cond();}
 ;
 
-expresion_booleana: expresion comparador expresion {verificarTipos($1.sval,$3.sval);}
+expresion_booleana: expresion comparador expresion {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 ;
 
 comparador: SIMB_DISTINTO
@@ -158,7 +158,7 @@ comparador: SIMB_DISTINTO
 		| '>'
 ;
 
-impresion: out '(' cadena ')'
+impresion: out '(' cadena ')' {ListaTercetos.addTerceto(new Terceto($1.sval,$3.sval,"-"));}
 		| out cadena ')' {errorEnXY("Falta de parentesis al comienzo de la cadena del out");}
 		| out '(' cadena {errorEnXY("Falta de parentesis al final de la cadena del out");}
 ;
@@ -171,18 +171,18 @@ for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verifica
 		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($5.sval,$7.sval);verificarTipos($5.sval+Ambito.getNaming(),$7.sval+Ambito.getNaming());verificarTipos($5.sval+Ambito.getNaming(),$9.sval);TablaSimbolos.cambiarNombreKey($1.sval, $1.sval+Ambito.getNaming());setearUso($1.sval+Ambito.getNaming(),"Etiqueta");}
 ;
 
-for_inic: id SIMB_ASIGNACION cte {verificarEntero($1.sval+Ambito.getNaming());verificarTipos($1.sval+Ambito.getNaming(),$3.sval);}
+for_inic: id SIMB_ASIGNACION cte {verificarEntero($1.sval+Ambito.getNaming());verificarTipos($1.sval+Ambito.getNaming(),$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));id_for_act.push($1.sval);}
 ;
 
-for_cond: id comparador expresion {verificarTipos($1.sval+Ambito.getNaming(),$3.sval);}
+for_cond: id comparador expresion {verificarTipos($1.sval+Ambito.getNaming(),$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));ListaTercetos.add_seleccion_cond();}
 ;
 
-for_act: mas_o_menos cte {$$.sval=$2.sval;}
+for_act: mas_o_menos cte {$$.sval=$2.sval;ListaTercetos.add_for_act(id_for_act.pop(),$1.sval,$2.sval);}
 		| cte {errorEnXY("Falta +/- para actualizar for");}
 ;
 
-for_cuerpo: '{' ejecutable_for '}' ';'
-		| inst_ejecutable_for
+for_cuerpo: '{' ejecutable_for '}' ';' {ListaTercetos.add_for_cpo();}
+		| inst_ejecutable_for {ListaTercetos.add_for_cpo();}
 ;
 
 mas_o_menos: '+'
@@ -215,6 +215,9 @@ public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
 
+public Stack<String> id_for_act = new Stack<String>();
+
+
 public void comprobarBinding(String arg, String text){
 	if (Ambito.getAmbito(arg) != null) {
 		//ACA CREAR LOS TERCETOS
@@ -233,6 +236,10 @@ public void setearTipo(String arg1, String arg2){
 }
 
 public void verificarEntero(String arg){
+	if (TablaSimbolos.getSimbolo(arg) == null){
+		errorEnXY("Variable "+arg+" no declarada.");
+		return;
+	}
 	if (TablaSimbolos.getSimbolo(arg).getTipo().equals("ui8")){
 		return;
 	}

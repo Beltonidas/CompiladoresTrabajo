@@ -56,4 +56,19 @@ pro {ui8 y, x, w;
         break :outer;
     };
     x =: fi(2);
+
+    fun fi (f64 xx):ui8{
+	    ui8 z;
+	    return (z);
+	}
+    <<y =: roberto + 3.0;>>
+
+    fun f20 (f64 xx):f64{
+        ui8 pepe;
+        fun f20 (f64 xx):ui8{
+            f64 pepito;
+            return (pepe);
+        }
+	    return (z);
+	}
 }

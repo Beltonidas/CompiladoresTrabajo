@@ -16,5 +16,6 @@ public class Main {
 		AnalizadorLexico.paruser=paruser;
 		paruser.run();
 		TablaSimbolos.imprimirTabla();
+		ListaTercetos.imprimir();
 	}	
 }

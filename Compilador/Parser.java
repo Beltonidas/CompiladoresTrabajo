@@ -528,6 +528,9 @@ public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
 
+public Stack<String> id_for_act = new Stack<String>();
+
+
 public void comprobarBinding(String arg, String text){
 	if (Ambito.getAmbito(arg) != null) {
 		//ACA CREAR LOS TERCETOS
@@ -546,6 +549,10 @@ public void setearTipo(String arg1, String arg2){
 }
 
 public void verificarEntero(String arg){
+	if (TablaSimbolos.getSimbolo(arg) == null){
+		errorEnXY("Variable "+arg+" no declarada.");
+		return;
+	}
 	if (TablaSimbolos.getSimbolo(arg).getTipo().equals("ui8")){
 		return;
 	}
@@ -645,7 +652,7 @@ private int yylex(){
     }
     return 0;
 }
-//#line 577 "Parser.java"
+//#line 584 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -942,7 +949,7 @@ case 44:
 break;
 case 45:
 //#line 101 "gramatica.y"
-{verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);comprobarBinding(val_peek(2).sval,"Variable no declarada");}
+{verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);comprobarBinding(val_peek(2).sval,"Variable no declarada");ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 46:
 //#line 102 "gramatica.y"
@@ -954,19 +961,19 @@ case 47:
 break;
 case 48:
 //#line 106 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 49:
 //#line 107 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 51:
 //#line 111 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 52:
 //#line 112 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 54:
 //#line 116 "gramatica.y"
@@ -996,9 +1003,29 @@ case 63:
 //#line 129 "gramatica.y"
 {verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
 break;
+case 64:
+//#line 132 "gramatica.y"
+{ListaTercetos.add_seleccion_final();}
+break;
+case 67:
+//#line 139 "gramatica.y"
+{ListaTercetos.add_seleccion_then();}
+break;
+case 68:
+//#line 140 "gramatica.y"
+{ListaTercetos.add_seleccion_then();}
+break;
+case 71:
+//#line 147 "gramatica.y"
+{ListaTercetos.add_seleccion_cond();}
+break;
 case 72:
 //#line 150 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);}
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+break;
+case 79:
+//#line 161 "gramatica.y"
+{ListaTercetos.addTerceto(new Terceto(val_peek(3).sval,val_peek(1).sval,"-"));}
 break;
 case 80:
 //#line 162 "gramatica.y"
@@ -1022,21 +1049,29 @@ case 85:
 break;
 case 86:
 //#line 174 "gramatica.y"
-{verificarEntero(val_peek(2).sval+Ambito.getNaming());verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);}
+{verificarEntero(val_peek(2).sval+Ambito.getNaming());verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));id_for_act.push(val_peek(2).sval);}
 break;
 case 87:
 //#line 177 "gramatica.y"
-{verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);}
+{verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));ListaTercetos.add_seleccion_cond();}
 break;
 case 88:
 //#line 180 "gramatica.y"
-{yyval.sval=val_peek(0).sval;}
+{yyval.sval=val_peek(0).sval;ListaTercetos.add_for_act(id_for_act.pop(),val_peek(1).sval,val_peek(0).sval);}
 break;
 case 89:
 //#line 181 "gramatica.y"
 {errorEnXY("Falta +/- para actualizar for");}
 break;
-//#line 963 "Parser.java"
+case 90:
+//#line 184 "gramatica.y"
+{ListaTercetos.add_for_cpo();}
+break;
+case 91:
+//#line 185 "gramatica.y"
+{ListaTercetos.add_for_cpo();}
+break;
+//#line 998 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

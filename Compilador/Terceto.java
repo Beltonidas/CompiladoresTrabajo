@@ -39,5 +39,10 @@ public class Terceto {
     public void setTarg(String targ) {
         this.targ = targ;
     }
+
+
+    public String imprimir() {
+        return ("( "+parg+" , "+sarg+" , "+targ+" )");
+    }
     
 }
