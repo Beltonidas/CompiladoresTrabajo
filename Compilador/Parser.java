@@ -499,7 +499,7 @@ final static String yyrule[] = {
 "inst_ejecutable_for : Continue ';'",
 };
 
-//#line 232 "gramatica.y"
+//#line 246 "gramatica.y"
 
 public static final String ANSI_RESET ="\u001B[0m";
 public static final String ANSI_RED = "\u001B[31m";
@@ -515,8 +515,8 @@ public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
 public Boolean verb=AnalizadorLexico.getVerbose();
-
 public Stack<String> id_for_act = new Stack<String>();
+public Boolean parametroConstante = false;
 
 
 public void comprobarBinding(String arg, String text){
@@ -870,186 +870,202 @@ case 27:
 //#line 68 "gramatica.y"
 {tokenAux=tokens.pop();
 												tokenAux.setTipo(val_peek(3).sval);
-												/*System.out.println("Verificar en linea 64 como funciona el return con la expresion en esto");*/
-												/*System.out.println($5.sval);*/
 												verificarTipos(tokenAux.getLexema().toString(),val_peek(1).sval);
 												Ambito.removeAmbito();}
 break;
 case 28:
-//#line 74 "gramatica.y"
+//#line 72 "gramatica.y"
 {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 break;
 case 29:
-//#line 77 "gramatica.y"
+//#line 75 "gramatica.y"
 {setearTipo(val_peek(0).sval,val_peek(1).sval);
 					setearUso(val_peek(0).sval,"Nombre de Parametro");
 					val_peek(0).sval=TablaSimbolos.cambiarNombreKey(val_peek(0).sval);}
 break;
 case 30:
-//#line 80 "gramatica.y"
+//#line 78 "gramatica.y"
 {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 break;
 case 31:
-//#line 83 "gramatica.y"
+//#line 81 "gramatica.y"
 {yyval.sval=val_peek(2).sval;}
 break;
 case 32:
-//#line 84 "gramatica.y"
+//#line 82 "gramatica.y"
 {errorEnXY("Parentesis esperados al final de la expresion");}
 break;
 case 33:
-//#line 85 "gramatica.y"
+//#line 83 "gramatica.y"
 {errorEnXY("Parentesis esperados al comienzo y final de la expresion");}
 break;
 case 34:
-//#line 86 "gramatica.y"
+//#line 84 "gramatica.y"
 {errorEnXY("Parentesis esperados al final de la expresion");}
 break;
 case 35:
-//#line 87 "gramatica.y"
+//#line 85 "gramatica.y"
 {errorEnXY("Parentesis esperados al comienzo y final de la expresion y ; al final de linea");}
 break;
 case 36:
-//#line 88 "gramatica.y"
+//#line 86 "gramatica.y"
 {errorEnXY("; esperados al final de linea");}
 break;
 case 38:
-//#line 93 "gramatica.y"
+//#line 91 "gramatica.y"
 {imprimirMSGEstructura("Defer de instruccion ejecutable");}
 break;
 case 39:
-//#line 96 "gramatica.y"
+//#line 94 "gramatica.y"
 {imprimirMSGEstructura("Asignacion");}
 break;
 case 40:
-//#line 97 "gramatica.y"
+//#line 95 "gramatica.y"
 {imprimirMSGEstructura("Seleccion If");}
 break;
 case 41:
-//#line 98 "gramatica.y"
+//#line 96 "gramatica.y"
 {imprimirMSGEstructura("Impresion a Consola");}
 break;
 case 42:
-//#line 99 "gramatica.y"
+//#line 97 "gramatica.y"
 {imprimirMSGEstructura("Invocacion de Funcion");}
 break;
 case 43:
-//#line 100 "gramatica.y"
+//#line 98 "gramatica.y"
 {imprimirMSGEstructura("Loop For");}
 break;
 case 44:
-//#line 103 "gramatica.y"
+//#line 101 "gramatica.y"
 {comprobarBinding(val_peek(2).sval,"Variable "+val_peek(2).sval+" no declarada");
 											val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
 											verificarTipos(val_peek(2).sval,val_peek(0).sval);
+											if (TablaSimbolos.getSimbolo(val_peek(2).sval).getUso().equals("Nombre de Parametro")){
+												TablaSimbolos.getSimbolo(Ambito.getNombreAmbito()).setEsp(true);
+											}
 											ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 45:
-//#line 107 "gramatica.y"
+//#line 108 "gramatica.y"
 {errorEnXY("Expresion esperada despues de la asignacion");}
 break;
 case 46:
-//#line 108 "gramatica.y"
+//#line 109 "gramatica.y"
 {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 break;
 case 47:
-//#line 111 "gramatica.y"
+//#line 112 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 48:
-//#line 113 "gramatica.y"
+//#line 114 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 50:
-//#line 118 "gramatica.y"
+//#line 119 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
 							ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 51:
-//#line 120 "gramatica.y"
+//#line 121 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
 								ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 53:
-//#line 125 "gramatica.y"
+//#line 126 "gramatica.y"
 {comprobarBinding(val_peek(0).sval,"Variable "+val_peek(0).sval+" no declarada");
 			val_peek(0).sval=Ambito.getAmbito(val_peek(0).sval);
 			yyval.sval=val_peek(0).sval;}
 break;
 case 55:
-//#line 129 "gramatica.y"
+//#line 130 "gramatica.y"
 {verificarRangoDoubleNegativo();
 					val_peek(0).sval="-"+val_peek(0).sval;
 					TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));
 					yyval.sval=val_peek(0).sval;}
 break;
 case 57:
-//#line 136 "gramatica.y"
+//#line 137 "gramatica.y"
 {comprobarBinding(val_peek(2).sval,"Funcion "+val_peek(2).sval+" no declarada");}
 break;
 case 58:
-//#line 137 "gramatica.y"
-{comprobarBinding(val_peek(3).sval,"Funcion "+val_peek(3).sval+" no declarada");}
+//#line 138 "gramatica.y"
+{comprobarBinding(val_peek(3).sval,"Funcion "+val_peek(3).sval+" no declarada");
+									val_peek(3).sval=Ambito.getAmbito(val_peek(3).sval);
+									System.out.println(val_peek(3).sval);
+									if (TablaSimbolos.getSimbolo(val_peek(3).sval).getEsp()&&parametroConstante){
+										errorEnXY("El parametro "+val_peek(1).sval+", no puede ser constante debido a que hay asignaciones en la funcion "+val_peek(3).sval);
+										parametroConstante=false;
+									}}
 break;
 case 59:
-//#line 138 "gramatica.y"
-{comprobarBinding(val_peek(5).sval,"Funcion "+val_peek(5).sval+" no declarada");}
+//#line 145 "gramatica.y"
+{comprobarBinding(val_peek(5).sval,"Funcion "+val_peek(5).sval+" no declarada");
+														System.out.println(val_peek(5).sval);
+														if (TablaSimbolos.getSimbolo(val_peek(5).sval).getEsp()&&parametroConstante){
+															errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+val_peek(5).sval);
+															parametroConstante=false;
+														}}
 break;
 case 60:
-//#line 141 "gramatica.y"
+//#line 153 "gramatica.y"
 {comprobarBinding(val_peek(0).sval,"No se encontro el parametro "+val_peek(0).sval);}
 break;
+case 61:
+//#line 154 "gramatica.y"
+{parametroConstante=true;}
+break;
 case 62:
-//#line 143 "gramatica.y"
+//#line 155 "gramatica.y"
 {verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
 break;
 case 63:
-//#line 146 "gramatica.y"
+//#line 158 "gramatica.y"
 {ListaTercetos.add_seleccion_final();}
 break;
 case 66:
-//#line 153 "gramatica.y"
+//#line 165 "gramatica.y"
 {ListaTercetos.add_seleccion_then();}
 break;
 case 67:
-//#line 154 "gramatica.y"
+//#line 166 "gramatica.y"
 {ListaTercetos.add_seleccion_then();}
 break;
 case 70:
-//#line 161 "gramatica.y"
+//#line 173 "gramatica.y"
 {ListaTercetos.add_seleccion_cond();}
 break;
 case 71:
-//#line 164 "gramatica.y"
+//#line 176 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
 													ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 78:
-//#line 176 "gramatica.y"
+//#line 188 "gramatica.y"
 {ListaTercetos.addTerceto(new Terceto(val_peek(3).sval,val_peek(1).sval,"-"));}
 break;
 case 79:
-//#line 177 "gramatica.y"
+//#line 189 "gramatica.y"
 {errorEnXY("Falta de parentesis al comienzo de la cadena del out");}
 break;
 case 80:
-//#line 178 "gramatica.y"
+//#line 190 "gramatica.y"
 {errorEnXY("Falta de parentesis al final de la cadena del out");}
 break;
 case 82:
-//#line 182 "gramatica.y"
+//#line 194 "gramatica.y"
 {errorEnXY("Funcion invocada sin discard del retorno");}
 break;
 case 83:
-//#line 185 "gramatica.y"
+//#line 197 "gramatica.y"
 {verificarIdIguales(val_peek(6).sval,val_peek(4).sval);
 																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(4).sval+Ambito.getNaming());
 																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(2).sval);}
 break;
 case 84:
-//#line 188 "gramatica.y"
+//#line 200 "gramatica.y"
 {verificarIdIguales(val_peek(6).sval,val_peek(4).sval);
 																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(4).sval+Ambito.getNaming());
 																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(2).sval);
@@ -1057,38 +1073,40 @@ case 84:
 																		setearUso(val_peek(10).sval+Ambito.getNaming(),"Etiqueta");}
 break;
 case 85:
-//#line 195 "gramatica.y"
-{val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
+//#line 207 "gramatica.y"
+{TablaSimbolos.removeSimbolo(val_peek(2).sval);
+									val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
 									verificarEntero(val_peek(2).sval);
 									verificarTipos(val_peek(2).sval,val_peek(0).sval);
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));
 									id_for_act.push(val_peek(2).sval);}
 break;
 case 86:
-//#line 202 "gramatica.y"
-{val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
+//#line 215 "gramatica.y"
+{TablaSimbolos.removeSimbolo(val_peek(2).sval);
+									val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
 									verificarTipos(val_peek(2).sval,val_peek(0).sval);
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));
 									ListaTercetos.add_seleccion_cond();}
 break;
 case 87:
-//#line 208 "gramatica.y"
+//#line 222 "gramatica.y"
 {yyval.sval=val_peek(0).sval;
 						ListaTercetos.add_for_act(id_for_act.pop(),val_peek(1).sval,val_peek(0).sval);}
 break;
 case 88:
-//#line 210 "gramatica.y"
+//#line 224 "gramatica.y"
 {errorEnXY("Falta +/- para actualizar for");}
 break;
 case 89:
-//#line 213 "gramatica.y"
+//#line 227 "gramatica.y"
 {ListaTercetos.add_for_cpo();}
 break;
 case 90:
-//#line 214 "gramatica.y"
+//#line 228 "gramatica.y"
 {ListaTercetos.add_for_cpo();}
 break;
-//#line 1015 "Parser.java"
+//#line 1033 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

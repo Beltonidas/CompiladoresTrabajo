@@ -58,8 +58,8 @@ public class ListaTercetos {
         Terceto t_asig = new Terceto("=:",op.getSarg(),"["+(tercetos.size()-1)+"]");
 
         addTerceto(t_asig);
-        addTerceto(new Terceto("BI", Integer.toString(indice_for_cond-1), "-"));
-        getTerceto(indice_for_cond).setSarg(Integer.toString(tercetos.size()));
+        addTerceto(new Terceto("BI", '['+Integer.toString(indice_for_cond-1)+']', "-"));
+        getTerceto(indice_for_cond).setTarg(Integer.toString(tercetos.size()));
     }
 
 

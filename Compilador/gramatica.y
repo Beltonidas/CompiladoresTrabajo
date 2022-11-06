@@ -67,8 +67,6 @@ header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 
 cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
 												tokenAux.setTipo($3.sval);
-												//System.out.println("Verificar en linea 64 como funciona el return con la expresion en esto");
-												//System.out.println($5.sval);
 												verificarTipos(tokenAux.getLexema().toString(),$5.sval);
 												Ambito.removeAmbito();}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
@@ -103,6 +101,9 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 asignacion: id SIMB_ASIGNACION expresion {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 											$1.sval=$1.sval+Ambito.getNaming();
 											verificarTipos($1.sval,$3.sval);
+											if (TablaSimbolos.getSimbolo($1.sval).getUso().equals("Nombre de Parametro")){
+												TablaSimbolos.getSimbolo(Ambito.getNombreAmbito()).setEsp(true);
+											}
 											ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada despues de la asignacion");}
 		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
@@ -134,12 +135,23 @@ factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 ;
 
 retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
-		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
-		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
+		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+									$1.sval=Ambito.getAmbito($1.sval);
+									System.out.println($1.sval);
+									if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
+										errorEnXY("El parametro "+$3.sval+", no puede ser constante debido a que hay asignaciones en la funcion "+$1.sval);
+										parametroConstante=false;
+									}}
+		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+														System.out.println($1.sval);
+														if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
+															errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+$1.sval);
+															parametroConstante=false;
+														}}
 ;
 
 parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro "+$1.sval);}
-		| cte 
+		| cte {parametroConstante=true;}
 		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
 ;
 
@@ -192,14 +204,16 @@ for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verifica
 																		setearUso($1.sval+Ambito.getNaming(),"Etiqueta");}
 ;
 
-for_inic: id SIMB_ASIGNACION cte {$1.sval=$1.sval+Ambito.getNaming();
+for_inic: id SIMB_ASIGNACION cte {TablaSimbolos.removeSimbolo($1.sval);
+									$1.sval=$1.sval+Ambito.getNaming();
 									verificarEntero($1.sval);
 									verificarTipos($1.sval,$3.sval);
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
 									id_for_act.push($1.sval);}
 ;
 
-for_cond: id comparador expresion {$1.sval=$1.sval+Ambito.getNaming();
+for_cond: id comparador expresion {TablaSimbolos.removeSimbolo($1.sval);
+									$1.sval=$1.sval+Ambito.getNaming();
 									verificarTipos($1.sval,$3.sval);
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
 									ListaTercetos.add_seleccion_cond();}
@@ -244,8 +258,8 @@ public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
 public Boolean verb=AnalizadorLexico.getVerbose();
-
 public Stack<String> id_for_act = new Stack<String>();
+public Boolean parametroConstante = false;
 
 
 public void comprobarBinding(String arg, String text){

@@ -29,6 +29,9 @@ public class TokenLexema {
      */
 	private int id;
 	private StringBuilder lexema;
+	//Sirve por ahora para identificar facilmente las funciones que tienen asignaciones de los parametros para que no se 
+	//puedan pasar constantes en ejecucion 
+	private Boolean esp;
 
     /**
      * Para los identificadores si son funciones/variables/parametro
@@ -43,6 +46,17 @@ public class TokenLexema {
 	public String getUso() {
         return uso;
     }
+	
+	public void setEsp(Boolean arg) {
+        esp=arg;
+    }
+	
+	public Boolean getEsp() {
+	    if (esp!=null) {
+	        return esp;
+	    }
+	    return false;
+	}
 
     public void setUso(String uso) {
         this.uso = uso;
@@ -119,6 +133,9 @@ public class TokenLexema {
         }
 	    if (this.uso!=null) {
             msg+=" | Uso: "+this.uso;
+        }
+	    if (this.esp!=null) {
+            msg+=" | Especial: "+this.esp;
         }
 	    return msg;
 	}

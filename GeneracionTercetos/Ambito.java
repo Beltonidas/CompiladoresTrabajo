@@ -57,4 +57,16 @@ public class Ambito {
         }
         return naming.toString();
     }
+    
+    public static String getNombreAmbito(){
+        StringBuilder aux = new StringBuilder(getNaming());
+        StringBuilder aux2 = new StringBuilder();
+        for (int i = aux.lastIndexOf(":")+1; i < aux.length(); i++) {
+            aux2.append(aux.charAt(i));
+        }
+        for (int i = 0; i < aux.lastIndexOf(":"); i++) {
+            aux2.append(aux.charAt(i));
+        }
+        return aux2.toString();
+    }
 }
