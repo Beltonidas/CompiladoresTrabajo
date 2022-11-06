@@ -27,10 +27,6 @@ pro {ui8 y, x, w;
         i =: 50.0; 
         end_if;
 
-
-    discard fi(2);
-    discard fi();
-    discard fi();
     defer out('askjhdjla');
 
     for (x =: 30; x<20; +34 ){
@@ -52,10 +48,8 @@ pro {ui8 y, x, w;
         x =: 40;
     
     outer: for (x =: 30; x<20; +34 ){
-        z =: 50.0;
         break :outer;
     };
-    x =: fi(2);
 
     fun fi (f64 xx):ui8{
 	    ui8 z;
@@ -69,6 +63,6 @@ pro {ui8 y, x, w;
             f64 pepito;
             return (pepe);
         }
-	    return (z);
+        return (6.0);
 	}
 }

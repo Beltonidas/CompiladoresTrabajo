@@ -1,4 +1,4 @@
-package Compilador;
+package GeneracionTercetos;
 
 import java.util.List;
 import java.util.Stack;

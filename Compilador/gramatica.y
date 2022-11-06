@@ -4,6 +4,7 @@ import java.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import GeneracionTercetos.*;
 %}
 
 //Declaracion de tokens:
@@ -17,13 +18,12 @@ import java.util.Stack;
 programa: nombre_programa bloque_sentencias {programaListo();}
 ;
 
-nombre_programa: id {setearUso($1.sval,"Nombre Programa");Ambito.addAmbito("Main");}
+nombre_programa: id {setearUso($1.sval,"Nombre Programa");Ambito.addAmbito("_");TablaSimbolos.cambiarNombreKey($1.sval);Ambito.removeAmbito();Ambito.addAmbito("Main");}
 		| cte {errorEnXY("Nombre del programa invalido. Identificador esperado, constante recibida en cambio");}
 		| cadena {errorEnXY("Nombre del programa invalido. Identificador esperado, cadena recibida en cambio");}
 ;
 
-bloque_sentencias: bloque_sentencias '{' sentencia '}'
-		| '{' sentencia '}'
+bloque_sentencias: '{' sentencia '}'
 		| '{' sentencia {errorEnXY("Esperando final de bloque");}
 		| sentencia '}' {errorEnXY("Esperando comienzo de bloque");}
 
@@ -47,8 +47,8 @@ tipo: ui8 {tipoAux=$1.sval;$$.sval=$1.sval;}
 		| id {errorEnXY("Tipo de la/s variable/s invalido");}
 ;
 
-list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");TablaSimbolos.cambiarNombreKey($1.sval, $1.sval+Ambito.getNaming());}
-		| list_variables ',' id {setearTipo($3.sval);setearUso($3.sval,"Variable");TablaSimbolos.cambiarNombreKey($3.sval, $3.sval+Ambito.getNaming());}
+list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");$1.sval=TablaSimbolos.cambiarNombreKey($1.sval);}
+		| list_variables ',' id {setearTipo($3.sval);setearUso($3.sval,"Variable");$3.sval=TablaSimbolos.cambiarNombreKey($3.sval);}
 		| error {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 ;
 
@@ -58,23 +58,25 @@ dec_funcion: header_funcion cola_funcion
 ;
 
 header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
-							TablaSimbolos.cambiarNombreKey($2.sval, $2.sval+Ambito.getNaming());
-							tokens.push(TablaSimbolos.getSimbolo($2.sval+Ambito.getNaming()));
-							Ambito.addAmbito($2.sval);}
+							String aux=TablaSimbolos.cambiarNombreKey($2.sval);
+							Ambito.addAmbito($2.sval);
+							$2.sval=aux;
+							tokens.push(TablaSimbolos.getSimbolo($2.sval));}
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
 cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
 												tokenAux.setTipo($3.sval);
-												//verificarTipos(tokenAux.getLexema().toString(),$5.sval+Ambito.getNaming());
-												verificarTipos(tokenAux.getLexema().toString(),Ambito.getAmbito($5.sval));
+												//System.out.println("Verificar en linea 64 como funciona el return con la expresion en esto");
+												//System.out.println($5.sval);
+												verificarTipos(tokenAux.getLexema().toString(),$5.sval);
 												Ambito.removeAmbito();}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
 parametro: tipo id {setearTipo($2.sval,$1.sval);
 					setearUso($2.sval,"Nombre de Parametro");
-					TablaSimbolos.cambiarNombreKey($2.sval, $2.sval+Ambito.getNaming());}
+					$2.sval=TablaSimbolos.cambiarNombreKey($2.sval);}
 		| tipo {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 ;
 
@@ -98,33 +100,45 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 		| for_continue {imprimirMSGEstructura("Loop For");}
 ;
 
-asignacion: id SIMB_ASIGNACION expresion {verificarTipos($1.sval+Ambito.getNaming(),$3.sval);comprobarBinding($1.sval,"Variable no declarada");ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+asignacion: id SIMB_ASIGNACION expresion {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
+											$1.sval=$1.sval+Ambito.getNaming();
+											verificarTipos($1.sval,$3.sval);
+											ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada despues de la asignacion");}
 		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 ;
 
-expresion: expresion '+' termino {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
-		| expresion '-' termino {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+expresion: expresion '+' termino {verificarTipos($1.sval,$3.sval);
+									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+		| expresion '-' termino {verificarTipos($1.sval,$3.sval);
+									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| termino
 ;
 
-termino: termino '*' factor {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
-		| termino '/' factor {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+termino: termino '*' factor {verificarTipos($1.sval,$3.sval);
+							ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+		| termino '/' factor {verificarTipos($1.sval,$3.sval);
+								ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| factor
 ;
 
-factor: id {comprobarBinding($1.sval,"Variable no declarada");}
+factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
+			$1.sval=Ambito.getAmbito($1.sval);
+			$$.sval=$1.sval;}
 		| cte
-		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
+		| '-' cte {verificarRangoDoubleNegativo();
+					$2.sval="-"+$2.sval;
+					TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));
+					$$.sval=$2.sval;}
 		| retorno_funcion
 ;
 
-retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"No se encontro la funcion en el ambito actual para los parametros dados");}
-		| id '(' parametro_real ')' {comprobarBinding($1.sval,"No se encontro la funcion en el ambito actual para los parametros dados");}
-		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"No se encontro la funcion en el ambito actual para los parametros dados");}
+retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
+		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
+		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
 ;
 
-parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro indicado");}
+parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro "+$1.sval);}
 		| cte 
 		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
 ;
@@ -147,7 +161,8 @@ else_selecc: '{' ejecutable_for '}'
 condicion_if: '(' expresion_booleana ')' {ListaTercetos.add_seleccion_cond();}
 ;
 
-expresion_booleana: expresion comparador expresion {verificarTipos($1.sval,$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+expresion_booleana: expresion comparador expresion {verificarTipos($1.sval,$3.sval);
+													ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 ;
 
 comparador: SIMB_DISTINTO
@@ -167,17 +182,31 @@ invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($3.sval,$5.sval);verificarTipos($3.sval+Ambito.getNaming(),$5.sval+Ambito.getNaming());verificarTipos($3.sval+Ambito.getNaming(),$7.sval);}
-		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($5.sval,$7.sval);verificarTipos($5.sval+Ambito.getNaming(),$7.sval+Ambito.getNaming());verificarTipos($5.sval+Ambito.getNaming(),$9.sval);TablaSimbolos.cambiarNombreKey($1.sval, $1.sval+Ambito.getNaming());setearUso($1.sval+Ambito.getNaming(),"Etiqueta");}
+for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($3.sval,$5.sval);
+																		verificarTipos($3.sval+Ambito.getNaming(),$5.sval+Ambito.getNaming());
+																		verificarTipos($3.sval+Ambito.getNaming(),$7.sval);}
+		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($5.sval,$7.sval);
+																		verificarTipos($5.sval+Ambito.getNaming(),$7.sval+Ambito.getNaming());
+																		verificarTipos($5.sval+Ambito.getNaming(),$9.sval);
+																		TablaSimbolos.cambiarNombreKey($1.sval);
+																		setearUso($1.sval+Ambito.getNaming(),"Etiqueta");}
 ;
 
-for_inic: id SIMB_ASIGNACION cte {verificarEntero($1.sval+Ambito.getNaming());verificarTipos($1.sval+Ambito.getNaming(),$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));id_for_act.push($1.sval);}
+for_inic: id SIMB_ASIGNACION cte {$1.sval=$1.sval+Ambito.getNaming();
+									verificarEntero($1.sval);
+									verificarTipos($1.sval,$3.sval);
+									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
+									id_for_act.push($1.sval);}
 ;
 
-for_cond: id comparador expresion {verificarTipos($1.sval+Ambito.getNaming(),$3.sval);ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));ListaTercetos.add_seleccion_cond();}
+for_cond: id comparador expresion {$1.sval=$1.sval+Ambito.getNaming();
+									verificarTipos($1.sval,$3.sval);
+									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
+									ListaTercetos.add_seleccion_cond();}
 ;
 
-for_act: mas_o_menos cte {$$.sval=$2.sval;ListaTercetos.add_for_act(id_for_act.pop(),$1.sval,$2.sval);}
+for_act: mas_o_menos cte {$$.sval=$2.sval;
+						ListaTercetos.add_for_act(id_for_act.pop(),$1.sval,$2.sval);}
 		| cte {errorEnXY("Falta +/- para actualizar for");}
 ;
 
@@ -214,14 +243,14 @@ public List<Terceto> tercetos = new ArrayList<Terceto>();
 public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
+public Boolean verb=AnalizadorLexico.getVerbose();
 
 public Stack<String> id_for_act = new Stack<String>();
 
 
 public void comprobarBinding(String arg, String text){
-	if (Ambito.getAmbito(arg) != null) {
-		//ACA CREAR LOS TERCETOS
-	} else
+	String aux = Ambito.getAmbito(arg);
+	if (aux == null)
 		errorEnXY(text);
 }
 
@@ -237,6 +266,7 @@ public void setearTipo(String arg1, String arg2){
 
 public void verificarEntero(String arg){
 	if (TablaSimbolos.getSimbolo(arg) == null){
+		//System.out.println("Verificando entero");
 		errorEnXY("Variable "+arg+" no declarada.");
 		return;
 	}
@@ -252,12 +282,10 @@ public void setearUso(String arg, String arg2){
 }
 
 public void verificarTipos(String arg1,String arg2){
-	if (TablaSimbolos.getSimbolo(arg1) == null || TablaSimbolos.getSimbolo(arg2) == null){
-		return;
-	}
+	//System.out.println("Verificando tipos "+arg1+";"+arg2);
 	if (TablaSimbolos.getSimbolo(arg1).getTipo().equals(TablaSimbolos.getSimbolo(arg2).getTipo()))
 		return;
-	errorEnXY("No se puede realizar una operacion entre "+arg1+", "+arg2);
+	errorEnXY("No se puede realizar una operacion entre "+arg1+" y "+arg2);
 }
 
 public void errorEnXY(String msg){
@@ -312,9 +340,11 @@ public void warningEnXY(String msg){
 }
 
 private void imprimirMSGEstructura(String msg){
-	int linea=0;
-	linea = AnalizadorLexico.getLinea();
-	System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+".\n"+ANSI_RESET);
+	if (verb){
+		int linea=0;
+		linea = AnalizadorLexico.getLinea();
+		System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+".\n"+ANSI_RESET);
+	}
 }
 
 private void programaListo(){

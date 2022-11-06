@@ -3,6 +3,8 @@ package Compilador;
 import java.io.IOException;
 import java.util.Scanner;
 
+import GeneracionTercetos.ListaTercetos;
+
 public class Main {
 
 	public static void main(String[] args) throws IOException {
@@ -11,7 +13,7 @@ public class Main {
 	    //String ruta = consola.nextLine();
         //consola.close();
         //AnalizadorLexico.inic(ruta);
-	    AnalizadorLexico.inic("./testFiles/prueba_3.txt");
+	    AnalizadorLexico.inic("./testFiles/test.txt");
 		Parser paruser = new Parser();
 		AnalizadorLexico.paruser=paruser;
 		paruser.run();

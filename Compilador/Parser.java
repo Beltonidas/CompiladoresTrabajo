@@ -22,7 +22,8 @@ import java.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-//#line 23 "Parser.java"
+import GeneracionTercetos.*;
+//#line 24 "Parser.java"
 
 
 
@@ -185,155 +186,147 @@ public final static short SIMB_COM_I=278;
 public final static short SIMB_COM_F=279;
 public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
-    0,    1,    1,    1,    2,    2,    2,    2,    3,    3,
-    3,    3,    4,    4,    6,    6,    8,    8,    8,    9,
-    9,    9,    7,    7,    7,   10,   10,   11,   11,   12,
-   12,   13,   13,   13,   13,   13,   13,    5,    5,   15,
-   15,   15,   15,   15,   16,   16,   16,   14,   14,   14,
-   21,   21,   21,   22,   22,   22,   22,   23,   23,   23,
-   24,   24,   24,   17,   26,   26,   27,   27,   28,   28,
-   25,   31,   32,   32,   32,   32,   32,   32,   18,   18,
-   18,   19,   19,   20,   20,   33,   34,   35,   35,   36,
-   36,   37,   37,   29,   29,   30,   30,   30,   30,
+    0,    1,    1,    1,    2,    2,    2,    3,    3,    3,
+    3,    4,    4,    6,    6,    8,    8,    8,    9,    9,
+    9,    7,    7,    7,   10,   10,   11,   11,   12,   12,
+   13,   13,   13,   13,   13,   13,    5,    5,   15,   15,
+   15,   15,   15,   16,   16,   16,   14,   14,   14,   21,
+   21,   21,   22,   22,   22,   22,   23,   23,   23,   24,
+   24,   24,   17,   26,   26,   27,   27,   28,   28,   25,
+   31,   32,   32,   32,   32,   32,   32,   18,   18,   18,
+   19,   19,   20,   20,   33,   34,   35,   35,   36,   36,
+   37,   37,   29,   29,   30,   30,   30,   30,
 };
 final static short yylen[] = {                            2,
-    2,    1,    1,    1,    4,    3,    2,    2,    1,    1,
-    2,    2,    1,    1,    3,    2,    1,    1,    1,    1,
-    3,    1,    2,    3,    5,    3,    2,    6,    1,    2,
-    1,    6,    5,    4,    5,    3,    5,    1,    2,    2,
-    2,    2,    2,    1,    3,    2,    4,    3,    3,    1,
-    3,    3,    1,    1,    1,    2,    1,    3,    4,    6,
-    1,    1,    2,    3,    4,    2,    4,    2,    3,    1,
-    3,    3,    1,    1,    1,    1,    1,    1,    4,    3,
-    3,    2,    1,    9,   11,    3,    3,    2,    1,    4,
-    1,    1,    1,    2,    1,    1,    2,    4,    2,
+    2,    1,    1,    1,    3,    2,    2,    1,    1,    2,
+    2,    1,    1,    3,    2,    1,    1,    1,    1,    3,
+    1,    2,    3,    5,    3,    2,    6,    1,    2,    1,
+    6,    5,    4,    5,    3,    5,    1,    2,    2,    2,
+    2,    2,    1,    3,    2,    4,    3,    3,    1,    3,
+    3,    1,    1,    1,    2,    1,    3,    4,    6,    1,
+    1,    2,    3,    4,    2,    4,    2,    3,    1,    3,
+    3,    1,    1,    1,    1,    1,    1,    4,    3,    3,
+    2,    1,    9,   11,    3,    3,    2,    1,    4,    1,
+    1,    1,    2,    1,    1,    2,    4,    2,
 };
 final static short yydefred[] = {                         0,
-    2,    3,    4,    0,    0,   22,    0,    0,    0,    0,
-   17,   18,    0,    0,    0,    0,    0,    0,    9,   10,
-   13,   14,    0,    0,    0,   38,    0,    0,    0,    0,
-   44,   83,    0,    0,    0,    0,    0,    0,    0,    0,
-   27,    0,   82,    0,    0,   39,    0,    0,    8,   11,
-   12,   20,    0,   16,    0,   29,   19,    0,    0,   23,
-    0,   40,   41,   42,   43,    0,   55,    0,    0,    0,
-   53,   57,   61,   62,   58,    0,    0,    0,    0,    0,
-    0,    0,   64,    0,   80,    0,   26,    0,    0,    6,
-    0,   15,   21,    0,   30,    0,   24,   56,    0,    0,
-    0,    0,   63,    0,   59,    0,    0,   74,   75,   73,
-   76,   77,   78,    0,   71,    0,    0,    0,   96,   68,
-    0,   66,   79,    0,    0,    5,    0,    0,    0,    0,
-   51,   52,    0,    0,    0,   97,    0,   99,    0,   95,
-    0,    0,   70,   86,    0,    0,    0,   25,   60,    0,
-    0,   67,   94,    0,   65,    0,    0,    0,    0,    0,
-   98,   69,    0,   89,   92,   93,    0,    0,    0,   28,
-    0,    0,   88,    0,    0,    0,    0,   91,   84,    0,
-   34,    0,    0,    0,   33,    0,   35,   85,    0,   32,
-   90,
+    2,    3,    4,    0,    0,   21,    0,    0,    0,    0,
+   16,   17,    0,    0,    0,    0,    1,    0,    8,    9,
+   12,   13,    0,    0,    0,   37,    0,    0,    0,    0,
+   43,   82,    0,    0,    0,    0,    0,    0,    0,    0,
+   26,    0,   81,    0,    0,   38,    0,    7,   10,   11,
+   19,    0,   15,    0,   28,   18,    0,    0,   22,    0,
+   39,   40,   41,   42,    0,   54,    0,    0,    0,   52,
+   56,   60,   61,   57,    0,    0,    0,    0,    0,    0,
+    0,   63,    0,   79,    0,   25,    0,    0,    5,   14,
+   20,    0,   29,    0,   23,   55,    0,    0,    0,    0,
+   62,    0,   58,    0,    0,   73,   74,   72,   75,   76,
+   77,    0,   70,    0,    0,    0,   95,   67,    0,   65,
+   78,    0,    0,    0,    0,    0,    0,   50,   51,    0,
+    0,    0,   96,    0,   98,    0,   94,    0,    0,   69,
+   85,    0,    0,    0,   24,   59,    0,    0,   66,   93,
+    0,   64,    0,    0,    0,    0,    0,   97,   68,    0,
+   88,   91,   92,    0,    0,    0,   27,    0,    0,   87,
+    0,    0,    0,    0,   90,   83,    0,   33,    0,    0,
+    0,   32,    0,   34,   84,    0,   31,   89,
 };
 final static short yydgoto[] = {                          4,
     5,   17,   18,   19,   20,   21,   22,   23,   24,   25,
-   60,   61,  159,   69,  119,   27,   28,   29,   30,   31,
-   70,   71,   32,   77,   37,   83,   84,  142,  139,  140,
-   81,  114,   89,  146,  167,  179,  168,
+   59,   60,  156,   68,  117,   27,   28,   29,   30,   31,
+   69,   70,   32,   76,   37,   82,   83,  139,  136,  137,
+   80,  112,   88,  143,  164,  176,  165,
 };
-final static short yysindex[] = {                      -171,
-    0,    0,    0,    0, -101,    0,  -25,    4,  -32,   -5,
-    0,    0, -178,   68, -117,  157,  -19,   40,    0,    0,
-    0,    0, -133,   23,  -38,    0,   33,   55,   61,  102,
-    0,    0,   -7,    2,  -48,   -7, -162,  119,  -97,  126,
-    0,  131,    0,  -84,  -25,    0,   59,  157,    0,    0,
-    0,    0,   31,    0,  -83,    0,    0,  118,  -82,    0,
-    5,    0,    0,    0,    0,  131,    0,  -81,   57,   36,
-    0,    0,    0,    0,    0,  -80,   69,  139,   -7,   -6,
-  140,  -75,    0, -136,    0,  142,    0,  -88,  128,    0,
-   77,    0,    0, -172,    0, -172,    0,    0,   -7,   -7,
-   -7,   -7,    0,   19,    0,  -84,   57,    0,    0,    0,
-    0,    0,    0,   -7,    0,   78,  132, -142,    0,    0,
-  -57,    0,    0,  -68,  -63,    0,   81,  -24,   36,   36,
-    0,    0,  158,  149,   57,    0,  -37,    0,   92,    0,
- -142,  -42,    0,    0,  -20,  163,  157,    0,    0,  -63,
-  165,    0,    0,  101,    0,   -7,   14,  136,  100,  174,
-    0,    0,   57,    0,    0,    0,  196,  -15,  -29,    0,
-   14,   21,    0,   -7,   50,  197, -142,    0,    0,   76,
-    0,  188,   21,  117,    0,  189,    0,    0,  194,    0,
-    0,
+final static short yysindex[] = {                      -166,
+    0,    0,    0,    0, -101,    0,  -25,  -13,  -32,   -5,
+    0,    0, -162,   59, -118,  105,    0,  -81,    0,    0,
+    0,    0, -136,   41,  -38,    0,   48,   74,   78,   79,
+    0,    0,   -7,    2,  -48,   -7, -148,   99, -108,  120,
+    0,  121,    0,  -95,  -25,    0,   40,    0,    0,    0,
+    0,   46,    0,  -91,    0,    0,  113,  -84,    0,    5,
+    0,    0,    0,    0,  121,    0,  -80,   63,   62,    0,
+    0,    0,    0,    0,  -78,   73,  134,   -7,   -6,  136,
+  -56,    0, -139,    0,  140,    0,  -88,  137,    0,    0,
+    0, -181,    0, -181,    0,    0,   -7,   -7,   -7,   -7,
+    0,   19,    0,  -95,   63,    0,    0,    0,    0,    0,
+    0,   -7,    0,   76,  138, -145,    0,    0,   22,    0,
+    0,  -65,  -62,   82,  -24,   62,   62,    0,    0,  161,
+  148,   63,    0,  -45,    0,   57,    0, -145,  -50,    0,
+    0,  -20,  158,  105,    0,    0,  -62,  162,    0,    0,
+   66,    0,   -7,   14,   84,   95,  163,    0,    0,   63,
+    0,    0,    0,  183,  -21,  -29,    0,   14,   31,    0,
+   -7,   37,  184, -145,    0,    0,   38,    0,  167,   31,
+   75,    0,  174,    0,    0,  179,    0,    0,
 };
 final static short yyrindex[] = {                         0,
     0,    0,    0,    0,    0,    0,   18,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,  254,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,  199,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,   27,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,   17,    0,
-    0,    0,    0,    0,    0,  -41,    0,    0,  203,  -36,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,  204,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,  205,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,  -31,   -9,
-    0,    0,    0,    0,  224,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,  220,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,  155,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,  159,    0,    0,    0,    0,
-    0,
+    0,    0,  188,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,  243,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   17,    0,    0,
+    0,    0,    0,    0,  -41,    0,    0,  189,  -36,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,  194,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,  195,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,  -31,   -9,    0,    0,    0,
+    0,  217,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,  203,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,  139,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,  153,    0,    0,    0,    0,    0,
 };
 final static short yygindex[] = {                         0,
-    0,    0,   64,   51,   54,    0,    0,   45,  259,    0,
-   20,  187,    0,   24,   58,    0,    0,    0,    0,    0,
-   52,   56,   32,  182,    0,    0,    0,    0,  -70,  236,
-    0,  144,  181,  145,  123,  107,    0,
+    0,    0,   50,   51,   54,    0,    0,   49,  240,    0,
+    3,  171,    0,  206,   55,    0,    0,    0,    0,    0,
+   52,   58,   32,  178,    0,    0,    0,    0,  -63,  -33,
+    0,  141,  177,  143,  117,  107,    0,
 };
-final static int YYTABLESIZE=430;
+final static int YYTABLESIZE=378;
 static short yytable[];
 static { yytable();}
 static void yytable(){
-yytable = new short[]{                         54,
-   54,   54,   58,   54,   50,   54,   50,   39,   50,   48,
-  174,   48,   79,   48,   34,   68,   58,   54,   54,   54,
-   54,   16,   50,   50,   50,   50,    7,   48,   48,   48,
-   48,   49,   35,   49,   41,   49,   99,   68,  100,  112,
-  111,  113,   75,   36,   43,   58,   76,  118,   96,   49,
-   49,   49,   49,  112,  111,  113,  165,   31,  166,   80,
-   31,   20,   26,   76,   72,  141,   55,   72,   50,   59,
-  154,   51,   46,   26,   55,   26,   20,  101,   42,   47,
-   97,   54,  102,   54,   57,    1,    2,    3,   50,   92,
-  182,   62,   99,   48,  100,   11,   12,   50,   82,   99,
-   51,  100,  107,   48,   26,   26,  184,   44,  181,  105,
-   72,   91,  104,   63,   45,   49,  186,    8,   99,   64,
-  100,    9,    6,   52,  116,  121,  122,   13,   14,  117,
-   72,   72,   72,   72,  185,  137,  136,  135,  127,   45,
-   59,   50,    8,  177,   51,   72,    9,  148,   26,    7,
-  129,  130,   13,   14,    6,    7,  131,  132,    8,   85,
-   65,   86,    9,   10,   49,   87,   11,   12,   13,   14,
-   34,   15,   88,   93,   95,   94,   98,  103,  106,  163,
-  115,   45,  123,   90,    8,  124,  125,   72,    9,  144,
-  138,  116,  175,  145,   13,   14,  117,  180,  149,   45,
-   72,  126,    8,  147,   26,   72,    9,  150,   50,  116,
-  158,   51,   13,   14,  117,   26,  152,   56,   57,  151,
-  155,  157,   78,  161,  170,  162,   38,   66,   67,   11,
-   12,   56,  171,   54,   54,   54,  172,  183,   50,   50,
-   50,  189,  173,   48,   48,   48,  187,  190,   33,   66,
-   67,   40,  191,    1,  108,  109,  110,   46,   73,   74,
-   56,   45,   81,   47,   72,   49,   49,   49,  108,  109,
-  110,  164,   31,   19,   19,   73,   74,   45,   87,   36,
-    8,   53,  128,   37,    9,  133,  134,  116,  156,  188,
-   13,   14,  117,  176,  160,    6,    7,    0,    0,    8,
-    0,    0,    0,    9,   10,    0,    0,   11,   12,   13,
-   14,    0,   15,    0,    6,    7,    0,  120,    8,    0,
-    0,    0,    9,   10,    0,    0,   11,   12,   13,   14,
-    0,   15,    6,    7,    0,    0,    8,    0,    0,    0,
-    9,   10,    0,    0,   11,   12,   13,   14,   45,   15,
-    0,    8,    0,    0,    0,    9,  143,   45,  116,    0,
-    8,   13,   14,  117,    9,    0,    0,  116,    0,    0,
-   13,   14,  117,   45,  153,    0,    8,    0,    0,    0,
-    9,    0,    0,  116,    0,    0,   13,   14,  117,  153,
-    0,    6,    7,    0,    0,    8,    0,    0,    0,    9,
-   10,  169,    0,   11,   12,   13,   14,  178,   15,    0,
-    0,    0,    6,    7,    0,    0,    8,    0,  178,  153,
-    9,   10,    0,    0,   11,   12,   13,   14,    0,   15,
+yytable = new short[]{                         53,
+   53,   53,   57,   53,   49,   53,   49,   39,   49,   47,
+  171,   47,   78,   47,   34,   67,   57,   53,   53,   53,
+   53,   16,   49,   49,   49,   49,   36,   47,   47,   47,
+   47,   48,   35,   48,   41,   48,   97,   67,   98,  110,
+  109,  111,   74,   48,   43,   57,   75,  118,   94,   48,
+   48,   48,   48,  110,  109,  111,  162,   30,  163,   26,
+   30,   19,   95,   75,   71,   47,  116,   71,   49,   46,
+   26,   50,   26,   58,  151,   56,   19,  179,  183,   97,
+   97,   98,   98,   53,   54,  140,   11,   12,   49,   54,
+    1,    2,    3,   47,   42,  178,  182,   49,   44,   53,
+   50,   26,  150,   99,   90,   97,   61,   98,  100,   71,
+  181,   45,   81,  103,    8,   48,  102,  150,    9,    6,
+   51,  114,  119,  120,   13,   14,  115,  145,   71,   71,
+   71,   71,   62,  134,  133,  175,   63,   64,   45,   84,
+  124,    8,   58,   71,  138,    9,  175,  150,  126,  127,
+   85,   13,   14,  174,    6,    7,  128,  129,    8,   86,
+   34,   87,    9,   10,   89,   91,   11,   12,   13,   14,
+   92,   15,   93,  104,    6,    7,  113,   96,    8,  101,
+  121,  149,    9,   10,   71,  122,   11,   12,   13,   14,
+  159,   15,  141,  155,  142,  123,  135,   71,   26,  186,
+   45,  146,   71,    8,  144,   49,  147,    9,   50,   26,
+  114,  148,  152,   13,   14,  115,  154,   55,   56,  167,
+  158,  168,   77,  169,  180,  184,   38,   65,   66,   11,
+   12,   55,  187,   53,   53,   53,  170,  188,   49,   49,
+   49,   79,    6,   47,   47,   47,   45,   44,   33,   65,
+   66,   40,   80,   46,  106,  107,  108,   71,   72,   73,
+   55,   86,   52,   35,  125,   48,   48,   48,  106,  107,
+  108,  161,   30,   18,   18,   72,   73,   36,   45,  130,
+  131,    8,  153,  105,  173,    9,  185,   45,  114,  157,
+    8,   13,   14,  115,    9,    6,    7,  114,    0,    8,
+   13,   14,  115,    9,   10,    0,    0,   11,   12,   13,
+   14,    0,   15,   45,    0,    0,    8,  132,    0,    0,
+    9,    0,   45,  114,    0,    8,   13,   14,  115,    9,
+    0,   45,  114,    0,    8,   13,   14,  115,    9,    6,
+    7,  114,    0,    8,   13,   14,  115,    9,   10,  166,
+    0,   11,   12,   13,   14,    0,   15,    0,  160,    0,
+    6,    7,    0,    0,    8,    0,    0,    0,    9,   10,
+    0,  172,   11,   12,   13,   14,  177,   15,
 };
 }
 static short yycheck[];
@@ -342,47 +335,42 @@ static void yycheck() {
 yycheck = new short[] {                         41,
    42,   43,   41,   45,   41,   47,   43,   40,   45,   41,
    40,   43,   61,   45,   40,   45,   41,   59,   60,   61,
-   62,  123,   59,   60,   61,   62,    0,   59,   60,   61,
+   62,  123,   59,   60,   61,   62,   40,   59,   60,   61,
    62,   41,   58,   43,   40,   45,   43,   45,   45,   60,
-   61,   62,   41,   40,   13,   41,   45,  123,   44,   59,
-   60,   61,   62,   60,   61,   62,   43,   41,   45,   36,
-   44,   44,    5,   45,   33,  123,   44,   36,   18,   25,
-  141,   18,   15,   16,   44,   18,   59,   42,  257,   16,
-   61,   59,   47,  125,  257,  257,  258,  259,  125,   59,
-   41,   59,   43,  125,   45,  268,  269,   47,  261,   43,
-   47,   45,   79,  123,   47,   48,  177,   40,   59,   41,
-   79,   48,   44,   59,  257,  125,   41,  260,   43,   59,
-   45,  264,  256,  257,  267,  262,  263,  270,  271,  272,
-   99,  100,  101,  102,   59,   58,   59,  114,   94,  257,
-   96,   91,  260,  123,   91,  114,  264,  128,   91,  123,
-   99,  100,  270,  271,  256,  257,  101,  102,  260,   41,
-   59,  259,  264,  265,  125,   40,  268,  269,  270,  271,
-   40,  273,  257,  257,  257,   58,  258,  258,   40,  156,
-   41,  257,   41,  125,  260,  274,   59,  156,  264,  258,
-   59,  267,  169,  257,  270,  271,  272,  174,   41,  257,
-  169,  125,  260,  123,  147,  174,  264,   59,  158,  267,
-  147,  158,  270,  271,  272,  158,  125,  256,  257,  257,
-  263,   59,  271,   59,  125,  125,  259,  257,  258,  268,
-  269,  256,   59,  275,  276,  277,   41,   41,  275,  276,
-  277,  125,  258,  275,  276,  277,   59,   59,  274,  257,
-  258,  257,   59,    0,  275,  276,  277,   59,  257,  258,
-  256,   59,   59,   59,   41,  275,  276,  277,  275,  276,
-  277,  258,  256,  256,  257,  257,  258,  257,   59,  125,
-  260,   23,   96,  125,  264,  104,  106,  267,  145,  183,
-  270,  271,  272,  171,  150,  256,  257,   -1,   -1,  260,
-   -1,   -1,   -1,  264,  265,   -1,   -1,  268,  269,  270,
-  271,   -1,  273,   -1,  256,  257,   -1,   82,  260,   -1,
-   -1,   -1,  264,  265,   -1,   -1,  268,  269,  270,  271,
-   -1,  273,  256,  257,   -1,   -1,  260,   -1,   -1,   -1,
-  264,  265,   -1,   -1,  268,  269,  270,  271,  257,  273,
-   -1,  260,   -1,   -1,   -1,  264,  121,  257,  267,   -1,
-  260,  270,  271,  272,  264,   -1,   -1,  267,   -1,   -1,
-  270,  271,  272,  257,  139,   -1,  260,   -1,   -1,   -1,
-  264,   -1,   -1,  267,   -1,   -1,  270,  271,  272,  154,
-   -1,  256,  257,   -1,   -1,  260,   -1,   -1,   -1,  264,
-  265,  266,   -1,  268,  269,  270,  271,  172,  273,   -1,
-   -1,   -1,  256,  257,   -1,   -1,  260,   -1,  183,  184,
-  264,  265,   -1,   -1,  268,  269,  270,  271,   -1,  273,
+   61,   62,   41,  125,   13,   41,   45,   81,   44,   59,
+   60,   61,   62,   60,   61,   62,   43,   41,   45,    5,
+   44,   44,   60,   45,   33,   16,  123,   36,   18,   15,
+   16,   18,   18,   25,  138,  257,   59,   41,   41,   43,
+   43,   45,   45,  125,   44,  119,  268,  269,  125,   44,
+  257,  258,  259,  125,  257,   59,   59,   47,   40,   59,
+   47,   47,  136,   42,   59,   43,   59,   45,   47,   78,
+  174,  257,  261,   41,  260,  125,   44,  151,  264,  256,
+  257,  267,  262,  263,  270,  271,  272,  125,   97,   98,
+   99,  100,   59,   58,   59,  169,   59,   59,  257,   41,
+   92,  260,   94,  112,  123,  264,  180,  181,   97,   98,
+  259,  270,  271,  123,  256,  257,   99,  100,  260,   40,
+   40,  257,  264,  265,  125,  257,  268,  269,  270,  271,
+   58,  273,  257,   40,  256,  257,   41,  258,  260,  258,
+   41,  125,  264,  265,  153,  274,  268,  269,  270,  271,
+  125,  273,  258,  144,  257,   59,   59,  166,  144,  125,
+  257,   41,  171,  260,  123,  155,   59,  264,  155,  155,
+  267,  257,  263,  270,  271,  272,   59,  256,  257,  125,
+   59,   59,  271,   41,   41,   59,  259,  257,  258,  268,
+  269,  256,   59,  275,  276,  277,  258,   59,  275,  276,
+  277,   36,    0,  275,  276,  277,   59,   59,  274,  257,
+  258,  257,   59,   59,  275,  276,  277,   41,  257,  258,
+  256,   59,   23,  125,   94,  275,  276,  277,  275,  276,
+  277,  258,  256,  256,  257,  257,  258,  125,  257,  102,
+  104,  260,  142,   78,  168,  264,  180,  257,  267,  147,
+  260,  270,  271,  272,  264,  256,  257,  267,   -1,  260,
+  270,  271,  272,  264,  265,   -1,   -1,  268,  269,  270,
+  271,   -1,  273,  257,   -1,   -1,  260,  112,   -1,   -1,
+  264,   -1,  257,  267,   -1,  260,  270,  271,  272,  264,
+   -1,  257,  267,   -1,  260,  270,  271,  272,  264,  256,
+  257,  267,   -1,  260,  270,  271,  272,  264,  265,  266,
+   -1,  268,  269,  270,  271,   -1,  273,   -1,  153,   -1,
+  256,  257,   -1,   -1,  260,   -1,   -1,   -1,  264,  265,
+   -1,  166,  268,  269,  270,  271,  171,  273,
 };
 }
 final static short YYFINAL=4;
@@ -415,7 +403,6 @@ final static String yyrule[] = {
 "nombre_programa : id",
 "nombre_programa : cte",
 "nombre_programa : cadena",
-"bloque_sentencias : bloque_sentencias '{' sentencia '}'",
 "bloque_sentencias : '{' sentencia '}'",
 "bloque_sentencias : '{' sentencia",
 "bloque_sentencias : sentencia '}'",
@@ -512,7 +499,7 @@ final static String yyrule[] = {
 "inst_ejecutable_for : Continue ';'",
 };
 
-//#line 203 "gramatica.y"
+//#line 232 "gramatica.y"
 
 public static final String ANSI_RESET ="\u001B[0m";
 public static final String ANSI_RED = "\u001B[31m";
@@ -527,14 +514,14 @@ public List<Terceto> tercetos = new ArrayList<Terceto>();
 public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
+public Boolean verb=AnalizadorLexico.getVerbose();
 
 public Stack<String> id_for_act = new Stack<String>();
 
 
 public void comprobarBinding(String arg, String text){
-	if (Ambito.getAmbito(arg) != null) {
-		//ACA CREAR LOS TERCETOS
-	} else
+	String aux = Ambito.getAmbito(arg);
+	if (aux == null)
 		errorEnXY(text);
 }
 
@@ -550,6 +537,7 @@ public void setearTipo(String arg1, String arg2){
 
 public void verificarEntero(String arg){
 	if (TablaSimbolos.getSimbolo(arg) == null){
+		//System.out.println("Verificando entero");
 		errorEnXY("Variable "+arg+" no declarada.");
 		return;
 	}
@@ -565,12 +553,10 @@ public void setearUso(String arg, String arg2){
 }
 
 public void verificarTipos(String arg1,String arg2){
-	if (TablaSimbolos.getSimbolo(arg1) == null || TablaSimbolos.getSimbolo(arg2) == null){
-		return;
-	}
+	//System.out.println("Verificando tipos "+arg1+";"+arg2);
 	if (TablaSimbolos.getSimbolo(arg1).getTipo().equals(TablaSimbolos.getSimbolo(arg2).getTipo()))
 		return;
-	errorEnXY("No se puede realizar una operacion entre "+arg1+", "+arg2);
+	errorEnXY("No se puede realizar una operacion entre "+arg1+" y "+arg2);
 }
 
 public void errorEnXY(String msg){
@@ -625,9 +611,11 @@ public void warningEnXY(String msg){
 }
 
 private void imprimirMSGEstructura(String msg){
-	int linea=0;
-	linea = AnalizadorLexico.getLinea();
-	System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+".\n"+ANSI_RESET);
+	if (verb){
+		int linea=0;
+		linea = AnalizadorLexico.getLinea();
+		System.out.println(ANSI_BLUE+"/|/|/|/: "+msg+" termina de reconocerse en la linea: "+linea+".\n"+ANSI_RESET);
+	}
 }
 
 private void programaListo(){
@@ -652,7 +640,7 @@ private int yylex(){
     }
     return 0;
 }
-//#line 584 "Parser.java"
+//#line 572 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -807,271 +795,300 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 17 "gramatica.y"
+//#line 18 "gramatica.y"
 {programaListo();}
 break;
 case 2:
-//#line 20 "gramatica.y"
-{setearUso(val_peek(0).sval,"Nombre Programa");Ambito.addAmbito("Main");}
+//#line 21 "gramatica.y"
+{setearUso(val_peek(0).sval,"Nombre Programa");Ambito.addAmbito("_");TablaSimbolos.cambiarNombreKey(val_peek(0).sval);Ambito.removeAmbito();Ambito.addAmbito("Main");}
 break;
 case 3:
-//#line 21 "gramatica.y"
+//#line 22 "gramatica.y"
 {errorEnXY("Nombre del programa invalido. Identificador esperado, constante recibida en cambio");}
 break;
 case 4:
-//#line 22 "gramatica.y"
+//#line 23 "gramatica.y"
 {errorEnXY("Nombre del programa invalido. Identificador esperado, cadena recibida en cambio");}
 break;
-case 7:
+case 6:
 //#line 27 "gramatica.y"
 {errorEnXY("Esperando final de bloque");}
 break;
-case 8:
+case 7:
 //#line 28 "gramatica.y"
 {errorEnXY("Esperando comienzo de bloque");}
 break;
-case 13:
+case 12:
 //#line 37 "gramatica.y"
 {imprimirMSGEstructura("Declaracion de variable/s");}
 break;
-case 14:
+case 13:
 //#line 38 "gramatica.y"
 {imprimirMSGEstructura("Declaracion de funcion");}
 break;
-case 16:
+case 15:
 //#line 42 "gramatica.y"
 {errorEnXY("Tipo de la/s variable/s esperado al comienzo de la sentencia");}
 break;
-case 17:
+case 16:
 //#line 45 "gramatica.y"
 {tipoAux=val_peek(0).sval;yyval.sval=val_peek(0).sval;}
 break;
-case 18:
+case 17:
 //#line 46 "gramatica.y"
 {tipoAux=val_peek(0).sval;yyval.sval=val_peek(0).sval;}
 break;
-case 19:
+case 18:
 //#line 47 "gramatica.y"
 {errorEnXY("Tipo de la/s variable/s invalido");}
 break;
-case 20:
+case 19:
 //#line 50 "gramatica.y"
-{setearTipo(val_peek(0).sval);setearUso(val_peek(0).sval,"Variable");TablaSimbolos.cambiarNombreKey(val_peek(0).sval, val_peek(0).sval+Ambito.getNaming());}
+{setearTipo(val_peek(0).sval);setearUso(val_peek(0).sval,"Variable");val_peek(0).sval=TablaSimbolos.cambiarNombreKey(val_peek(0).sval);}
+break;
+case 20:
+//#line 51 "gramatica.y"
+{setearTipo(val_peek(0).sval);setearUso(val_peek(0).sval,"Variable");val_peek(0).sval=TablaSimbolos.cambiarNombreKey(val_peek(0).sval);}
 break;
 case 21:
-//#line 51 "gramatica.y"
-{setearTipo(val_peek(0).sval);setearUso(val_peek(0).sval,"Variable");TablaSimbolos.cambiarNombreKey(val_peek(0).sval, val_peek(0).sval+Ambito.getNaming());}
-break;
-case 22:
 //#line 52 "gramatica.y"
 {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 break;
-case 26:
+case 25:
 //#line 60 "gramatica.y"
 {setearUso(val_peek(1).sval,"Nombre de Funcion");
-							TablaSimbolos.cambiarNombreKey(val_peek(1).sval, val_peek(1).sval+Ambito.getNaming());
-							tokens.push(TablaSimbolos.getSimbolo(val_peek(1).sval+Ambito.getNaming()));
-							Ambito.addAmbito(val_peek(1).sval);}
+							String aux=TablaSimbolos.cambiarNombreKey(val_peek(1).sval);
+							Ambito.addAmbito(val_peek(1).sval);
+							val_peek(1).sval=aux;
+							tokens.push(TablaSimbolos.getSimbolo(val_peek(1).sval));}
 break;
-case 27:
-//#line 64 "gramatica.y"
+case 26:
+//#line 65 "gramatica.y"
 {errorEnXY("La declaracion de la funcion necesita un nombre");}
 break;
-case 28:
-//#line 67 "gramatica.y"
+case 27:
+//#line 68 "gramatica.y"
 {tokenAux=tokens.pop();
 												tokenAux.setTipo(val_peek(3).sval);
-												/*verificarTipos(tokenAux.getLexema().toString(),$5.sval+Ambito.getNaming());*/
-												verificarTipos(tokenAux.getLexema().toString(),Ambito.getAmbito(val_peek(1).sval));
+												/*System.out.println("Verificar en linea 64 como funciona el return con la expresion en esto");*/
+												/*System.out.println($5.sval);*/
+												verificarTipos(tokenAux.getLexema().toString(),val_peek(1).sval);
 												Ambito.removeAmbito();}
 break;
-case 29:
-//#line 72 "gramatica.y"
+case 28:
+//#line 74 "gramatica.y"
 {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 break;
-case 30:
-//#line 75 "gramatica.y"
+case 29:
+//#line 77 "gramatica.y"
 {setearTipo(val_peek(0).sval,val_peek(1).sval);
 					setearUso(val_peek(0).sval,"Nombre de Parametro");
-					TablaSimbolos.cambiarNombreKey(val_peek(0).sval, val_peek(0).sval+Ambito.getNaming());}
+					val_peek(0).sval=TablaSimbolos.cambiarNombreKey(val_peek(0).sval);}
 break;
-case 31:
-//#line 78 "gramatica.y"
+case 30:
+//#line 80 "gramatica.y"
 {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 break;
-case 32:
-//#line 81 "gramatica.y"
+case 31:
+//#line 83 "gramatica.y"
 {yyval.sval=val_peek(2).sval;}
 break;
-case 33:
-//#line 82 "gramatica.y"
-{errorEnXY("Parentesis esperados al final de la expresion");}
-break;
-case 34:
-//#line 83 "gramatica.y"
-{errorEnXY("Parentesis esperados al comienzo y final de la expresion");}
-break;
-case 35:
+case 32:
 //#line 84 "gramatica.y"
 {errorEnXY("Parentesis esperados al final de la expresion");}
 break;
-case 36:
+case 33:
 //#line 85 "gramatica.y"
+{errorEnXY("Parentesis esperados al comienzo y final de la expresion");}
+break;
+case 34:
+//#line 86 "gramatica.y"
+{errorEnXY("Parentesis esperados al final de la expresion");}
+break;
+case 35:
+//#line 87 "gramatica.y"
 {errorEnXY("Parentesis esperados al comienzo y final de la expresion y ; al final de linea");}
 break;
-case 37:
-//#line 86 "gramatica.y"
+case 36:
+//#line 88 "gramatica.y"
 {errorEnXY("; esperados al final de linea");}
 break;
-case 39:
-//#line 91 "gramatica.y"
+case 38:
+//#line 93 "gramatica.y"
 {imprimirMSGEstructura("Defer de instruccion ejecutable");}
 break;
-case 40:
-//#line 94 "gramatica.y"
+case 39:
+//#line 96 "gramatica.y"
 {imprimirMSGEstructura("Asignacion");}
 break;
-case 41:
-//#line 95 "gramatica.y"
+case 40:
+//#line 97 "gramatica.y"
 {imprimirMSGEstructura("Seleccion If");}
 break;
-case 42:
-//#line 96 "gramatica.y"
+case 41:
+//#line 98 "gramatica.y"
 {imprimirMSGEstructura("Impresion a Consola");}
 break;
-case 43:
-//#line 97 "gramatica.y"
+case 42:
+//#line 99 "gramatica.y"
 {imprimirMSGEstructura("Invocacion de Funcion");}
 break;
-case 44:
-//#line 98 "gramatica.y"
+case 43:
+//#line 100 "gramatica.y"
 {imprimirMSGEstructura("Loop For");}
 break;
-case 45:
-//#line 101 "gramatica.y"
-{verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);comprobarBinding(val_peek(2).sval,"Variable no declarada");ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+case 44:
+//#line 103 "gramatica.y"
+{comprobarBinding(val_peek(2).sval,"Variable "+val_peek(2).sval+" no declarada");
+											val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
+											verificarTipos(val_peek(2).sval,val_peek(0).sval);
+											ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
-case 46:
-//#line 102 "gramatica.y"
+case 45:
+//#line 107 "gramatica.y"
 {errorEnXY("Expresion esperada despues de la asignacion");}
 break;
-case 47:
-//#line 103 "gramatica.y"
+case 46:
+//#line 108 "gramatica.y"
 {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 break;
-case 48:
-//#line 106 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+case 47:
+//#line 111 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);
+									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
-case 49:
-//#line 107 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+case 48:
+//#line 113 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);
+									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+break;
+case 50:
+//#line 118 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);
+							ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 51:
-//#line 111 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+//#line 120 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);
+								ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
-case 52:
-//#line 112 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+case 53:
+//#line 125 "gramatica.y"
+{comprobarBinding(val_peek(0).sval,"Variable "+val_peek(0).sval+" no declarada");
+			val_peek(0).sval=Ambito.getAmbito(val_peek(0).sval);
+			yyval.sval=val_peek(0).sval;}
 break;
-case 54:
-//#line 116 "gramatica.y"
-{comprobarBinding(val_peek(0).sval,"Variable no declarada");}
+case 55:
+//#line 129 "gramatica.y"
+{verificarRangoDoubleNegativo();
+					val_peek(0).sval="-"+val_peek(0).sval;
+					TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));
+					yyval.sval=val_peek(0).sval;}
 break;
-case 56:
-//#line 118 "gramatica.y"
-{verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
+case 57:
+//#line 136 "gramatica.y"
+{comprobarBinding(val_peek(2).sval,"Funcion "+val_peek(2).sval+" no declarada");}
 break;
 case 58:
-//#line 122 "gramatica.y"
-{comprobarBinding(val_peek(2).sval,"No se encontro la funcion en el ambito actual para los parametros dados");}
+//#line 137 "gramatica.y"
+{comprobarBinding(val_peek(3).sval,"Funcion "+val_peek(3).sval+" no declarada");}
 break;
 case 59:
-//#line 123 "gramatica.y"
-{comprobarBinding(val_peek(3).sval,"No se encontro la funcion en el ambito actual para los parametros dados");}
+//#line 138 "gramatica.y"
+{comprobarBinding(val_peek(5).sval,"Funcion "+val_peek(5).sval+" no declarada");}
 break;
 case 60:
-//#line 124 "gramatica.y"
-{comprobarBinding(val_peek(5).sval,"No se encontro la funcion en el ambito actual para los parametros dados");}
+//#line 141 "gramatica.y"
+{comprobarBinding(val_peek(0).sval,"No se encontro el parametro "+val_peek(0).sval);}
 break;
-case 61:
-//#line 127 "gramatica.y"
-{comprobarBinding(val_peek(0).sval,"No se encontro el parametro indicado");}
-break;
-case 63:
-//#line 129 "gramatica.y"
+case 62:
+//#line 143 "gramatica.y"
 {verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
 break;
-case 64:
-//#line 132 "gramatica.y"
+case 63:
+//#line 146 "gramatica.y"
 {ListaTercetos.add_seleccion_final();}
 break;
+case 66:
+//#line 153 "gramatica.y"
+{ListaTercetos.add_seleccion_then();}
+break;
 case 67:
-//#line 139 "gramatica.y"
+//#line 154 "gramatica.y"
 {ListaTercetos.add_seleccion_then();}
 break;
-case 68:
-//#line 140 "gramatica.y"
-{ListaTercetos.add_seleccion_then();}
-break;
-case 71:
-//#line 147 "gramatica.y"
+case 70:
+//#line 161 "gramatica.y"
 {ListaTercetos.add_seleccion_cond();}
 break;
-case 72:
-//#line 150 "gramatica.y"
-{verificarTipos(val_peek(2).sval,val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
+case 71:
+//#line 164 "gramatica.y"
+{verificarTipos(val_peek(2).sval,val_peek(0).sval);
+													ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
-case 79:
-//#line 161 "gramatica.y"
+case 78:
+//#line 176 "gramatica.y"
 {ListaTercetos.addTerceto(new Terceto(val_peek(3).sval,val_peek(1).sval,"-"));}
 break;
-case 80:
-//#line 162 "gramatica.y"
+case 79:
+//#line 177 "gramatica.y"
 {errorEnXY("Falta de parentesis al comienzo de la cadena del out");}
 break;
-case 81:
-//#line 163 "gramatica.y"
+case 80:
+//#line 178 "gramatica.y"
 {errorEnXY("Falta de parentesis al final de la cadena del out");}
 break;
-case 83:
-//#line 167 "gramatica.y"
+case 82:
+//#line 182 "gramatica.y"
 {errorEnXY("Funcion invocada sin discard del retorno");}
 break;
+case 83:
+//#line 185 "gramatica.y"
+{verificarIdIguales(val_peek(6).sval,val_peek(4).sval);
+																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(4).sval+Ambito.getNaming());
+																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(2).sval);}
+break;
 case 84:
-//#line 170 "gramatica.y"
-{verificarIdIguales(val_peek(6).sval,val_peek(4).sval);verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(4).sval+Ambito.getNaming());verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(2).sval);}
+//#line 188 "gramatica.y"
+{verificarIdIguales(val_peek(6).sval,val_peek(4).sval);
+																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(4).sval+Ambito.getNaming());
+																		verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(2).sval);
+																		TablaSimbolos.cambiarNombreKey(val_peek(10).sval);
+																		setearUso(val_peek(10).sval+Ambito.getNaming(),"Etiqueta");}
 break;
 case 85:
-//#line 171 "gramatica.y"
-{verificarIdIguales(val_peek(6).sval,val_peek(4).sval);verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(4).sval+Ambito.getNaming());verificarTipos(val_peek(6).sval+Ambito.getNaming(),val_peek(2).sval);TablaSimbolos.cambiarNombreKey(val_peek(10).sval, val_peek(10).sval+Ambito.getNaming());setearUso(val_peek(10).sval+Ambito.getNaming(),"Etiqueta");}
+//#line 195 "gramatica.y"
+{val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
+									verificarEntero(val_peek(2).sval);
+									verificarTipos(val_peek(2).sval,val_peek(0).sval);
+									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));
+									id_for_act.push(val_peek(2).sval);}
 break;
 case 86:
-//#line 174 "gramatica.y"
-{verificarEntero(val_peek(2).sval+Ambito.getNaming());verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));id_for_act.push(val_peek(2).sval);}
+//#line 202 "gramatica.y"
+{val_peek(2).sval=val_peek(2).sval+Ambito.getNaming();
+									verificarTipos(val_peek(2).sval,val_peek(0).sval);
+									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));
+									ListaTercetos.add_seleccion_cond();}
 break;
 case 87:
-//#line 177 "gramatica.y"
-{verificarTipos(val_peek(2).sval+Ambito.getNaming(),val_peek(0).sval);ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));ListaTercetos.add_seleccion_cond();}
+//#line 208 "gramatica.y"
+{yyval.sval=val_peek(0).sval;
+						ListaTercetos.add_for_act(id_for_act.pop(),val_peek(1).sval,val_peek(0).sval);}
 break;
 case 88:
-//#line 180 "gramatica.y"
-{yyval.sval=val_peek(0).sval;ListaTercetos.add_for_act(id_for_act.pop(),val_peek(1).sval,val_peek(0).sval);}
-break;
-case 89:
-//#line 181 "gramatica.y"
+//#line 210 "gramatica.y"
 {errorEnXY("Falta +/- para actualizar for");}
 break;
+case 89:
+//#line 213 "gramatica.y"
+{ListaTercetos.add_for_cpo();}
+break;
 case 90:
-//#line 184 "gramatica.y"
+//#line 214 "gramatica.y"
 {ListaTercetos.add_for_cpo();}
 break;
-case 91:
-//#line 185 "gramatica.y"
-{ListaTercetos.add_for_cpo();}
-break;
-//#line 998 "Parser.java"
+//#line 1015 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

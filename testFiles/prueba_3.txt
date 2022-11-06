@@ -6,7 +6,7 @@ programa
     ui8 x, a;
     z =: 3.;
     v =: 3.;
-
+	
     ui8 i;
     for (i =: 0; i<10; +1 ){
         a =: a*2;

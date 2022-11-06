@@ -1,4 +1,4 @@
-package Compilador;
+package GeneracionTercetos;
 
 public class Terceto {
     String parg,sarg,targ;

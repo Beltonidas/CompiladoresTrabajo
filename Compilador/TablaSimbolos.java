@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import GeneracionTercetos.Ambito;
+
 
 
 public class TablaSimbolos {
@@ -36,7 +38,9 @@ public class TablaSimbolos {
 	}
 	
 	public static int addSimbolo(TokenLexema tok) {
-	    //System.out.println(tok.toString());
+	    //int linea = AnalizadorLexico.getLinea();
+	    //int caracter = AnalizadorLexico.getCaracter();
+	    //System.out.println(linea+"|"+caracter+"|"+tok.toString());
 		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
 		    //System.out.println("Token Previo Palabra Reservada");
 		    tok.setId(palabrasReservadas.get(tok.getLexema().toString()));
@@ -63,17 +67,17 @@ public class TablaSimbolos {
 		return tabla.containsKey(key);
 	}
 
-	public static void cambiarNombreKey(String vie, String nue){
+	public static String cambiarNombreKey(String vie){
+	    String nue = vie+Ambito.getNaming();
 		if (tabla.containsKey(nue)){
-			AnalizadorLexico.paruser.errorEnXY("Variable/Funcion "+nue+" redeclarada");
-			return;
+			AnalizadorLexico.paruser.errorEnXY("Redeclaracion de: "+vie);
+			return null;
 		}
 		TokenLexema aux = tabla.get(vie);
-		aux.setLexema(nue);
-		tabla.put(nue, tabla.get(vie));
-		tabla.get(nue).setTipo(tabla.get(vie).getTipo());
-		tabla.get(nue).setUso(tabla.get(vie).getUso());
 		tabla.remove(vie);
+		aux.setLexema(nue);
+		tabla.put(nue, aux);
+		return nue;
 	}
 
 	public static void imprimirTabla() {

@@ -18,11 +18,20 @@ public class AnalizadorLexico {
     private static int tokenEntregar = -1;
     public static TokenLexema anteriorToken;
     public static Parser paruser;
+    private static boolean verbose=false;
 	
 	public AnalizadorLexico() {
 	}
 	
 	public static void inic(String ruta) {
+        archivoCodigoFuente = GestorArchivo.readCode(ruta);
+        anteriorToken = AccionSemantica.getNewToken();
+        lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
+        TablaSimbolos.inic();
+    }
+	
+	public static void inic(String ruta,Boolean verb) {
+	    verbose=verb;
 	    archivoCodigoFuente = GestorArchivo.readCode(ruta);
         anteriorToken = AccionSemantica.getNewToken();
         lineaProcesar = archivoCodigoFuente.get(iteradorListaCaracteres);
@@ -41,10 +50,16 @@ public class AnalizadorLexico {
         return iteradorLineaCaracteres+1;
     }
 	
+	public static boolean getVerbose() {
+	    return verbose;
+	}
+	
 	public static void entregarToken(int idToken) {
 	    tokenEntregar=idToken;
 	    anteriorToken=AccionSemantica.getToken();
-	    System.out.println(Parser.ANSI_PURPLE+"Token con: {"+anteriorToken+"}\nDetectado en linea: "+getLinea()+", caracter: "+getCaracter()+".\n"+Parser.ANSI_RESET);
+	    if (verbose) {
+	        System.out.println(Parser.ANSI_PURPLE+"Token con: {"+anteriorToken+"}\nDetectado en linea: "+getLinea()+", caracter: "+getCaracter()+".\n"+Parser.ANSI_RESET);
+	    }
 	}
 	
 	public static void avanzarLectura() {
