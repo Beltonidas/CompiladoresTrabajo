@@ -1,8 +1,9 @@
 %{
 package Compilador;
+import java.util.HashMap;
 import java.util.Vector;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Stack;
 import GeneracionTercetos.*;
 %}
@@ -23,7 +24,7 @@ nombre_programa: id {setearUso($1.sval,"Nombre Programa");Ambito.addAmbito("_");
 		| cadena {errorEnXY("Nombre del programa invalido. Identificador esperado, cadena recibida en cambio");}
 ;
 
-bloque_sentencias: '{' sentencia '}'
+bloque_sentencias: '{' sentencia '}' {Ambito.removeAmbito();}
 		| '{' sentencia {errorEnXY("Esperando final de bloque");}
 		| sentencia '}' {errorEnXY("Esperando comienzo de bloque");}
 
@@ -53,22 +54,38 @@ list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");$1.sval=Ta
 ;
 
 dec_funcion: header_funcion cola_funcion
-		| header_funcion parametro cola_funcion 
-		| header_funcion parametro ',' parametro cola_funcion
+		| header_funcion parametro cola_funcion {llamadasFunciones.get($1.sval).setPar1($2.sval);}
+		| header_funcion parametro ',' parametro cola_funcion {InvocacionFuncion f = llamadasFunciones.get($1.sval);
+																f.setPar1($2.sval);
+																f.setPar2($4.sval);}
 ;
 
 header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 							String aux=TablaSimbolos.cambiarNombreKey($2.sval);
 							Ambito.addAmbito($2.sval);
 							$2.sval=aux;
-							tokens.push(TablaSimbolos.getSimbolo($2.sval));}
+							tokens.push(TablaSimbolos.getSimbolo($2.sval));
+							Terceto terAux = new Terceto("BI","","_");
+							tercetosAux.push(terAux);
+							ListaTercetos.addTerceto(terAux);
+							InvocacionFuncion f = new InvocacionFuncion();
+							f.setTercetoInv("["+ListaTercetos.getIndice()+"]");
+							llamadasFunciones.put($2.sval,f);
+							$$.sval=$2.sval;}
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
 cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
 												tokenAux.setTipo($3.sval);
 												verificarTipos(tokenAux.getLexema().toString(),$5.sval);
-												Ambito.removeAmbito();}
+												Terceto terAux=new Terceto("Stack",$5.sval,"_");
+												ListaTercetos.addTerceto(terAux);
+												Ambito.removeAmbito();
+												terAux=new Terceto("BI","TerRetFuncion:_","_");
+												ListaTercetos.addTerceto(terAux);
+												terAux=tercetosAux.pop();
+												terAux.setSarg("["+ListaTercetos.getIndice()+"]");
+												}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
@@ -88,7 +105,8 @@ cuerpo_fun: sentencia Return '(' expresion ')' ';' {$$.sval=$4.sval;}
 
 //REGLAS PARA LAS SENTENCIAS EJECUTABLES
 ejecutable: inst_ejecutable
-		| defer inst_ejecutable {imprimirMSGEstructura("Defer de instruccion ejecutable");}
+		| defer {ListaTercetos.setDefer(true);} inst_ejecutable {ListaTercetos.setDefer(false);
+																imprimirMSGEstructura("Defer de instruccion ejecutable");}
 ; 
 
 inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
@@ -99,7 +117,7 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 ;
 
 asignacion: id SIMB_ASIGNACION expresion {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
-											$1.sval=$1.sval+Ambito.getNaming();
+											$1.sval=Ambito.getAmbito($1.sval);
 											verificarTipos($1.sval,$3.sval);
 											if (TablaSimbolos.getSimbolo($1.sval).getUso().equals("Nombre de Parametro")){
 												TablaSimbolos.getSimbolo(Ambito.getNombreAmbito()).setEsp(true);
@@ -110,16 +128,20 @@ asignacion: id SIMB_ASIGNACION expresion {comprobarBinding($1.sval,"Variable "+$
 ;
 
 expresion: expresion '+' termino {verificarTipos($1.sval,$3.sval);
+									$$.sval="["+ListaTercetos.getIndice()+"]";
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| expresion '-' termino {verificarTipos($1.sval,$3.sval);
+									$$.sval="["+ListaTercetos.getIndice()+"]";
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| termino
 ;
 
 termino: termino '*' factor {verificarTipos($1.sval,$3.sval);
+							$$.sval="["+ListaTercetos.getIndice()+"]";
 							ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| termino '/' factor {verificarTipos($1.sval,$3.sval);
-								ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+							$$.sval="["+ListaTercetos.getIndice()+"]";
+							ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
 		| factor
 ;
 
@@ -134,20 +156,53 @@ factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 		| retorno_funcion
 ;
 
-retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");}
+retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+								$1.sval=Ambito.getAmbito($1.sval);
+								$$.sval=Ambito.getAmbito($1.sval);
+								Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
+								ListaTercetos.addTerceto(terAux);
+								terAux=new Terceto("=:","TerRetFuncion:_","["+(ListaTercetos.getIndice()+2)+"]");
+								ListaTercetos.addTerceto(terAux);
+								terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
+								ListaTercetos.addTerceto(terAux);
+								terAux=new Terceto("Pop",$1.sval,"_");
+								ListaTercetos.addTerceto(terAux);
+								terAux=new Terceto("Pop","TerRetFuncion:_","_");
+								ListaTercetos.addTerceto(terAux);}
 		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
 									$1.sval=Ambito.getAmbito($1.sval);
-									System.out.println($1.sval);
 									if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
 										errorEnXY("El parametro "+$3.sval+", no puede ser constante debido a que hay asignaciones en la funcion "+$1.sval);
 										parametroConstante=false;
-									}}
+									}
+									Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("=:","TerRetFuncion:_","["+(ListaTercetos.getIndice()+2)+"]");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("Pop",$1.sval,"_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("Pop","TerRetFuncion:_","_");
+									ListaTercetos.addTerceto(terAux);
+									$$.sval=$1.sval;}
 		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
-														System.out.println($1.sval);
+														$1.sval=Ambito.getAmbito($1.sval);
 														if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
 															errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+$1.sval);
 															parametroConstante=false;
-														}}
+														}
+														Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
+														ListaTercetos.addTerceto(terAux);
+														terAux=new Terceto("=:","TerRetFuncion:_","["+(ListaTercetos.getIndice()+2)+"]");
+														ListaTercetos.addTerceto(terAux);
+														terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
+														ListaTercetos.addTerceto(terAux);
+														terAux=new Terceto("Pop",$1.sval,"_");
+														ListaTercetos.addTerceto(terAux);
+														terAux=new Terceto("Pop","TerRetFuncion:_","_");
+														ListaTercetos.addTerceto(terAux);
+														$$.sval=Ambito.getAmbito($1.sval);}
 ;
 
 parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro "+$1.sval);}
@@ -185,47 +240,87 @@ comparador: SIMB_DISTINTO
 		| '>'
 ;
 
-impresion: out '(' cadena ')' {ListaTercetos.addTerceto(new Terceto($1.sval,$3.sval,"-"));}
+impresion: out '(' cadena ')' {ListaTercetos.addTerceto(new Terceto($1.sval,$3.sval,"_"));}
 		| out cadena ')' {errorEnXY("Falta de parentesis al comienzo de la cadena del out");}
 		| out '(' cadena {errorEnXY("Falta de parentesis al final de la cadena del out");}
 ;
 
-invocar_fun: discard retorno_funcion
+invocar_fun: discard retorno_funcion {ListaTercetos.removeTerceto(ListaTercetos.getIndice()-2);}
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 
-for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($3.sval,$5.sval);
-																		verificarTipos($3.sval+Ambito.getNaming(),$5.sval+Ambito.getNaming());
-																		verificarTipos($3.sval+Ambito.getNaming(),$7.sval);}
-		| id ':' For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {verificarIdIguales($5.sval,$7.sval);
-																		verificarTipos($5.sval+Ambito.getNaming(),$7.sval+Ambito.getNaming());
-																		verificarTipos($5.sval+Ambito.getNaming(),$9.sval);
-																		TablaSimbolos.cambiarNombreKey($1.sval);
-																		setearUso($1.sval+Ambito.getNaming(),"Etiqueta");}
+for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {Ambito.removeAmbito();
+																		verificarIdIguales($3.sval,$5.sval);
+																		verificarTipos($3.sval,$5.sval);
+																		verificarTipos($3.sval,$7.sval);}
+		| etiqueta For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {Ambito.removeAmbito();
+																			verificarIdIguales($4.sval,$6.sval);
+																			verificarTipos($4.sval,$6.sval);
+																			verificarTipos($4.sval,$8.sval);
+																			if (tercetosBreakET.containsKey($1.sval)){
+																				List<Terceto> aux = tercetosBreakET.get($1.sval);
+																				tercetosBreakET.remove($1.sval);
+																				for (int i = 0; i<aux.size();i++){
+																					aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+																				}
+																			}}
 ;
 
-for_inic: id SIMB_ASIGNACION cte {TablaSimbolos.removeSimbolo($1.sval);
-									$1.sval=$1.sval+Ambito.getNaming();
+etiqueta: id ':' {setearUso($1.sval,"Etiqueta");
+					$$.sval=TablaSimbolos.cambiarNombreKey($1.sval);}
+;
+
+for_inic: id SIMB_ASIGNACION cte {$1.sval=Ambito.getAmbito($1.sval);
 									verificarEntero($1.sval);
 									verificarTipos($1.sval,$3.sval);
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
-									id_for_act.push($1.sval);}
+									id_for_act.push($1.sval);
+									$$.sval=$1.sval;}
 ;
 
-for_cond: id comparador expresion {TablaSimbolos.removeSimbolo($1.sval);
-									$1.sval=$1.sval+Ambito.getNaming();
+for_cond: id comparador expresion {$1.sval=Ambito.getAmbito($1.sval);
 									verificarTipos($1.sval,$3.sval);
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
-									ListaTercetos.add_seleccion_cond();}
+									ListaTercetos.add_seleccion_cond();
+									$$.sval=$1.sval;}
 ;
 
-for_act: mas_o_menos cte {$$.sval=$2.sval;
-						ListaTercetos.add_for_act(id_for_act.pop(),$1.sval,$2.sval);}
+for_act: mas_o_menos cte {$$.sval= $2.sval;
+						ListaTercetos.add_for_act(id_for_act.pop(),$1.sval,$2.sval);
+						Ambito.addAmbito("for");}
 		| cte {errorEnXY("Falta +/- para actualizar for");}
 ;
 
-for_cuerpo: '{' ejecutable_for '}' ';' {ListaTercetos.add_for_cpo();}
-		| inst_ejecutable_for {ListaTercetos.add_for_cpo();}
+for_cuerpo: '{' ejecutable_for '}' ';' {ListaTercetos.add_for_cpo();
+										if (tercetosContinue.containsKey(Ambito.getNaming())){
+											List<Terceto> aux = tercetosContinue.get(Ambito.getNaming());
+											tercetosContinue.remove(Ambito.getNaming());
+											for (int i = 0; i<aux.size();i++){
+												aux.get(i).setSarg("["+(ListaTercetos.getIndice()-3)+"]");
+											}
+										}
+										if (tercetosBreak.containsKey(Ambito.getNaming())){
+											List<Terceto> aux = tercetosBreak.get(Ambito.getNaming());
+											tercetosBreak.remove(Ambito.getNaming());
+											for (int i = 0; i<aux.size();i++){
+												aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+											}
+										}}
+		| inst_ejecutable_for {ListaTercetos.add_for_cpo();
+								if (tercetosContinue.containsKey(Ambito.getNaming())){
+									List<Terceto> aux = tercetosContinue.get(Ambito.getNaming());
+									tercetosContinue.remove(Ambito.getNaming());
+									for (int i = 0; i<aux.size();i++){
+										aux.get(i).setSarg("["+(ListaTercetos.getIndice()-3)+"]");
+									}
+								}
+								if (tercetosBreak.containsKey(Ambito.getNaming())){
+									List<Terceto> aux = tercetosBreak.get(Ambito.getNaming());
+									tercetosBreak.remove(Ambito.getNaming());
+									for (int i = 0; i<aux.size();i++){
+										aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+									}
+								}}
 ;
 
 mas_o_menos: '+'
@@ -237,9 +332,37 @@ ejecutable_for: ejecutable_for inst_ejecutable_for
 ;
 
 inst_ejecutable_for: inst_ejecutable
-		| Break ';'
-		| Break ':' id ';'
-		| Continue ';'
+		| Break ';' {Terceto brk=new Terceto("BI","_","_");
+					if (tercetosBreak.containsKey(Ambito.getNaming())){
+						tercetosBreak.get(Ambito.getNaming()).add(brk);
+						ListaTercetos.addTerceto(brk);
+					}else{
+						List<Terceto> aux = new ArrayList<Terceto>();
+						aux.add(brk);
+						tercetosBreak.put(Ambito.getNaming(),aux);
+						ListaTercetos.addTerceto(brk);
+					}}
+		| Break ':' id ';' {String amb = Ambito.getAmbito($3.sval);
+							Terceto brk=new Terceto("BI","_","_");
+							if (tercetosBreakET.containsKey(amb)){
+								tercetosBreakET.get(amb).add(brk);
+								ListaTercetos.addTerceto(brk);
+							}else{
+								List<Terceto> aux = new ArrayList<Terceto>();
+								aux.add(brk);
+								tercetosBreakET.put(amb,aux);
+								ListaTercetos.addTerceto(brk);
+							}}
+		| Continue ';' {Terceto cont=new Terceto("BI","_","_");
+						if (tercetosContinue.containsKey(Ambito.getNaming())){
+							tercetosContinue.get(Ambito.getNaming()).add(cont);
+							ListaTercetos.addTerceto(cont);
+						}else{
+							List<Terceto> aux =new ArrayList<Terceto>();
+							aux.add(cont);
+							tercetosContinue.put(Ambito.getNaming(),aux);
+							ListaTercetos.addTerceto(cont);
+						}}
 ;
 
 %%
@@ -253,14 +376,18 @@ public static final String ANSI_PURPLE ="\u001B[35m";
 public static final String ANSI_CYAN = "\u001B[36m";
 
 public Vector<String> for_ids = new Vector<String>();
-public List<Terceto> tercetos = new ArrayList<Terceto>();
 public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
 public TokenLexema tokenAux;
+public Stack<Terceto> tercetosAux = new Stack<Terceto>();
 public Boolean verb=AnalizadorLexico.getVerbose();
 public Stack<String> id_for_act = new Stack<String>();
 public Boolean parametroConstante = false;
-
+public HashMap<String, InvocacionFuncion> llamadasFunciones = new HashMap<String,InvocacionFuncion>();
+public Stack<String> etiquetas = new Stack<String>();
+public HashMap<String,List<Terceto>> tercetosContinue = new HashMap<String,List<Terceto>>();
+public HashMap<String,List<Terceto>> tercetosBreak = new HashMap<String,List<Terceto>>();
+public HashMap<String,List<Terceto>> tercetosBreakET = new HashMap<String,List<Terceto>>();
 
 public void comprobarBinding(String arg, String text){
 	String aux = Ambito.getAmbito(arg);
@@ -296,8 +423,18 @@ public void setearUso(String arg, String arg2){
 }
 
 public void verificarTipos(String arg1,String arg2){
+	
 	//System.out.println("Verificando tipos "+arg1+";"+arg2);
-	if (TablaSimbolos.getSimbolo(arg1).getTipo().equals(TablaSimbolos.getSimbolo(arg2).getTipo()))
+	String aux1 = arg1;
+	while (aux1.startsWith("[")){
+		aux1=ListaTercetos.getTerceto(aux1).getSarg();
+	}
+	String aux2=arg2;
+	while (aux2.startsWith("[")){
+		aux2=ListaTercetos.getTerceto(aux2).getSarg();
+	}
+	//System.out.println("Verificando tipos "+aux1+";"+aux2);
+	if (TablaSimbolos.getSimbolo(aux1).getTipo().equals(TablaSimbolos.getSimbolo(aux2).getTipo()))
 		return;
 	errorEnXY("No se puede realizar una operacion entre "+arg1+" y "+arg2);
 }
@@ -347,10 +484,12 @@ private void yyerror(String msg){
 }
 
 public void warningEnXY(String msg){
-	int linea,caracter=0;
-	linea = AnalizadorLexico.getLinea();
-	caracter = AnalizadorLexico.getCaracter();
-	System.out.println(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+"\n"+ANSI_RESET);
+	if (verb){
+		int linea,caracter=0;
+		linea = AnalizadorLexico.getLinea();
+		caracter = AnalizadorLexico.getCaracter();
+		System.out.println(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+"\n"+ANSI_RESET);
+	}
 }
 
 private void imprimirMSGEstructura(String msg){

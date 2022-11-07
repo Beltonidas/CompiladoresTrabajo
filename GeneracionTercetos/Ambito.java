@@ -4,16 +4,32 @@ import Compilador.TablaSimbolos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Ambito {
     private static List<String> ambitos = new ArrayList<String>();
-
+    private static Stack<List<Terceto>> tercetosDiferidos = new Stack<List<Terceto>>();
+    
+    
     public static void addAmbito(String amb){
         ambitos.add(amb);
+        tercetosDiferidos.push(new ArrayList<Terceto>());
     }
 
     public static String removeAmbito(){
+        List<Terceto> aux=tercetosDiferidos.pop();
+        while (!aux.isEmpty()) {
+            Terceto x = aux.remove(0);
+            if (x.parg.equals("=:")&&x.sarg.equals("TerRetFuncion:_")) {
+                x.targ="["+(ListaTercetos.getIndice()+2)+"]";
+            }
+            ListaTercetos.addTerceto(x);
+        }
         return ambitos.remove(ambitos.size()-1);
+    }
+    
+    public static void addTercetoDiferido(Terceto t) {
+        tercetosDiferidos.peek().add(t);
     }
 
     public static String ultimo(){

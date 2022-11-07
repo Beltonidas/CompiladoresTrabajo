@@ -7,11 +7,27 @@ import java.util.Vector;
 public class ListaTercetos {
     private static List<Terceto> tercetos = new Vector<Terceto>();
     private static Stack<Integer> pila_indices = new Stack<Integer>();
-
     private static Stack<Terceto> pila_tercetos_for = new Stack<Terceto>();
+    private static Boolean defer=false;
 
+    public static void setDefer(Boolean b) {
+        defer=b;
+    }
+    
     public static void addTerceto(Terceto t){
-        tercetos.add(t);
+        if (defer) {
+            Ambito.addTercetoDiferido(t);
+        }else {
+            tercetos.add(t);
+        }
+    }
+    
+    public static void removeTerceto(int indice) {
+        tercetos.remove(indice);
+    }
+    
+    public static int getIndice() {
+        return tercetos.size();
     }
 
     public void addIndice(int indice){
@@ -21,26 +37,33 @@ public class ListaTercetos {
     public static Terceto getTerceto(int indice){
         return tercetos.get(indice);
     }
+    
+    public static Terceto getTerceto(String indice){
+        StringBuilder aux = new StringBuilder(indice);
+        aux.deleteCharAt(0);
+        aux.deleteCharAt(aux.length()-1);
+        return tercetos.get(Integer.parseInt(aux.toString()));
+    }
 
     public static void add_seleccion_cond(){
         pila_indices.push(tercetos.size()); //agregamos el indice del terceto incompleto que mas adelante se completara.
         int indice_terceto_ant = tercetos.size()-1;
-        Terceto terceto_bifurcacion_falso = new Terceto("BF", "["+indice_terceto_ant+"]", "-");
+        Terceto terceto_bifurcacion_falso = new Terceto("BF", "["+indice_terceto_ant+"]", "_");
         addTerceto(terceto_bifurcacion_falso);
     }
 
     public static void add_seleccion_then(){
         int indice_cond = pila_indices.pop(); //obtengo el indice del terceto incompleto de la condicion
-        getTerceto(indice_cond).setTarg(Integer.toString(tercetos.size()+1)); //completamos el terceto incompleto que se agrego por el void de arriba
+        getTerceto(indice_cond).setTarg('['+Integer.toString(tercetos.size()+1)+']'); //completamos el terceto incompleto que se agrego por el void de arriba
     
         pila_indices.push(tercetos.size()); // apilamos terceto para BI incompleto
-        Terceto bifurcacion_incondicional = new Terceto("BI","-","-"); //generamos el terceto para la BI incompleto
+        Terceto bifurcacion_incondicional = new Terceto("BI","_","_"); //generamos el terceto para la BI incompleto
         addTerceto(bifurcacion_incondicional);  //y lo agregamos
     }
 
     public static void add_seleccion_final(){
         int indice_then = pila_indices.pop(); // obtengo el indice del terceto BI
-        getTerceto(indice_then).setSarg(Integer.toString(tercetos.size())); // le seteamos al terceto de la BI, el terceto siguiente el cual es al que tiene que saltar una vez ejecutada la rama del then
+        getTerceto(indice_then).setSarg('['+Integer.toString(tercetos.size())+']'); // le seteamos al terceto de la BI, el terceto siguiente el cual es al que tiene que saltar una vez ejecutada la rama del then
     }
 
 
@@ -55,11 +78,11 @@ public class ListaTercetos {
         addTerceto(op);
 
         int indice_for_cond = pila_indices.pop();
-        Terceto t_asig = new Terceto("=:",op.getSarg(),"["+(tercetos.size()-1)+"]");
+        Terceto t_asig = new Terceto("=:",op.getSarg(),"["+(tercetos.size()-1)+']');
 
         addTerceto(t_asig);
-        addTerceto(new Terceto("BI", '['+Integer.toString(indice_for_cond-1)+']', "-"));
-        getTerceto(indice_for_cond).setTarg(Integer.toString(tercetos.size()));
+        addTerceto(new Terceto("BI", '['+Integer.toString(indice_for_cond-1)+']', "_"));
+        getTerceto(indice_for_cond).setTarg('['+Integer.toString(tercetos.size())+']');
     }
 
 

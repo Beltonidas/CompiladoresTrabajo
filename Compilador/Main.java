@@ -13,7 +13,7 @@ public class Main {
 	    //String ruta = consola.nextLine();
         //consola.close();
         //AnalizadorLexico.inic(ruta);
-	    AnalizadorLexico.inic("./testFiles/prueba_3.txt");
+	    AnalizadorLexico.inic("./testFiles/prueba_3.txt",true);
 		Parser paruser = new Parser();
 		AnalizadorLexico.paruser=paruser;
 		paruser.run();

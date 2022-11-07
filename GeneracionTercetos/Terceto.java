@@ -45,4 +45,9 @@ public class Terceto {
         return ("( "+parg+" , "+sarg+" , "+targ+" )");
     }
     
+    @Override
+    public String toString() {
+        return ("( "+parg+" , "+sarg+" , "+targ+" )");
+    }
+    
 }

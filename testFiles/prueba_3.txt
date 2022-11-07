@@ -1,16 +1,33 @@
 programa
 {
+	defer out('askjhdjla');
     f64 z, v;
-    
+    ui8 x, a,b,i;
+    if (30 < 20) then{
+        i =: 49;
+    }else{
 
-    ui8 x, a;
-    z =: 3.;
-    v =: 3.;
-	
-    ui8 i;
-    for (i =: 0; i<10; +1 ){
+        i =: 50+100;
+    }end_if;
+    fun fi (ui8 x):ui8{
+        f64 z;
+        a=:a*2;
+        return (x);
+    }
+    discard fi(a);
+    defer x=:fi(a);
+    ui8 j;
+     outer:for (i =: 0; i<10; +1 ){
+    	continue;
+    	for (j =: 0; j<10; +1 ){
+    		continue;
+    		break : outer;
+    	};
         a =: a*2;
+        break;
+        b =: x;
         x =: a;
+        
     };
 
     z =: 3.;
