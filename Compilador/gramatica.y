@@ -19,7 +19,11 @@ import GeneracionTercetos.*;
 programa: nombre_programa bloque_sentencias {programaListo();}
 ;
 
-nombre_programa: id {setearUso($1.sval,"Nombre Programa");Ambito.addAmbito("_");TablaSimbolos.cambiarNombreKey($1.sval);Ambito.removeAmbito();Ambito.addAmbito("Main");}
+nombre_programa: id {setearUso($1.sval,"Nombre Programa");
+					Ambito.addAmbito("_");
+					TablaSimbolos.cambiarNombreKey($1.sval);
+					Ambito.removeAmbito();
+					Ambito.addAmbito("Main");}
 		| cte {errorEnXY("Nombre del programa invalido. Identificador esperado, constante recibida en cambio");}
 		| cadena {errorEnXY("Nombre del programa invalido. Identificador esperado, cadena recibida en cambio");}
 ;
@@ -506,6 +510,8 @@ private void programaListo(){
 		return;
 	}
 	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
+	TablaSimbolos.imprimirTabla();
+	ListaTercetos.imprimir();
 }
 
 private int yylex(){

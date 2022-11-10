@@ -1,5 +1,6 @@
 package GeneracionTercetos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -9,7 +10,7 @@ public class ListaTercetos {
     private static Stack<Integer> pila_indices = new Stack<Integer>();
     private static Stack<Terceto> pila_tercetos_for = new Stack<Terceto>();
     private static Boolean defer=false;
-
+    
     public static void setDefer(Boolean b) {
         defer=b;
     }
@@ -85,11 +86,48 @@ public class ListaTercetos {
         getTerceto(indice_for_cond).setTarg('['+Integer.toString(tercetos.size())+']');
     }
 
-
     public static void imprimir(){
+        considerarEtiquetas();
         System.out.println("Tercetos:");
+        int x=0;
+        System.out.println("start:");
         for (int i=0; i<tercetos.size(); i++){
-            System.out.println(i+". "+tercetos.get(i).imprimir());
+            Terceto aux = tercetos.get(i);
+            if (aux.getParg().startsWith("Label_")) {
+                System.out.println(aux.getParg()+":");
+            }else {
+                System.out.println(x+". "+tercetos.get(i).toString());
+                x++;
+            }
+        }
+        System.out.println("end start");
+    }
+    
+    
+    public static void considerarEtiquetas() {
+        List<Integer> labels = new ArrayList<Integer>();
+        for (int i=0;i<tercetos.size();i++) {
+            Terceto x = tercetos.get(i);
+            
+            
+            if (x.getParg().equals("BI")) {
+                String aux=x.getSarg().substring(1,x.getSarg().length()-1);
+                if (aux.equals("erRetFuncion:")) continue;
+                if (labels.contains(aux)) { 
+                    continue;
+                }
+                labels.add(Integer.parseInt(aux));
+            }
+            if (x.getParg().equals("BF")) {
+                String aux=x.getTarg().substring(1,x.getTarg().length()-1);
+                if (labels.contains(aux)) { 
+                    continue;
+                }
+                labels.add(Integer.parseInt(aux));
+            }
+        }
+        for (int i=0;i<labels.size();i++) {
+            tercetos.get(labels.get(i)).setCarg(true);
         }
     }
 }

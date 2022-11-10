@@ -647,6 +647,8 @@ private void programaListo(){
 		return;
 	}
 	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
+	TablaSimbolos.imprimirTabla();
+	ListaTercetos.imprimir();
 }
 
 private int yylex(){
@@ -663,7 +665,7 @@ private int yylex(){
     }
     return 0;
 }
-//#line 595 "Parser.java"
+//#line 597 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1284,7 +1286,7 @@ case 100:
 							ListaTercetos.addTerceto(cont);
 						}}
 break;
-//#line 1211 "Parser.java"
+//#line 1213 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
