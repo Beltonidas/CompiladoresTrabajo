@@ -512,6 +512,8 @@ private void programaListo(){
 	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
 	TablaSimbolos.imprimirTabla();
 	ListaTercetos.imprimir();
+	GestorAssembler.procesarArchivo();
+	GestorAssembler.imprimir();
 }
 
 private int yylex(){

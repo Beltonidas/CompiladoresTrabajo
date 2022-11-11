@@ -104,6 +104,7 @@ public class ListaTercetos {
     }
     
     
+    @SuppressWarnings("unlikely-arg-type")
     public static void considerarEtiquetas() {
         List<Integer> labels = new ArrayList<Integer>();
         for (int i=0;i<tercetos.size();i++) {
