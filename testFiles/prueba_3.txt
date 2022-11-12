@@ -11,10 +11,13 @@ programa
     }end_if;
     fun fi (ui8 x):ui8{
         f64 z;
-        a=:a*2;
+        z=:10.;
+        a=:a*b;
         return (x);
     }
+    a=:10;
     discard fi(a);
+    x=:10;
     defer x=:fi(a);
     ui8 j;
      outer:for (i =: 0; i<10; +1 ){

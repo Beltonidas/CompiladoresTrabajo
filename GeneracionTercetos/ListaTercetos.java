@@ -28,6 +28,9 @@ public class ListaTercetos {
     }
     
     public static int getIndice() {
+        if (defer) {
+            return tercetos.size()+Ambito.getIndiceDiferido();
+        }
         return tercetos.size();
     }
 

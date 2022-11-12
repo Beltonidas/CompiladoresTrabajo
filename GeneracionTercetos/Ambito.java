@@ -10,6 +10,9 @@ public class Ambito {
     private static List<String> ambitos = new ArrayList<String>();
     private static Stack<List<Terceto>> tercetosDiferidos = new Stack<List<Terceto>>();
     
+    public static int getIndiceDiferido() {
+        return tercetosDiferidos.get(tercetosDiferidos.size()-1).size();
+    }
     
     public static void addAmbito(String amb){
         ambitos.add(amb);
@@ -74,8 +77,14 @@ public class Ambito {
         return naming.toString();
     }
     
+    public static String getAmbitoDeVariable(String lexema) {
+        StringBuilder aux=new StringBuilder(lexema);
+        aux.delete(0, aux.indexOf(":"));
+        return aux.toString();
+    }
+    
     public static String getNombreAmbito(){
-        StringBuilder aux = new StringBuilder(getNaming());
+        StringBuilder aux = new StringBuilder(getNaming().replace(":for", ""));
         StringBuilder aux2 = new StringBuilder();
         for (int i = aux.lastIndexOf(":")+1; i < aux.length(); i++) {
             aux2.append(aux.charAt(i));
@@ -85,4 +94,6 @@ public class Ambito {
         }
         return aux2.toString();
     }
+    
+    
 }

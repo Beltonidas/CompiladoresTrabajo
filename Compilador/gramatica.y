@@ -57,9 +57,14 @@ list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");$1.sval=Ta
 		| error {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 ;
 
+//SABEMOS QUE QUEDA FEO PERO ES PARA NO TENER QUE COMPLICARNOS CON EL CODIGO
 dec_funcion: header_funcion cola_funcion
-		| header_funcion parametro cola_funcion {llamadasFunciones.get($1.sval).setPar1($2.sval);}
-		| header_funcion parametro ',' parametro cola_funcion {InvocacionFuncion f = llamadasFunciones.get($1.sval);
+		| header_funcion parametro {ListaTercetos.addTerceto(new Terceto("Pop",$2.sval,"_"));} cola_funcion {llamadasFunciones.get($1.sval).setPar1($2.sval);}
+		| header_funcion parametro ',' parametro {
+												ListaTercetos.addTerceto(new Terceto("Pop",$2.sval,"_"));
+												ListaTercetos.addTerceto(new Terceto("Pop",$4.sval,"_"));
+												} 
+												cola_funcion {InvocacionFuncion f = llamadasFunciones.get($1.sval);
 																f.setPar1($2.sval);
 																f.setPar2($4.sval);}
 ;
@@ -88,14 +93,14 @@ cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
 												terAux=new Terceto("BI","TerRetFuncion:_","_");
 												ListaTercetos.addTerceto(terAux);
 												terAux=tercetosAux.pop();
-												terAux.setSarg("["+ListaTercetos.getIndice()+"]");
-												}
+												terAux.setSarg("["+ListaTercetos.getIndice()+"]");}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
 parametro: tipo id {setearTipo($2.sval,$1.sval);
 					setearUso($2.sval,"Nombre de Parametro");
-					$2.sval=TablaSimbolos.cambiarNombreKey($2.sval);}
+					$$.sval=TablaSimbolos.cambiarNombreKey($2.sval);
+					variablesInicializadas.add($$.sval);}
 		| tipo {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 ;
 
@@ -109,7 +114,8 @@ cuerpo_fun: sentencia Return '(' expresion ')' ';' {$$.sval=$4.sval;}
 
 //REGLAS PARA LAS SENTENCIAS EJECUTABLES
 ejecutable: inst_ejecutable
-		| defer {ListaTercetos.setDefer(true);} inst_ejecutable {ListaTercetos.setDefer(false);
+		| defer {ListaTercetos.setDefer(true);diferido=true;} inst_ejecutable {ListaTercetos.setDefer(false);
+																diferido=false;
 																imprimirMSGEstructura("Defer de instruccion ejecutable");}
 ; 
 
@@ -122,6 +128,15 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 
 asignacion: id SIMB_ASIGNACION expresion {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 											$1.sval=Ambito.getAmbito($1.sval);
+											if (!diferido){
+												if (Ambito.getNaming().equals(Ambito.getAmbitoDeVariable($1.sval))){
+													variablesInicializadas.add($1.sval);
+												}
+											}else{
+												if (!variablesInicializadas.contains($1.sval)){
+													errorEnXY("Para asignar a una variable en una instruccion diferida primero inicialicela");
+												}
+											}
 											verificarTipos($1.sval,$3.sval);
 											if (TablaSimbolos.getSimbolo($1.sval).getUso().equals("Nombre de Parametro")){
 												TablaSimbolos.getSimbolo(Ambito.getNombreAmbito()).setEsp(true);
@@ -151,6 +166,7 @@ termino: termino '*' factor {verificarTipos($1.sval,$3.sval);
 
 factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 			$1.sval=Ambito.getAmbito($1.sval);
+			comprobarInicializada($1.sval,Ambito.getNaming());
 			$$.sval=$1.sval;}
 		| cte
 		| '-' cte {verificarRangoDoubleNegativo();
@@ -161,11 +177,12 @@ factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 ;
 
 retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+								comprobarParametrosFuncion($1.sval,0);
 								$1.sval=Ambito.getAmbito($1.sval);
 								$$.sval=Ambito.getAmbito($1.sval);
-								Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
+								Terceto terAux=new Terceto("Push","TerRetFuncion:_","_");
 								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("=:","TerRetFuncion:_","["+(ListaTercetos.getIndice()+2)+"]");
+								terAux=new Terceto("Stack","TerRetFuncion:_","_");
 								ListaTercetos.addTerceto(terAux);
 								terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
 								ListaTercetos.addTerceto(terAux);
@@ -174,6 +191,7 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 								terAux=new Terceto("Pop","TerRetFuncion:_","_");
 								ListaTercetos.addTerceto(terAux);}
 		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+									comprobarParametrosFuncion($1.sval,1);
 									$1.sval=Ambito.getAmbito($1.sval);
 									if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
 										errorEnXY("El parametro "+$3.sval+", no puede ser constante debido a que hay asignaciones en la funcion "+$1.sval);
@@ -181,7 +199,11 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 									}
 									Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
 									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("=:","TerRetFuncion:_","["+(ListaTercetos.getIndice()+2)+"]");
+									terAux=new Terceto("Push",Ambito.getAmbito($3.sval),"_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("Stack","TerRetFuncion:_","_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
 									ListaTercetos.addTerceto(terAux);
 									terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
 									ListaTercetos.addTerceto(terAux);
@@ -191,6 +213,7 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 									ListaTercetos.addTerceto(terAux);
 									$$.sval=$1.sval;}
 		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+														comprobarParametrosFuncion($1.sval,2);
 														$1.sval=Ambito.getAmbito($1.sval);
 														if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
 															errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+$1.sval);
@@ -198,7 +221,11 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 														}
 														Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
 														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("=:","TerRetFuncion:_","["+(ListaTercetos.getIndice()+2)+"]");
+														terAux=new Terceto("Push",Ambito.getAmbito($3.sval),"_");
+														ListaTercetos.addTerceto(terAux);
+														terAux=new Terceto("Push",Ambito.getAmbito($5.sval),"_");
+														ListaTercetos.addTerceto(terAux);
+														terAux=new Terceto("Stack","TerRetFuncion:_","_");
 														ListaTercetos.addTerceto(terAux);
 														terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
 														ListaTercetos.addTerceto(terAux);
@@ -209,7 +236,8 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 														$$.sval=Ambito.getAmbito($1.sval);}
 ;
 
-parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro "+$1.sval);}
+parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro "+$1.sval);
+					comprobarInicializada(Ambito.getAmbito($1.sval),Ambito.getNaming());}
 		| cte {parametroConstante=true;}
 		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
 ;
@@ -275,6 +303,8 @@ etiqueta: id ':' {setearUso($1.sval,"Etiqueta");
 ;
 
 for_inic: id SIMB_ASIGNACION cte {$1.sval=Ambito.getAmbito($1.sval);
+									if (!variablesInicializadas.contains($1.sval))
+										variablesInicializadas.add($1.sval);
 									verificarEntero($1.sval);
 									verificarTipos($1.sval,$3.sval);
 									ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
@@ -392,6 +422,28 @@ public Stack<String> etiquetas = new Stack<String>();
 public HashMap<String,List<Terceto>> tercetosContinue = new HashMap<String,List<Terceto>>();
 public HashMap<String,List<Terceto>> tercetosBreak = new HashMap<String,List<Terceto>>();
 public HashMap<String,List<Terceto>> tercetosBreakET = new HashMap<String,List<Terceto>>();
+public List<String> erroresDump=new ArrayList<String>();
+public List<String> warningsDump=new ArrayList<String>();
+public List<String> variablesInicializadas=new ArrayList<String>();
+public Boolean diferido=false;
+
+public void comprobarInicializada(String arg,String ambito){
+    ambito=ambito.replace("for:", "");
+    String aux = Ambito.getAmbitoDeVariable(arg).substring(1);
+	if (aux.equals(ambito) && !variablesInicializadas.contains(arg))
+		errorEnXY("La variable "+arg+" falta ser inicializada");
+}
+
+public void comprobarParametrosFuncion(String nomFuncionInvocada,Integer x){
+    InvocacionFuncion aux = llamadasFunciones.get(Ambito.getAmbito(nomFuncionInvocada));
+    if (aux.getPar1().equals("") && x==0)
+        return;
+    else if (!aux.getPar1().equals("") && aux.getPar2().equals("") && x==1)
+        return;
+    else if (!aux.getPar1().equals("") && !aux.getPar2().equals("") && x==2)
+        return;
+    errorEnXY("La funcion "+nomFuncionInvocada+" fue invocada con un numero de parametros incorrecto");
+}
 
 public void comprobarBinding(String arg, String text){
 	String aux = Ambito.getAmbito(arg);
@@ -411,7 +463,6 @@ public void setearTipo(String arg1, String arg2){
 
 public void verificarEntero(String arg){
 	if (TablaSimbolos.getSimbolo(arg) == null){
-		//System.out.println("Verificando entero");
 		errorEnXY("Variable "+arg+" no declarada.");
 		return;
 	}
@@ -427,8 +478,6 @@ public void setearUso(String arg, String arg2){
 }
 
 public void verificarTipos(String arg1,String arg2){
-	
-	//System.out.println("Verificando tipos "+arg1+";"+arg2);
 	String aux1 = arg1;
 	while (aux1.startsWith("[")){
 		aux1=ListaTercetos.getTerceto(aux1).getSarg();
@@ -437,7 +486,6 @@ public void verificarTipos(String arg1,String arg2){
 	while (aux2.startsWith("[")){
 		aux2=ListaTercetos.getTerceto(aux2).getSarg();
 	}
-	//System.out.println("Verificando tipos "+aux1+";"+aux2);
 	if (TablaSimbolos.getSimbolo(aux1).getTipo().equals(TablaSimbolos.getSimbolo(aux2).getTipo()))
 		return;
 	errorEnXY("No se puede realizar una operacion entre "+arg1+" y "+arg2);
@@ -448,7 +496,7 @@ public void errorEnXY(String msg){
 	linea = AnalizadorLexico.getLinea();
 	caracter = AnalizadorLexico.getCaracter();
 	yynerrs++;
-	System.out.println(ANSI_RED+"!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Errores hasta ahora: "+yynerrs+"\n"+msg+"\n"+ANSI_RESET);
+	erroresDump.add(ANSI_RED+"!|!|!|! Error en linea: "+linea+", caracter: "+caracter+". Errores hasta ahora: "+yynerrs+"\n"+msg+"\n"+ANSI_RESET);
 }
 
 public void verificarIdIguales(String id_1, String id_2){
@@ -492,7 +540,7 @@ public void warningEnXY(String msg){
 		int linea,caracter=0;
 		linea = AnalizadorLexico.getLinea();
 		caracter = AnalizadorLexico.getCaracter();
-		System.out.println(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+"\n"+ANSI_RESET);
+		warningsDump.add(ANSI_YELLOW+"!|/|/|! Warning en linea: "+linea+", caracter: "+caracter+"\n"+msg+"\n"+ANSI_RESET);
 	}
 }
 
@@ -507,10 +555,16 @@ private void imprimirMSGEstructura(String msg){
 private void programaListo(){
 	if (yynerrs!=0){
 		System.out.println(ANSI_RED+"!|!|!|!: El programa encontro "+yynerrs+" errores al compilarse."+ANSI_RESET);
+		for (int i = 0; i<erroresDump.size();i++){
+			System.out.println(erroresDump.get(i));
+		}
 		return;
 	}
 	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
 	TablaSimbolos.imprimirTabla();
+	for (int i = 0; i<warningsDump.size();i++){
+			System.out.println(warningsDump.get(i));
+		}
 	ListaTercetos.imprimir();
 	GestorAssembler.procesarArchivo();
 	GestorAssembler.imprimir();
@@ -519,7 +573,6 @@ private void programaListo(){
 private int yylex(){
 	int rta=0;
     rta=AnalizadorLexico.siguienteToken();
-    //System.out.println("Siguiente token: "+rta+", valor: "+AnalizadorLexico.anteriorToken.getId());
     if (rta!=-1) {
         if (AnalizadorLexico.anteriorToken.getLexema() != null){
             yylval = new ParserVal(AnalizadorLexico.anteriorToken.getLexema().toString());
