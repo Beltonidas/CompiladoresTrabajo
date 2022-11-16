@@ -1,0 +1,75 @@
+programa
+{
+    <<f64 z, v;
+    ui8 x, a;
+    z=:1.0;
+    v=:2.0;
+    z=:z+v;
+    z=:z-v;
+    z=:z*v;
+    z=:z/v;
+    x=:3;
+    a=:4;
+    x=:x+a;
+    x=:x-a;
+    x=:x*a;
+    x=:x/a; 
+    Todo esto funciona y genera un assembler 
+    /////////Comienzo Assembler
+0: START:
+1: F[N]INIT
+2: FLD 1.0
+3: FSTP z:Main
+4: FLD 2.0
+5: FSTP v:Main
+6: FLD z:Main
+7: FLD v:Main
+8: FADD
+9: FSTP @aux0
+10: FILD @aux0
+11: FSTP z:Main
+12: FLD z:Main
+13: FLD v:Main
+14: FSUB
+15: FSTP @aux1
+16: FILD @aux1
+17: FSTP z:Main
+18: FLD z:Main
+19: FLD v:Main
+20: FMUL
+21: FSTP @aux2
+22: FILD @aux2
+23: FSTP z:Main
+24: FLD z:Main
+25: FLD v:Main
+26: FDIV
+27: FSTP @aux3
+28: FILD @aux3
+29: FSTP z:Main
+30: MOV AL, 3
+31: MOV x:Main, AL
+32: MOV AL, 4
+33: MOV a:Main, AL
+34: MOV AL, x:Main
+35: ADD AL, a:Main
+36: MOV @aux4, AL
+37: MOV AL, @aux4
+38: MOV x:Main, AL
+39: MOV AL, x:Main
+40: SUB AL, a:Main
+41: MOV @aux5, AL
+42: MOV AL, @aux5
+43: MOV x:Main, AL
+44: MOV AL, x:Main
+45: MUL AL, a:Main
+46: MOV @aux6, AL
+47: MOV AL, @aux6
+48: MOV x:Main, AL
+49: MOV AL, x:Main
+50: DIV AL, a:Main
+51: MOV @aux7, AL
+52: MOV AL, @aux7
+53: MOV x:Main, AL
+54: END START>>
+    
+}

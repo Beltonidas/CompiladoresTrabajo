@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import Compilador.TablaSimbolos;
+import Compilador.TokenLexema;
 
 
 public class GestorAssembler {
@@ -30,22 +31,121 @@ public class GestorAssembler {
     final static String fmul = "FMUL";
     final static String fdiv = "FDIV";
     final static String fld = "FLD";
+    final static String fild = "FILD";
     final static String fstp = "FSTP";
+    final static String variableAux= "@aux";
     
     //private StringBuilder lineaAsembler;
-    private static List<StringBuilder> lineaCODE=new ArrayList<StringBuilder>();
-    private static List<StringBuilder> lineaDATA=new ArrayList<StringBuilder>();
+    private static List<String> lineaCODE=new ArrayList<String>();
+    private static List<String> lineaDATA=new ArrayList<String>();
     private static Integer etiquetas=0;
-    private static Integer extras=0;
-    
+    private static HashMap<Integer,String> variablesAux = new HashMap<Integer,String>();
+    private static Integer x = 0;
     //-------------------ATRIBUTOS--------------------------
 
     //------------------CONSTRUCTOR-------------------------
+    
+    //Nunca en el segundo argumento de un terceto vamos a tener una referencia a otro terceto
     public GestorAssembler (){
         //lista de variables
     }
+    
+    public static int referenciaTerceto(String str) {
+        return Integer.parseInt(str.substring(1,str.length()-1));
+    }
 
-
+    public static void operacion(int nroTerceto, Terceto terceto) {
+        // + , - , * , /
+        //Para que esto funcione el segundo argumento debe si o si estar en la tabla se simbolos
+        String segundoArgumento,tercerArgumento,tipoOp;
+        String operador = "";
+        Boolean segEsReferencia = false;
+        Boolean terEsReferencia = false;
+        //Si empieza con corchetes es una referencia a otro terceto
+        if (terceto.sarg.startsWith("[")) {
+            segEsReferencia=true;
+            String aux = variablesAux.get(referenciaTerceto(terceto.sarg));
+            segundoArgumento = TablaSimbolos.getSimbolo(aux).getLexema().toString();
+            tipoOp = TablaSimbolos.getSimbolo(aux).getTipo();
+        } else {
+            segundoArgumento = TablaSimbolos.getSimbolo(terceto.sarg).getLexema().toString();
+            tipoOp = TablaSimbolos.getSimbolo(terceto.sarg).getTipo().toString();
+        }
+        System.out.println("Tipo segundo operador: "+tipoOp);
+        if (terceto.targ.startsWith("[")) {
+            terEsReferencia=true;
+            tercerArgumento = TablaSimbolos.getSimbolo(variablesAux.get(referenciaTerceto(terceto.targ))).getLexema().toString();
+        }else {
+            tercerArgumento = TablaSimbolos.getSimbolo(terceto.targ).getLexema().toString();
+        }
+        switch (terceto.parg){
+            case "+": if (tipoOp.equals("ui8")) {operador=add;} else {operador=fadd;}break;
+            case "-": if (tipoOp.equals("ui8")) {operador=sub;} else {operador=fsub;}break;
+            case "*": if (tipoOp.equals("ui8")) {operador=mul;} else {operador=fmul;}break;
+            case "/": if (tipoOp.equals("ui8")) {operador=div;} else {operador=fdiv;}break;
+        }
+        if (tipoOp.equals("ui8")) {
+            procesarTerceto(segundoArgumento, tercerArgumento, operador, (variableAux+x));
+        } else {
+            if (segEsReferencia&&terEsReferencia) {
+                procesarTercetoDoubleRR(segundoArgumento, tercerArgumento, operador, (variableAux+x));    
+            }else if(!segEsReferencia&&!terEsReferencia) {
+                procesarTercetoDoubleII(segundoArgumento, tercerArgumento, operador, (variableAux+x));
+            }else {
+                if(segEsReferencia) {
+                    procesarTercetoDoubleIR(tercerArgumento, segundoArgumento, operador, (variableAux+x));
+                }else {
+                    procesarTercetoDoubleIR(segundoArgumento, tercerArgumento, operador, (variableAux+x));
+                }
+            }
+        }
+        TablaSimbolos.addSimbolo(new TokenLexema(0,(variableAux+x),tipoOp));
+        variablesAux.put(nroTerceto, (variableAux+x));
+        x++;
+    }
+    
+    public static void asignacion(int nroTerceto, Terceto terceto) {
+        TokenLexema segundoArgumento = TablaSimbolos.getSimbolo(terceto.sarg);
+        String tipoOp = segundoArgumento.getTipo();
+        TokenLexema tercerArgumento;
+        Boolean esReferencia=false;
+        //Si empieza con corchetes es una referencia a otro terceto
+        if (terceto.targ.startsWith("[")) {
+            esReferencia=true;
+            tercerArgumento = new TokenLexema(0,variablesAux.get(referenciaTerceto(terceto.targ)));
+        }else {
+            tercerArgumento = TablaSimbolos.getSimbolo(terceto.targ);
+        }
+        if (tipoOp.equals("ui8")) {
+            //Asignacion de 8 bits
+            lineaCODE.add(mov +" AL, " + tercerArgumento.getLexema());
+            lineaCODE.add(mov +" " + segundoArgumento.getLexema() + ", AL");
+        } else {
+            //La diferencia esta en que un una vamos a cargar de memoria y en otra seria un inmediato
+            if (esReferencia) {
+                lineaCODE.add(fild +" "+tercerArgumento.getLexema());
+            }else {
+                lineaCODE.add(fld +" "+tercerArgumento.getLexema());
+            }
+            lineaCODE.add(fstp +" "+segundoArgumento.getLexema());
+        }
+    }
+    
+    public static StringBuilder comparacion(Terceto terceto) {
+        return null;
+    }
+    
+    public static StringBuilder salto(Terceto terceto) {
+        return null;
+    }
+    
+    public static StringBuilder stackOp(Terceto terceto) {
+        return null;
+    }
+    
+    public static StringBuilder outOp(Terceto terceto) {
+        return null;
+    }
     //---------------CREAR ARCHIVO-------------------------
     /* 
     
@@ -56,149 +156,41 @@ public class GestorAssembler {
 
 
     */
-
-    @SuppressWarnings("unlikely-arg-type")
+    
+    //Antes de ejecutar el metodo correspondiente se deben procesar los argumentos y deben estar en la tabla de simbolos
     public static void procesarArchivo(){
         //----------------ITERAR TERCETOS GENERAR CODIGO--------------------
-        
         int x = 0;
-        int xAnterior = 0;
         Boolean addLibsOut = false;
         String operadorAnterior="";
         
-        HashMap<String,String> variablesPrevias = new HashMap<String,String>();
-        
         for (int i = 0; i < ListaTercetos.getIndice() ; i++) {
-            
+            System.out.println("Terceto: "+i);
             Terceto tercetoProcesar = ListaTercetos.getTerceto(i);
-            System.out.println(tercetoProcesar);
             String operador = tercetoProcesar.getParg();
-            String sArg = tercetoProcesar.getSarg();
-            String tArg = tercetoProcesar.getTarg();
-            String variableAux= "@aux";
+            
             if (tercetoProcesar.getCarg()!=false) {
-                lineaCODE.add(new StringBuilder("Label_"+ i +":"));
+                lineaCODE.add("Label_"+ i +":");
                 etiquetas++;
             }
             
             switch (operador) {
-                case "+":
-                    if (sArg.startsWith("[")) {
-                        if (Integer.parseInt(sArg.substring(1,sArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            sArg=variablesPrevias.get(sArg);
-                        }
-                    }
-                    if (tArg.startsWith("[")) {
-                        if (Integer.parseInt(tArg.substring(1,tArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            sArg=variablesPrevias.get(tArg);
-                        }
-                    }
-                    if (TablaSimbolos.getSimbolo(sArg).getTipo().equals("ui8")) {
-                        operador=add;
-                        procesarTerceto(sArg, tArg, operador, (variableAux+x));
-                    } else {
-                        operador=fadd;
-                        procesarTercetoDouble(sArg, tArg, operador, (variableAux+x));
-                    }
-                    variablesPrevias.put("["+i+"]",(variableAux+x));
-                    x++;
-                    break;
-                case "*": 
-                    if (sArg.startsWith("[")) {
-                        if (Integer.parseInt(sArg.substring(1,sArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            sArg=variablesPrevias.get(sArg);
-                        }
-                    }
-                    if (tArg.startsWith("[")) {
-                        if (Integer.parseInt(tArg.substring(1,tArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            tArg=variablesPrevias.get(tArg);
-                        }
-                    }
-                    if (TablaSimbolos.getSimbolo(sArg).getTipo().equals("ui8")) {
-                        operador=mul;
-                        procesarTerceto(sArg, tArg, operador, (variableAux+x));
-                    } else {
-                        operador=fmul;
-                        procesarTercetoDouble(sArg, tArg, operador, (variableAux+x));
-                    }
-                    variablesPrevias.put("["+i+"]",(variableAux+x));
-                    x++;
-                    break;
-                case "/": 
-                    if (sArg.startsWith("[")) {
-                        if (Integer.parseInt(sArg.substring(1,sArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            sArg=variablesPrevias.get(sArg);
-                        }
-                    }
-                    if (tArg.startsWith("[")) {
-                        if (Integer.parseInt(tArg.substring(1,tArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            tArg=variablesPrevias.get(tArg);
-                        }
-                    }
-                    if (TablaSimbolos.getSimbolo(sArg).getTipo().equals("ui8")) {
-                        operador=div;
-                        procesarTerceto(sArg, tArg, operador, (variableAux+x));
-                    } else {
-                        operador=fdiv;
-                        procesarTercetoDouble(sArg, tArg, operador, (variableAux+x));
-                    }
-                    variablesPrevias.put("["+i+"]",(variableAux+x));
-                    x++;
-                    break;
-                case "-": 
-                    if (sArg.startsWith("[")) {
-                        if (Integer.parseInt(sArg.substring(1,sArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            sArg=variablesPrevias.get(sArg);
-                        }
-                    }
-                    if (tArg.startsWith("[")) {
-                        if (Integer.parseInt(tArg.substring(1,tArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            tArg=variablesPrevias.get(tArg);
-                        }
-                    }
-                    if (TablaSimbolos.getSimbolo(sArg).getTipo().equals("ui8")) {
-                        operador=sub;
-                        procesarTerceto(sArg, tArg, operador, (variableAux+x));
-                    } else {
-                        operador=fsub;
-                        procesarTercetoDouble(sArg, tArg, operador, (variableAux+x));
-                    }
-                    variablesPrevias.put("["+i+"]",(variableAux+x));
-                    x++;
-                    break;
                 case "=:":
-                    operador=mov;
-                    if (tArg.startsWith("[")) {
-                        if (Integer.parseInt(tArg.substring(1,tArg.length()-1)) > i+etiquetas+extras) {
-                            System.out.println("Error en compilacion de assembler se esta intentando acceder al valor de una instruccion futura");
-                        }else {
-                            tArg=variablesPrevias.get(tArg);
-                        }
-                        lineaCODE.add(new StringBuilder(mov +" AL, " + tArg));
-                        lineaCODE.add(new StringBuilder(mov +" " + sArg + ", AL"));
-                        extras+=1;
-                    }else {
-                        lineaCODE.add(new StringBuilder(mov +" " + sArg +", "+ tArg));
-                    }
-                    
+                    asignacion(i, tercetoProcesar);
                     break;
-                case "BI":
+                case "+":
+                    operacion(i, tercetoProcesar);
+                    break;
+                case "-":
+                    operacion(i, tercetoProcesar);
+                    break;
+                case "*":
+                    operacion(i, tercetoProcesar);
+                    break;
+                case "/":
+                    operacion(i, tercetoProcesar);
+                    break;
+                /*case "BI":
                     if (sArg.equals("TerRetFuncion:_")) {
                         lineaCODE.add(new StringBuilder(jmp +" TerRetFuncion:_"));
                     }else {
@@ -266,7 +258,7 @@ public class GestorAssembler {
                     break;
                 case "Stack":
                     //Aca habria que ver bien como se puede acceder al stack pointer
-                    StringBuilder contenido = new StringBuilder(mov + " EAX, " +"CS");
+                    StringBuilder contenido = new StringBuilder(mov + " EAX, " +"SP");
                     lineaCODE.add(contenido);
                     contenido = new StringBuilder(add + " EAX, " +"8");
                     lineaCODE.add(contenido);
@@ -274,19 +266,13 @@ public class GestorAssembler {
                     lineaCODE.add(contenido);
                     lineaCODE.add(new StringBuilder(mov +" AL, " + (variableAux+x)));
                     lineaCODE.add(new StringBuilder(mov +" " + sArg + ", AL"));
-                    extras+=4;
                     x++;
-                    break;
-                default:
-                    continue;
+                    break;*/
             }
-            operadorAnterior=operador;
-            xAnterior=x;
         }
-        lineaCODE.add(0,new StringBuilder("F[N]INIT"));
-        lineaCODE.add(0,new StringBuilder("START:"));
-        lineaCODE.add(new StringBuilder("F[N]CLEX"));
-        lineaCODE.add(new StringBuilder("END START"));
+        lineaCODE.add(0,"F[N]INIT");
+        lineaCODE.add(0,"START:");
+        lineaCODE.add("END START");
         if (addLibsOut) {
             addLibreriasParaElOut();
         }
@@ -294,11 +280,11 @@ public class GestorAssembler {
         
     }
     public static void addLibreriasParaElOut() {
-        lineaDATA.add(new StringBuilder("include \\masm32\\include\\windows.inc\\"));
-        lineaDATA.add(new StringBuilder("include \\masm32\\include\\kernel32.inc"));
-        lineaDATA.add(new StringBuilder("include \\masm32\\include\\user32.inc"));
-        lineaDATA.add(new StringBuilder("includelib \\masm32\\lib\\kernel32.lib"));
-        lineaDATA.add(new StringBuilder("includelib \\masm32\\lib\\user32.lib"));
+        lineaDATA.add("include \\masm32\\include\\windows.inc\\");
+        lineaDATA.add("include \\masm32\\include\\kernel32.inc");
+        lineaDATA.add("include \\masm32\\include\\user32.inc");
+        lineaDATA.add("includelib \\masm32\\lib\\kernel32.lib");
+        lineaDATA.add("includelib \\masm32\\lib\\user32.lib");
     }
     
     
@@ -316,25 +302,32 @@ public class GestorAssembler {
     }
     
     public static void procesarTerceto(String sOp, String tOp, String funcion, String variable) {
-        StringBuilder contenido = new StringBuilder(mov + " AL, " +sOp);
-        lineaCODE.add(contenido);
-        contenido = new StringBuilder(funcion + " AL, " +tOp);
-        lineaCODE.add(contenido);
-        contenido = new StringBuilder(mov +" " + variable + ", AL");
-        lineaCODE.add(contenido);
-        extras+=2;
+        lineaCODE.add(mov + " AL, " +sOp);
+        lineaCODE.add(funcion + " AL, " +tOp);
+        lineaCODE.add(mov +" " + variable + ", AL");
     }
     
-    public static void procesarTercetoDouble(String sOp, String tOp, String funcion, String variable) {
-        StringBuilder contenido = new StringBuilder(fld+" "+sOp);
-        lineaCODE.add(contenido);
-        contenido = new StringBuilder(fld+" "+tOp);
-        lineaCODE.add(contenido);
-        contenido = new StringBuilder(funcion);
-        lineaCODE.add(contenido);
-        contenido = new StringBuilder(fstp+" "+variable);
-        lineaCODE.add(contenido);
-        extras+=3;
+    public static void procesarTercetoDoubleIR(String sOp, String tOp, String funcion, String variable) {
+        lineaCODE.add(fld+" "+sOp);
+        lineaCODE.add(fild+" "+tOp);
+        procesarDouble(funcion,variable);
+    }
+    
+    public static void procesarTercetoDoubleRR(String sOp, String tOp, String funcion, String variable) {
+        lineaCODE.add(fild+" "+sOp);
+        lineaCODE.add(fild+" "+tOp);
+        procesarDouble(funcion,variable);
+    }
+    
+    public static void procesarTercetoDoubleII(String sOp, String tOp, String funcion, String variable) {
+        lineaCODE.add(fld+" "+sOp);
+        lineaCODE.add(fld+" "+tOp);
+        procesarDouble(funcion,variable);
+    }
+    
+    public static void procesarDouble(String funcion, String variable) {
+        lineaCODE.add(funcion);
+        lineaCODE.add(fstp+" "+variable);
     }
     
     public static void imprimir() {
