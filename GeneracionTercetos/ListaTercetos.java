@@ -107,31 +107,35 @@ public class ListaTercetos {
     }
     
     
-    @SuppressWarnings("unlikely-arg-type")
     public static void considerarEtiquetas() {
         List<Integer> labels = new ArrayList<Integer>();
         for (int i=0;i<tercetos.size();i++) {
             Terceto x = tercetos.get(i);
             
-            
             if (x.getParg().equals("BI")) {
                 String aux=x.getSarg().substring(1,x.getSarg().length()-1);
-                if (aux.equals("erRetFuncion:")) continue;
-                if (labels.contains(aux)) { 
-                    continue;
+                if (aux.equals("TerRetFuncion:_")) continue;
+                if (!labels.contains(Integer.parseInt(aux))) { 
+                    labels.add(Integer.parseInt(aux));
                 }
-                labels.add(Integer.parseInt(aux));
             }
             if (x.getParg().equals("BF")) {
                 String aux=x.getTarg().substring(1,x.getTarg().length()-1);
-                if (labels.contains(aux)) { 
-                    continue;
+                if (!labels.contains(Integer.parseInt(aux))) { 
+                    labels.add(Integer.parseInt(aux));
                 }
-                labels.add(Integer.parseInt(aux));
             }
         }
         for (int i=0;i<labels.size();i++) {
-            tercetos.get(labels.get(i)).setCarg(true);
+            int aux = labels.get(i);
+            if (aux>tercetos.size()-1) {
+                Terceto x = new Terceto("NOP","_","_");
+                x.carg=true;
+                tercetos.add(x);
+            }else {
+                tercetos.get(aux).setCarg(true);
+            }
+            
         }
     }
 }
