@@ -34,14 +34,18 @@ public class GestorAssembler {
     final static String fild = "FILD";
     final static String fstp = "FSTP";
     final static String fcom = "FCOM";
+    final static String fcompp = "FCOMPP";
     final static String fstsw = "FSTSW";
     final static String sahf= "SAHF";
     final static String variableAux= "@aux";
+    final static String dobleMin = "2.2250738585072014E-308";
+    final static String dobleMax = "1.7976931348623157E308";
+    final static String zero = "0.";
+    
     
     //private StringBuilder lineaAsembler;
     private static List<String> lineaCODE=new ArrayList<String>();
     private static List<String> lineaDATA=new ArrayList<String>();
-    private static Integer etiquetas=0;
     private static HashMap<Integer,String> variablesAux = new HashMap<Integer,String>();
     private static Integer x = 0;
     //-------------------ATRIBUTOS--------------------------
@@ -61,8 +65,6 @@ public class GestorAssembler {
         // + , - , * , /
         String segundoArgumento,tercerArgumento,tipoOp;
         String operador = "";
-        Boolean segEsImm = false;
-        Boolean terEsImm = false;
         //Si empieza con corchetes es una referencia a otro terceto
         if (terceto.sarg.startsWith("[")) {
             String aux = variablesAux.get(referenciaTerceto(terceto.sarg));
@@ -72,19 +74,12 @@ public class GestorAssembler {
             TokenLexema aux = TablaSimbolos.getSimbolo(terceto.sarg);
             segundoArgumento = aux.getLexema().toString();
             tipoOp = aux.getTipo().toString();
-            if(aux.getUso()==null) {
-                segEsImm=true;
-            }
         }
         if (terceto.targ.startsWith("[")) {
-            terEsImm=true;
             tercerArgumento = TablaSimbolos.getSimbolo(variablesAux.get(referenciaTerceto(terceto.targ))).getLexema().toString();
         }else {
             TokenLexema aux = TablaSimbolos.getSimbolo(terceto.targ);
             tercerArgumento = aux.getLexema().toString();
-            if(aux.getUso()==null) {
-                terEsImm=true;
-            }
         }
         switch (terceto.parg){
             case "+": if (tipoOp.equals("ui8")) {operador=add;} else {operador=fadd;}break;
@@ -95,17 +90,7 @@ public class GestorAssembler {
         if (tipoOp.equals("ui8")) {
             procesarTerceto(segundoArgumento, tercerArgumento, operador, (variableAux+x));
         } else {
-            if (!segEsImm&&!terEsImm) {
-                procesarTercetoDoubleRR(segundoArgumento, tercerArgumento, operador, (variableAux+x));    
-            }else if(segEsImm&&terEsImm) {
-                procesarTercetoDoubleII(segundoArgumento, tercerArgumento, operador, (variableAux+x));
-            }else {
-                if(segEsImm) {
-                    procesarTercetoDoubleIR(segundoArgumento, tercerArgumento, operador, (variableAux+x));
-                }else {
-                    procesarTercetoDoubleIR(tercerArgumento, segundoArgumento, operador, (variableAux+x));
-                }
-            }
+            procesarTercetoDouble(segundoArgumento, tercerArgumento, operador, (variableAux+x));    
         }
         TablaSimbolos.addSimbolo(new TokenLexema(0,(variableAux+x),tipoOp));
         variablesAux.put(nroTerceto, (variableAux+x));
@@ -133,11 +118,7 @@ public class GestorAssembler {
             lineaCODE.add(mov +" " + segundoArgumento.getLexema() + ", AL");
         } else {
             //La diferencia esta en que un una vamos a cargar de memoria y en otra seria un inmediato
-            if (terEsImm) {
-                lineaCODE.add(fld +" "+tercerArgumento.getLexema());
-            }else {
-                lineaCODE.add(fild +" "+tercerArgumento.getLexema());
-            }
+            lineaCODE.add(fild +" "+tercerArgumento.getLexema());
             lineaCODE.add(fstp +" "+segundoArgumento.getLexema());
         }
     }
@@ -177,15 +158,9 @@ public class GestorAssembler {
             }else 
                 lineaCODE.add(cmp+" "+segundoArgumento+", "+tercerArgumento);
         }else {
-            if (segEsImm) { lineaCODE.add(fld+" "+segundoArgumento);
-            }
-            else { lineaCODE.add(fild+" "+segundoArgumento);
-            }
-            if (terEsImm) { lineaCODE.add(fld+" "+tercerArgumento);
-            }
-            else { lineaCODE.add(fild+" "+tercerArgumento);
-            }
-            lineaCODE.add(fcom);
+            lineaCODE.add(fild+" "+segundoArgumento);
+            lineaCODE.add(fild+" "+tercerArgumento);
+            lineaCODE.add(fcompp);
             lineaCODE.add(fstsw+" "+(variableAux+x));
             lineaCODE.add(mov+" AX, "+(variableAux+x));
             lineaCODE.add(sahf);
@@ -220,18 +195,13 @@ public class GestorAssembler {
     //Antes de ejecutar el metodo correspondiente se deben procesar los argumentos y deben estar en la tabla de simbolos
     public static void procesarArchivo(){
         //----------------ITERAR TERCETOS GENERAR CODIGO--------------------
-        int x = 0;
-        Boolean addLibsOut = false;
         String operadorAnterior="";
-        
         for (int i = 0; i < ListaTercetos.getIndice() ; i++) {
-            System.out.println("Terceto: "+i);
             Terceto tercetoProcesar = ListaTercetos.getTerceto(i);
             String operador = tercetoProcesar.getParg();
             
             if (tercetoProcesar.getCarg()!=false) {
-                lineaCODE.add("Label_"+ i +":");
-                etiquetas++;
+                lineaCODE.add("Label_"+i+":");
             }
             
             switch (operador) {
@@ -250,17 +220,12 @@ public class GestorAssembler {
                 case "/":
                     operacion(i, tercetoProcesar);
                     break;
-                /*case "BI":
-                    if (sArg.equals("TerRetFuncion:_")) {
-                        lineaCODE.add(new StringBuilder(jmp +" TerRetFuncion:_"));
-                    }else {
-                        lineaCODE.add(new StringBuilder(jmp +" Label_"+ sArg.substring(1, sArg.length()-1) +":"));
-                    }
+                case "BI":
+                    lineaCODE.add(jmp+" Label_"+referenciaTerceto(tercetoProcesar.sarg)+":");
                     break;
                 case "BF":
-                    operador=nemesisOp(operadorAnterior);
-                    lineaCODE.add(new StringBuilder(operador +" Label_"+ tArg.substring(1, tArg.length()-1) +":"));
-                    break;*/
+                    lineaCODE.add(nemesisOp(operadorAnterior)+" Label_"+referenciaTerceto(tercetoProcesar.targ)+":");
+                    break;
                 case "<":
                     comparacion(i,tercetoProcesar);
                     break;
@@ -279,46 +244,50 @@ public class GestorAssembler {
                 case "=!":
                     comparacion(i,tercetoProcesar);
                     break;
-                /*case "out":
-                    addLibsOut=true;
-                    lineaCODE.add(new StringBuilder("OUT "+sArg));
-                    break;
                 case "Push":
-                    lineaCODE.add(new StringBuilder(push+" "+sArg));
+                    if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
+                        lineaCODE.add(push+" "+tercetoProcesar.sarg);
+                    }else {
+                        lineaCODE.add(fild+" "+tercetoProcesar.sarg);
+                    }
                     break;
                 case "Pop":
-                    lineaCODE.add(new StringBuilder(pop+" "+sArg));
+                    if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
+                        lineaCODE.add(pop+" "+tercetoProcesar.sarg);
+                    }else {
+                        lineaCODE.add(fstp+" "+tercetoProcesar.sarg);
+                    }
                     break;
-                case "Stack":
-                    //Aca habria que ver bien como se puede acceder al stack pointer
-                    StringBuilder contenido = new StringBuilder(mov + " EAX, " +"SP");
-                    lineaCODE.add(contenido);
-                    contenido = new StringBuilder(add + " EAX, " +"8");
-                    lineaCODE.add(contenido);
-                    contenido = new StringBuilder(mov +" " + (variableAux+x) + ", EAX");
-                    lineaCODE.add(contenido);
-                    lineaCODE.add(new StringBuilder(mov +" AL, " + (variableAux+x)));
-                    lineaCODE.add(new StringBuilder(mov +" " + sArg + ", AL"));
-                    x++;
-                    break;*/
+                default:
+                    String aux = tercetoProcesar.parg;
+                    if (tercetoProcesar.sarg!="_") {
+                        aux +=" "+tercetoProcesar.sarg;
+                    }
+                    if (tercetoProcesar.targ!="_") {
+                        aux +=" "+tercetoProcesar.targ;
+                    }
+                    lineaCODE.add(aux);
+                    break;
+                case "out":
+                    //Fijarse bien como se hace
+                    //lineaCODE.add("invoke MessageBox, NULL, addr "+terceto.sarg+", addr "+terceto.sarg+", MB_OK");
+                    //lineaCODE.add("invoke ExitProcess, 0");
+                    break;
             }
             operadorAnterior=operador;
         }
-        lineaCODE.add(0,"F[N]INIT");
-        lineaCODE.add(0,"START:");
-        lineaCODE.add("END START");
-        if (addLibsOut) {
-            addLibreriasParaElOut();
-        }
-        
-        
+        addLibrerias();
     }
-    public static void addLibreriasParaElOut() {
+    public static void addLibrerias() {
         lineaDATA.add("include \\masm32\\include\\windows.inc\\");
         lineaDATA.add("include \\masm32\\include\\kernel32.inc");
         lineaDATA.add("include \\masm32\\include\\user32.inc");
         lineaDATA.add("includelib \\masm32\\lib\\kernel32.lib");
         lineaDATA.add("includelib \\masm32\\lib\\user32.lib");
+        lineaCODE.add(0,"F[N]INIT");
+        lineaCODE.add(0,"START:");
+        addCodigosError();
+        lineaCODE.add("END START");
     }
     
     
@@ -338,30 +307,54 @@ public class GestorAssembler {
     public static void procesarTerceto(String sOp, String tOp, String funcion, String variable) {
         lineaCODE.add(mov + " AL, " +sOp);
         lineaCODE.add(funcion + " AL, " +tOp);
+        if(funcion.equals(sub)) {
+            lineaCODE.add(cmp +" AL, 0");
+            lineaCODE.add(jl+" ErrUiNeg");
+        }
         lineaCODE.add(mov +" " + variable + ", AL");
     }
     
-    public static void procesarTercetoDoubleIR(String sOp, String tOp, String funcion, String variable) {
-        lineaCODE.add(fld+" "+sOp);
-        lineaCODE.add(fild+" "+tOp);
-        procesarDouble(funcion,variable);
-    }
-    
-    public static void procesarTercetoDoubleRR(String sOp, String tOp, String funcion, String variable) {
+    public static void procesarTercetoDouble(String sOp, String tOp, String funcion, String variable) {
         lineaCODE.add(fild+" "+sOp);
         lineaCODE.add(fild+" "+tOp);
-        procesarDouble(funcion,variable);
-    }
-    
-    public static void procesarTercetoDoubleII(String sOp, String tOp, String funcion, String variable) {
-        lineaCODE.add(fld+" "+sOp);
-        lineaCODE.add(fld+" "+tOp);
-        procesarDouble(funcion,variable);
-    }
-    
-    public static void procesarDouble(String funcion, String variable) {
         lineaCODE.add(funcion);
+        if (funcion.equals(fmul)) {
+            lineaCODE.add(fcom+" "+dobleMax);
+            lineaCODE.add(fstsw+" "+(variableAux+x));
+            lineaCODE.add(mov+" AX, "+(variableAux+x));
+            x++;
+            lineaCODE.add(sahf);
+            lineaCODE.add(jg+" ErrOvMul");
+            
+            lineaCODE.add(fcom+" "+dobleMin);
+            lineaCODE.add(fstsw+" "+(variableAux+x));
+            lineaCODE.add(mov+" AX, "+(variableAux+x));
+            x++;
+            lineaCODE.add(sahf);
+            lineaCODE.add(jl+" ErrOvMul");
+        }
         lineaCODE.add(fstp+" "+variable);
+    }
+    
+    public static void addCodigosError() {
+        lineaCODE.add(jmp+" final");
+        
+        lineaCODE.add("ErrRec:"); 
+        lineaCODE.add("invoke MessageBox, NULL, addr _ErrRec, addr _ErrRec, MB_OK");
+        lineaCODE.add("invoke ExitProcess, 0");
+        lineaCODE.add(jmp+" final");
+        
+        lineaCODE.add("ErrUiNeg:"); 
+        lineaCODE.add("invoke MessageBox, NULL, addr _ErrUiNeg, addr _ErrUiNeg, MB_OK");
+        lineaCODE.add("invoke ExitProcess, 0");
+        lineaCODE.add(jmp+" final");
+        
+        lineaCODE.add("ErrOvMul:"); 
+        lineaCODE.add("invoke MessageBox, NULL, addr _ErrOvMul, addr _ErrOvMul, MB_OK");
+        lineaCODE.add("invoke ExitProcess, 0");
+        lineaCODE.add(jmp+" final");
+        
+        lineaCODE.add("final:");
     }
     
     public static void imprimir() {

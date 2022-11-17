@@ -40,7 +40,8 @@ sentencia: declarativa
 
 //REGLAS PARA LAS SENTENCIAS DECLARATIVAS
 declarativa: dec_variables {imprimirMSGEstructura("Declaracion de variable/s");}
-		| dec_funcion {imprimirMSGEstructura("Declaracion de funcion");}
+		| dec_funcion {ListaTercetos.getTerceto(llamadasFunciones.get($1.sval).getTercetoInv()).setCarg(true);
+						imprimirMSGEstructura("Declaracion de funcion");}
 ;
 
 dec_variables: tipo list_variables ';'
@@ -59,12 +60,8 @@ list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");$1.sval=Ta
 
 //SABEMOS QUE QUEDA FEO PERO ES PARA NO TENER QUE COMPLICARNOS CON EL CODIGO
 dec_funcion: header_funcion cola_funcion
-		| header_funcion parametro {ListaTercetos.addTerceto(new Terceto("Pop",$2.sval,"_"));} cola_funcion {llamadasFunciones.get($1.sval).setPar1($2.sval);}
-		| header_funcion parametro ',' parametro {
-												ListaTercetos.addTerceto(new Terceto("Pop",$2.sval,"_"));
-												ListaTercetos.addTerceto(new Terceto("Pop",$4.sval,"_"));
-												} 
-												cola_funcion {InvocacionFuncion f = llamadasFunciones.get($1.sval);
+		| header_funcion parametro cola_funcion {llamadasFunciones.get($1.sval).setPar1($2.sval);}
+		| header_funcion parametro ',' parametro cola_funcion {InvocacionFuncion f = llamadasFunciones.get($1.sval);
 																f.setPar1($2.sval);
 																f.setPar2($4.sval);}
 ;
@@ -80,6 +77,8 @@ header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 							InvocacionFuncion f = new InvocacionFuncion();
 							f.setTercetoInv("["+ListaTercetos.getIndice()+"]");
 							llamadasFunciones.put($2.sval,f);
+							terAux = new Terceto("MOV","EBX",String.valueOf(ListaTercetos.getIndice()));
+							ListaTercetos.addTerceto(terAux);
 							$$.sval=$2.sval;}
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
@@ -87,10 +86,10 @@ header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
 												tokenAux.setTipo($3.sval);
 												verificarTipos(tokenAux.getLexema().toString(),$5.sval);
-												Terceto terAux=new Terceto("Stack",$5.sval,"_");
+												Terceto terAux=new Terceto("Push",$5.sval,"_");
 												ListaTercetos.addTerceto(terAux);
 												Ambito.removeAmbito();
-												terAux=new Terceto("BI","TerRetFuncion:_","_");
+												terAux=new Terceto("RET","_","_");
 												ListaTercetos.addTerceto(terAux);
 												terAux=tercetosAux.pop();
 												terAux.setSarg("["+ListaTercetos.getIndice()+"]");}
@@ -100,11 +99,12 @@ cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
 parametro: tipo id {setearTipo($2.sval,$1.sval);
 					setearUso($2.sval,"Nombre de Parametro");
 					$$.sval=TablaSimbolos.cambiarNombreKey($2.sval);
-					variablesInicializadas.add($$.sval);}
+					variablesInicializadas.add($$.sval);
+					ListaTercetos.addTerceto(new Terceto("Pop",$$.sval,"_"));}
 		| tipo {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 ;
 
-cuerpo_fun: sentencia Return '(' expresion ')' ';' {$$.sval=$4.sval;}
+cuerpo_fun: sentencia Return '(' expresion ')' ';' {$$.sval=$4.sval; }
 		| sentencia Return '(' expresion ';' {errorEnXY("Parentesis esperados al final de la expresion");}
 		| sentencia Return expresion ';' {errorEnXY("Parentesis esperados al comienzo y final de la expresion");}
 		| sentencia Return expresion ')' ';' {errorEnXY("Parentesis esperados al final de la expresion");}
@@ -180,15 +180,18 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 								comprobarParametrosFuncion($1.sval,0);
 								$1.sval=Ambito.getAmbito($1.sval);
 								$$.sval=Ambito.getAmbito($1.sval);
-								Terceto terAux=new Terceto("Push","TerRetFuncion:_","_");
+								String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
+								Terceto terAux=new Terceto("Push","EBX","_");
 								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("Stack","TerRetFuncion:_","_");
+								terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
+								terAux=new Terceto("JE","ErrRec","_");
+								ListaTercetos.addTerceto(terAux);
+								terAux=new Terceto("CALL",tercetoLlamado,"_");
 								ListaTercetos.addTerceto(terAux);
 								terAux=new Terceto("Pop",$1.sval,"_");
 								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("Pop","TerRetFuncion:_","_");
+								terAux=new Terceto("Pop","EBX","_");
 								ListaTercetos.addTerceto(terAux);}
 		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
 									comprobarParametrosFuncion($1.sval,1);
@@ -197,20 +200,13 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 										errorEnXY("El parametro "+$3.sval+", no puede ser constante debido a que hay asignaciones en la funcion "+$1.sval);
 										parametroConstante=false;
 									}
-									Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
+									String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
+									Terceto terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("Push",Ambito.getAmbito($3.sval),"_");
-									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("Stack","TerRetFuncion:_","_");
-									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
-									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
-									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("Pop",$1.sval,"_");
-									ListaTercetos.addTerceto(terAux);
-									terAux=new Terceto("Pop","TerRetFuncion:_","_");
-									ListaTercetos.addTerceto(terAux);
+									ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
+									ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
+									ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
+									ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
 									$$.sval=$1.sval;}
 		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
 														comprobarParametrosFuncion($1.sval,2);
@@ -219,20 +215,14 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 															errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+$1.sval);
 															parametroConstante=false;
 														}
-														Terceto terAux=new Terceto("Stack","TerRetFuncion:_","_");
+														String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
+														Terceto terAux = new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("Push",Ambito.getAmbito($3.sval),"_");
-														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("Push",Ambito.getAmbito($5.sval),"_");
-														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("Stack","TerRetFuncion:_","_");
-														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("BI",llamadasFunciones.get($1.sval).getTercetoInv(),"_");
-														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("Pop",$1.sval,"_");
-														ListaTercetos.addTerceto(terAux);
-														terAux=new Terceto("Pop","TerRetFuncion:_","_");
-														ListaTercetos.addTerceto(terAux);
+														ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
+														ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
+														ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($5.sval),"_"));
+														ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
+														ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
 														$$.sval=Ambito.getAmbito($1.sval);}
 ;
 
@@ -277,7 +267,7 @@ impresion: out '(' cadena ')' {ListaTercetos.addTerceto(new Terceto($1.sval,$3.s
 		| out '(' cadena {errorEnXY("Falta de parentesis al final de la cadena del out");}
 ;
 
-invocar_fun: discard retorno_funcion {ListaTercetos.removeTerceto(ListaTercetos.getIndice()-2);}
+invocar_fun: discard retorno_funcion
 		| retorno_funcion {errorEnXY("Funcion invocada sin discard del retorno");}
 ;
 

@@ -8,5 +8,11 @@ programa
 
         i =: 50.+100.;
     }end_if;
+    fun fi (ui8 x,ui8 y):ui8{
+        f64 z;
+        z=:10.;
+        x=:x*y;
+        return (x);
+    }
     <<i =: 49;>>
 }

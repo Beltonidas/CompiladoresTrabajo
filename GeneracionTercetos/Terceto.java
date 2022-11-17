@@ -11,6 +11,13 @@ public class Terceto {
         targ=c;
         carg=false;
     }
+    
+    public Terceto(String a, String b, String c, Boolean d) {
+        parg=a;
+        sarg=b;
+        targ=c;
+        carg=d;
+    }
 
 
     public String getParg() {
