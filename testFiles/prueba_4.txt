@@ -1,18 +1,19 @@
 programa
 {
-	f64 i;
-	i =: 49.;
-	if (30. < i) then{
-        i =: 49.;
+	ui8 i, x, a;
+    i =: 30;
+    x =: 30;
+    i =: x;
+
+    i =: x*3;
+    i =: x - x;
+    x =: x + x;
+    i =: x/ x;
+
+    if (i < x) then{
+        i =: 49;
     }else{
 
-        i =: 50.+100.;
+        i =: 50+100;
     }end_if;
-    fun fi (ui8 x,ui8 y):ui8{
-        f64 z;
-        z=:10.;
-        x=:x*y;
-        return (x);
-    }
-    <<i =: 49;>>
 }

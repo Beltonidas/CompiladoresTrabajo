@@ -59,6 +59,10 @@ public class TablaSimbolos {
 		tabla.remove(key);
 	}
 
+	public static HashMap<String, TokenLexema> getTablaSimbolo (){
+		return tabla;
+	}
+
 	public static TokenLexema getSimbolo(String key) {
 		return tabla.get(key);
 	}
