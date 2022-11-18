@@ -163,8 +163,7 @@ public class GestorAssembler {
                 segEsImm=true;
             }else{
                 //Cambio de nombre
-                if(!segundoArgumento.startsWith("_"))
-                    segundoArgumento = "_"+segundoArgumento;
+                segundoArgumento = "_"+segundoArgumento;
             }
         }
         if (terceto.targ.startsWith("[")) {
@@ -176,8 +175,7 @@ public class GestorAssembler {
                 terEsImm=true;
             }else{
                 //Cambio de nombre
-                if(!tercerArgumento.startsWith("_"))
-                    tercerArgumento = "_"+tercerArgumento;
+                tercerArgumento = "_"+tercerArgumento;
             }
         }
         if (tipoOp.equals("ui8")) {
@@ -343,7 +341,6 @@ public class GestorAssembler {
     
     public static void addDataTablaSimbolo(){
         for (HashMap.Entry<String, TokenLexema> entry : TablaSimbolos.getTablaSimbolo().entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
             if ((entry.getValue().getId()== 257) && (entry.getValue().getTipo()!= null)){
                 if(entry.getValue().getTipo().equals("ui8")){
                     // Declaramos las variables que son "ui8"
@@ -352,6 +349,11 @@ public class GestorAssembler {
                     // Declaramos las variables que son "f64"
                     lineaDATA.add("_"+entry.getKey()+ " DQ ?");
                 }
+            }
+            if (entry.getValue().getId()== 259){
+                String aux= entry.getKey();
+                aux = aux.replace("'", "");
+                lineaDATA.add(aux+ " DB \""+aux+ "\"" );
             }
         }
     }
