@@ -285,7 +285,9 @@ public class GestorAssembler {
                     comparacion(i,tercetoProcesar);
                     break;
                 case "Push":
-                    if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
+                    if (tercetoProcesar.sarg.equals("EBX")) {
+                        lineaCODE.add(push+" "+tercetoProcesar.sarg);
+                    }else if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
                         nombreAUX = tercetoProcesar.sarg;
                         nombreAUX = nombreAUX.replace(":", "");
                         lineaCODE.add(mov+" AL, _"+nombreAUX);
@@ -295,7 +297,9 @@ public class GestorAssembler {
                     }
                     break;
                 case "Pop":
-                    if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
+                    if (tercetoProcesar.sarg.equals("EBX")) {
+                        lineaCODE.add(pop+" "+tercetoProcesar.sarg);
+                    }else if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
                         lineaCODE.add(pop+" AX");
                         lineaCODE.add(mov+" _"+tercetoProcesar.sarg.replace(":","")+", AL");
                         

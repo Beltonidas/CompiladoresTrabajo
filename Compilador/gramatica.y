@@ -434,9 +434,7 @@ public void comprobarInicializada(String arg,String ambito){
 }
 
 public void comprobarParametrosFuncion(String nomFuncionInvocada,Integer x){
-	System.out.println("Funcion invocada: "+nomFuncionInvocada+" | Parametros "+x );
     InvocacionFuncion aux = llamadasFunciones.get(Ambito.getAmbito(nomFuncionInvocada));
-	System.out.println("Ambito de la funcion invocada"+Ambito.getAmbito(nomFuncionInvocada)+" | Llamada a funcion: "+aux.toString());
     if (aux.getPar1().equals("") && x==0)
         return;
     else if (!aux.getPar1().equals("") && aux.getPar2().equals("") && x==1)
@@ -562,13 +560,12 @@ private void programaListo(){
 		return;
 	}
 	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
-	TablaSimbolos.imprimirTabla();
 	for (int i = 0; i<warningsDump.size();i++){
 			System.out.println(warningsDump.get(i));
 		}
 	ListaTercetos.imprimir();
 	GestorAssembler.procesarArchivo();
-	GestorAssembler.imprimir();
+	TablaSimbolos.imprimirTabla();
 }
 
 private int yylex(){
