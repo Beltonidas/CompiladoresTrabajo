@@ -202,12 +202,16 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 										parametroConstante=false;
 									}
 									String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
-									Terceto terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
+									Terceto terAux=new Terceto("Push","EBX","_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 									ListaTercetos.addTerceto(terAux);
 									ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
 									ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
 									ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
 									ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
+									terAux=new Terceto("Pop","EBX","_");
+									ListaTercetos.addTerceto(terAux);
 									$$.sval=$1.sval;}
 		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
 														comprobarParametrosFuncion($1.sval,2);
@@ -217,13 +221,17 @@ retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no de
 															parametroConstante=false;
 														}
 														String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
-														Terceto terAux = new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
+														Terceto terAux=new Terceto("Push","EBX","_");
+														ListaTercetos.addTerceto(terAux);
+														terAux = new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 														ListaTercetos.addTerceto(terAux);
 														ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
 														ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
 														ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($5.sval),"_"));
 														ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
 														ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
+														terAux=new Terceto("Pop","EBX","_");
+														ListaTercetos.addTerceto(terAux);
 														$$.sval=Ambito.getAmbito($1.sval);}
 ;
 
