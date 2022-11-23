@@ -1,19 +1,17 @@
 programa
 {
-	ui8 i, x, a;
-    i =: 30;
-    x =: 30;
-    i =: x;
-
-    i =: x*3;
-    i =: x - x;
-    x =: x + x;
-    i =: x/ x;
-
-    if (i < x) then{
-        i =: 49;
-    }else{
-
-        i =: 50+100;
-    }end_if;
+	ui8 variable_uno, variable_dos, variable_tres;
+    fun fi (ui8 x):ui8{
+        discard fi(x);
+        f64 z;
+        z=:10.;
+        variable_uno=:variable_uno*variable_dos;
+        return (variable_uno);
+    }
+    
+    <<Asignaciones>>
+    variable_uno =: 30;
+    variable_dos =: 30;
+    variable_tres =: 40;
+    discard fi(variable_tres);
 }

@@ -3,13 +3,14 @@ programa
 	defer out('askjhdjla');
     f64 z, v;
     ui8 x, a,b,i;
+    z=: 10.0;
     if (30 < 20) then{
         i =: 49;
     }else{
-
         i =: 50+100;
     }end_if;
     fun fi (ui8 x):ui8{
+        discard fi(x);
         f64 z;
         z=:10.;
         a=:a*b;
@@ -32,7 +33,6 @@ programa
         x =: a;
         
     };
-
     z =: 3.;
     v =: 3.;
 }

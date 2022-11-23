@@ -60,10 +60,10 @@ list_variables: id {setearTipo($1.sval);setearUso($1.sval,"Variable");$1.sval=Ta
 
 //SABEMOS QUE QUEDA FEO PERO ES PARA NO TENER QUE COMPLICARNOS CON EL CODIGO
 dec_funcion: header_funcion cola_funcion
-		| header_funcion parametro cola_funcion {llamadasFunciones.get($1.sval).setPar1($2.sval);}
-		| header_funcion parametro ',' parametro cola_funcion {InvocacionFuncion f = llamadasFunciones.get($1.sval);
+		| header_funcion parametro {llamadasFunciones.get($1.sval).setPar1($2.sval);} cola_funcion 
+		| header_funcion parametro ',' parametro {InvocacionFuncion f = llamadasFunciones.get($1.sval);
 																f.setPar1($2.sval);
-																f.setPar2($4.sval);}
+																f.setPar2($4.sval);} cola_funcion 
 ;
 
 header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
@@ -166,7 +166,8 @@ termino: termino '*' factor {verificarTipos($1.sval,$3.sval);
 
 factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 			$1.sval=Ambito.getAmbito($1.sval);
-			comprobarInicializada($1.sval,Ambito.getNaming());
+			if(!TablaSimbolos.getSimbolo($1.sval).getUso().equals("Nombre de Parametro"))
+				comprobarInicializada($1.sval,Ambito.getNaming());
 			$$.sval=$1.sval;}
 		| cte
 		| '-' cte {verificarRangoDoubleNegativo();
@@ -420,12 +421,14 @@ public Boolean diferido=false;
 public void comprobarInicializada(String arg,String ambito){
     ambito=ambito.replace("for:", "");
     String aux = Ambito.getAmbitoDeVariable(arg).substring(1);
-	if (aux.equals(ambito) && !variablesInicializadas.contains(arg))
+	if (aux.equals(ambito.substring(1)) && !variablesInicializadas.contains(arg))
 		errorEnXY("La variable "+arg+" falta ser inicializada");
 }
 
 public void comprobarParametrosFuncion(String nomFuncionInvocada,Integer x){
+	System.out.println("Funcion invocada: "+nomFuncionInvocada+" | Parametros "+x );
     InvocacionFuncion aux = llamadasFunciones.get(Ambito.getAmbito(nomFuncionInvocada));
+	System.out.println("Ambito de la funcion invocada"+Ambito.getAmbito(nomFuncionInvocada)+" | Llamada a funcion: "+aux.toString());
     if (aux.getPar1().equals("") && x==0)
         return;
     else if (!aux.getPar1().equals("") && aux.getPar2().equals("") && x==1)
