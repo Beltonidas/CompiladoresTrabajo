@@ -1,0 +1,27 @@
+programa
+{
+    ui8 i,j,a,b,x;
+    if (1 < 2) then{
+        i =: 3;
+        if (4 < 5) then{
+            i =: 6;
+        }else{
+            i =: 7;
+        }end_if;
+    }else{
+        i =: 8;
+        if (9 < 10) then{
+            i =: 11;
+        }else{
+            i =: 12;
+        }end_if;
+    }end_if;
+    outer:for (i =: 0; i<1; +2 ){
+        continue;
+        for (j =: 0; j<3; +4 ){
+            continue;
+            break : outer;
+        };
+        break;
+    };
+}

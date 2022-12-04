@@ -1,0 +1,10 @@
+programa
+{
+	ui8 variable_uno;
+    variable_uno=:1;
+    fun fi (ui8 x):ui8{
+        discard fi(x);
+        return (variable_uno);
+    }
+    discard fi(variable_uno);
+}

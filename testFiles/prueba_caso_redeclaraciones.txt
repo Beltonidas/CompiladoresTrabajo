@@ -1,0 +1,28 @@
+programa
+{
+	z=:20.0;
+    f64 z;
+    f64 z;
+    discard fi();
+
+    fun fi (ui8 x):ui8{
+        f64 z;
+        return (x);
+    }
+    discard fi();
+    discard fi(z,x);
+    <<Aca se toma como redeclarado el parametro x pero es porque se declaran 2 x en el ambito de fi>>
+    fun fi (ui8 x):ui8{
+        f64 z;
+        return (x);
+    }
+    for (i =: 0; i<10; +1 ){
+        break: outer;
+    };
+    outer: for (i =: 0; i<10; +1 ){
+        continue;  
+    };
+    outer: for (i =: 0; i<10; +1 ){
+        continue;  
+    };
+}

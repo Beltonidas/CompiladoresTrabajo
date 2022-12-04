@@ -1,0 +1,5 @@
+programa
+{
+	ui8 variable_uno;
+    variable_uno=:1-2;
+}

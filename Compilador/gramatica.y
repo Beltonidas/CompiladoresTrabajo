@@ -83,16 +83,18 @@ header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
-cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {tokenAux=tokens.pop();
-												tokenAux.setTipo($3.sval);
-												verificarTipos(tokenAux.getLexema().toString(),$5.sval);
-												Terceto terAux=new Terceto("Push",$5.sval,"_");
-												ListaTercetos.addTerceto(terAux);
-												Ambito.removeAmbito();
-												terAux=new Terceto("RET","_","_");
-												ListaTercetos.addTerceto(terAux);
-												terAux=tercetosAux.pop();
-												terAux.setSarg("["+ListaTercetos.getIndice()+"]");}
+cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {TokenLexema tokenAux=tokens.pop();
+												if(tokenAux!=null){
+													tokenAux.setTipo($3.sval);
+													verificarTipos(tokenAux.getLexema().toString(),$5.sval);
+													Terceto terAux=new Terceto("Push",$5.sval,"_");
+													ListaTercetos.addTerceto(terAux);
+													Ambito.removeAmbito();
+													terAux=new Terceto("RET","_","_");
+													ListaTercetos.addTerceto(terAux);
+													terAux=tercetosAux.pop();
+													terAux.setSarg("["+ListaTercetos.getIndice()+"]");
+												}}
 		| error {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 ;
 
@@ -128,20 +130,22 @@ inst_ejecutable: asignacion ';' {imprimirMSGEstructura("Asignacion");}
 
 asignacion: id SIMB_ASIGNACION expresion {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 											$1.sval=Ambito.getAmbito($1.sval);
-											if (!diferido){
-												if (Ambito.getNaming().equals(Ambito.getAmbitoDeVariable($1.sval))){
-													variablesInicializadas.add($1.sval);
+											if($1.sval!=null){
+												if (!diferido){
+													if (Ambito.getNaming().equals(Ambito.getAmbitoDeVariable($1.sval))){
+														variablesInicializadas.add($1.sval);
+													}
+												}else{
+													if (!variablesInicializadas.contains($1.sval)){
+														errorEnXY("Para asignar a una variable en una instruccion diferida primero inicialicela");
+													}
 												}
-											}else{
-												if (!variablesInicializadas.contains($1.sval)){
-													errorEnXY("Para asignar a una variable en una instruccion diferida primero inicialicela");
+												verificarTipos($1.sval,$3.sval);
+												if (TablaSimbolos.getSimbolo($1.sval).getUso().equals("Nombre de Parametro")){
+													TablaSimbolos.getSimbolo(Ambito.getNombreAmbito()).setEsp(true);
 												}
-											}
-											verificarTipos($1.sval,$3.sval);
-											if (TablaSimbolos.getSimbolo($1.sval).getUso().equals("Nombre de Parametro")){
-												TablaSimbolos.getSimbolo(Ambito.getNombreAmbito()).setEsp(true);
-											}
-											ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));}
+												ListaTercetos.addTerceto(new Terceto($2.sval,$1.sval,$3.sval));
+											}}
 		| id SIMB_ASIGNACION {errorEnXY("Expresion esperada despues de la asignacion");}
 		| id ':' '=' expresion {errorEnXY("Operador de asignacion incorrecto, se esperaba -> =:");}
 ;
@@ -178,67 +182,86 @@ factor: id {comprobarBinding($1.sval,"Variable "+$1.sval+" no declarada");
 ;
 
 retorno_funcion: id '(' ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
-								comprobarParametrosFuncion($1.sval,0);
-								$1.sval=Ambito.getAmbito($1.sval);
-								$$.sval=Ambito.getAmbito($1.sval);
-								String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
-								Terceto terAux=new Terceto("Push","EBX","_");
-								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
-								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("JE","ErrRec","_");
-								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("CALL",tercetoLlamado,"_");
-								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("Pop",$1.sval,"_");
-								ListaTercetos.addTerceto(terAux);
-								terAux=new Terceto("Pop","EBX","_");
-								ListaTercetos.addTerceto(terAux);}
-		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
-									comprobarParametrosFuncion($1.sval,1);
+								if(Ambito.getAmbito($1.sval)!=null){
+									comprobarParametrosFuncion($1.sval,0);
 									$1.sval=Ambito.getAmbito($1.sval);
-									if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
-										errorEnXY("El parametro "+$3.sval+", no puede ser constante debido a que hay asignaciones en la funcion "+$1.sval);
-										parametroConstante=false;
-									}
+									$$.sval=Ambito.getAmbito($1.sval);
 									String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
 									Terceto terAux=new Terceto("Push","EBX","_");
 									ListaTercetos.addTerceto(terAux);
 									terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 									ListaTercetos.addTerceto(terAux);
-									ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
-									ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
-									ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
-									ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
+									terAux=new Terceto("JE","ErrRec","_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("CALL",tercetoLlamado,"_");
+									ListaTercetos.addTerceto(terAux);
+									terAux=new Terceto("Pop",$1.sval,"_");
+									ListaTercetos.addTerceto(terAux);
 									terAux=new Terceto("Pop","EBX","_");
 									ListaTercetos.addTerceto(terAux);
-									$$.sval=$1.sval;}
+								}}
+		| id '(' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
+									if(Ambito.getAmbito($1.sval)!=null){
+										comprobarParametrosFuncion($1.sval,1);
+										$1.sval=Ambito.getAmbito($1.sval);
+										String par= Ambito.getAmbito($3.sval);
+										if(par==null)
+											par =$3.sval;
+										verificarTipos(llamadasFunciones.get($1.sval).getPar1(),par);
+										if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
+											errorEnXY("El parametro "+$3.sval+", no puede ser constante debido a que hay asignaciones en la funcion "+$1.sval);
+											parametroConstante=false;
+										}
+										String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
+										Terceto terAux=new Terceto("Push","EBX","_");
+										ListaTercetos.addTerceto(terAux);
+										terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
+										ListaTercetos.addTerceto(terAux);
+										ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
+										ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
+										ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
+										ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
+										terAux=new Terceto("Pop","EBX","_");
+										ListaTercetos.addTerceto(terAux);
+										$$.sval=$1.sval;
+									}}
 		| id '(' parametro_real ',' parametro_real ')' {comprobarBinding($1.sval,"Funcion "+$1.sval+" no declarada");
-														comprobarParametrosFuncion($1.sval,2);
-														$1.sval=Ambito.getAmbito($1.sval);
-														if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
-															errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+$1.sval);
-															parametroConstante=false;
-														}
-														String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
-														Terceto terAux=new Terceto("Push","EBX","_");
-														ListaTercetos.addTerceto(terAux);
-														terAux = new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
-														ListaTercetos.addTerceto(terAux);
-														ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
-														ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
-														ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($5.sval),"_"));
-														ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
-														ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
-														terAux=new Terceto("Pop","EBX","_");
-														ListaTercetos.addTerceto(terAux);
-														$$.sval=Ambito.getAmbito($1.sval);}
+														if(Ambito.getAmbito($1.sval)!=null){
+															comprobarParametrosFuncion($1.sval,2);
+															$1.sval=Ambito.getAmbito($1.sval);
+															String par= Ambito.getAmbito($3.sval);
+															if(par==null)
+																par =$3.sval;
+															verificarTipos(llamadasFunciones.get($1.sval).getPar1(),par);
+															par= Ambito.getAmbito($5.sval);
+															if(par==null)
+																par =$5.sval;
+															verificarTipos(llamadasFunciones.get($1.sval).getPar2(),par);
+															if (TablaSimbolos.getSimbolo($1.sval).getEsp()&&parametroConstante){
+																errorEnXY("Los parametros no pueden ser constantes debido a que hay asignaciones en la funcion "+$1.sval);
+																parametroConstante=false;
+															}
+															String tercetoLlamado = llamadasFunciones.get($1.sval).getTercetoInv();
+															Terceto terAux=new Terceto("Push","EBX","_");
+															ListaTercetos.addTerceto(terAux);
+															terAux = new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
+															ListaTercetos.addTerceto(terAux);
+															ListaTercetos.addTerceto(new Terceto("JE","ErrRec","_"));
+															ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($3.sval),"_"));
+															ListaTercetos.addTerceto(new Terceto("Push",Ambito.getAmbito($5.sval),"_"));
+															ListaTercetos.addTerceto(new Terceto("CALL",tercetoLlamado,"_"));
+															ListaTercetos.addTerceto(new Terceto("Pop",$1.sval,"_"));
+															terAux=new Terceto("Pop","EBX","_");
+															ListaTercetos.addTerceto(terAux);
+															$$.sval=Ambito.getAmbito($1.sval);
+														}}
 ;
 
 parametro_real: id {comprobarBinding($1.sval,"No se encontro el parametro "+$1.sval);
-					comprobarInicializada(Ambito.getAmbito($1.sval),Ambito.getNaming());}
+					if(Ambito.getAmbito($1.sval)!=null)
+						comprobarInicializada(Ambito.getAmbito($1.sval),Ambito.getNaming());}
 		| cte {parametroConstante=true;}
-		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;}
+		| '-' cte {verificarRangoDoubleNegativo();$2.sval="-"+$2.sval;TablaSimbolos.addSimbolo(new TokenLexema(258, $2.sval,"f64"));$$.sval=$2.sval;parametroConstante=true;}
 ;
 
 seleccion: If condicion_if cuerpo_if {ListaTercetos.add_seleccion_final();}
@@ -281,18 +304,22 @@ invocar_fun: discard retorno_funcion
 ;
 
 for_continue: For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {Ambito.removeAmbito();
-																		verificarIdIguales($3.sval,$5.sval);
-																		verificarTipos($3.sval,$5.sval);
-																		verificarTipos($3.sval,$7.sval);}
+																		if($3.sval!=null){
+																			verificarIdIguales($3.sval,$5.sval);
+																			verificarTipos($3.sval,$5.sval);
+																			verificarTipos($3.sval,$7.sval);
+																		}}
 		| etiqueta For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo {Ambito.removeAmbito();
-																			verificarIdIguales($4.sval,$6.sval);
-																			verificarTipos($4.sval,$6.sval);
-																			verificarTipos($4.sval,$8.sval);
-																			if (tercetosBreakET.containsKey($1.sval)){
-																				List<Terceto> aux = tercetosBreakET.get($1.sval);
-																				tercetosBreakET.remove($1.sval);
-																				for (int i = 0; i<aux.size();i++){
-																					aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+																			if($4.sval!=null){
+																				verificarIdIguales($4.sval,$6.sval);
+																				verificarTipos($4.sval,$6.sval);
+																				verificarTipos($4.sval,$8.sval);
+																				if (tercetosBreakET.containsKey($1.sval)){
+																					List<Terceto> aux = tercetosBreakET.get($1.sval);
+																					tercetosBreakET.remove($1.sval);
+																					for (int i = 0; i<aux.size();i++){
+																						aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+																					}
 																				}
 																			}}
 ;
@@ -376,15 +403,19 @@ inst_ejecutable_for: inst_ejecutable
 						ListaTercetos.addTerceto(brk);
 					}}
 		| Break ':' id ';' {String amb = Ambito.getAmbito($3.sval);
-							Terceto brk=new Terceto("BI","_","_");
-							if (tercetosBreakET.containsKey(amb)){
-								tercetosBreakET.get(amb).add(brk);
-								ListaTercetos.addTerceto(brk);
-							}else{
-								List<Terceto> aux = new ArrayList<Terceto>();
-								aux.add(brk);
-								tercetosBreakET.put(amb,aux);
-								ListaTercetos.addTerceto(brk);
+							if (amb!=null){
+								Terceto brk=new Terceto("BI","_","_");
+								if (tercetosBreakET.containsKey(amb)){
+									tercetosBreakET.get(amb).add(brk);
+									ListaTercetos.addTerceto(brk);
+								}else{
+									List<Terceto> aux = new ArrayList<Terceto>();
+									aux.add(brk);
+									tercetosBreakET.put(amb,aux);
+									ListaTercetos.addTerceto(brk);
+								}
+							} else {
+								errorEnXY("Etiqueta "+$3.sval+" no declarada");
 							}}
 		| Continue ';' {Terceto cont=new Terceto("BI","_","_");
 						if (tercetosContinue.containsKey(Ambito.getNaming())){
@@ -411,13 +442,11 @@ public static final String ANSI_CYAN = "\u001B[36m";
 public Vector<String> for_ids = new Vector<String>();
 public String tipoAux="";
 public Stack<TokenLexema> tokens= new Stack<TokenLexema>();
-public TokenLexema tokenAux;
 public Stack<Terceto> tercetosAux = new Stack<Terceto>();
 public Boolean verb=AnalizadorLexico.getVerbose();
 public Stack<String> id_for_act = new Stack<String>();
 public Boolean parametroConstante = false;
 public HashMap<String, InvocacionFuncion> llamadasFunciones = new HashMap<String,InvocacionFuncion>();
-public Stack<String> etiquetas = new Stack<String>();
 public HashMap<String,List<Terceto>> tercetosContinue = new HashMap<String,List<Terceto>>();
 public HashMap<String,List<Terceto>> tercetosBreak = new HashMap<String,List<Terceto>>();
 public HashMap<String,List<Terceto>> tercetosBreakET = new HashMap<String,List<Terceto>>();
@@ -462,13 +491,16 @@ public void setearTipo(String arg1, String arg2){
 
 public void verificarEntero(String arg){
 	if (TablaSimbolos.getSimbolo(arg) == null){
-		errorEnXY("Variable "+arg+" no declarada.");
+		if(arg!=null)
+			errorEnXY("Variable "+arg+" no declarada.");
+		else
+			errorEnXY("Variable no declarada.");
 		return;
 	}
 	if (TablaSimbolos.getSimbolo(arg).getTipo().equals("ui8")){
 		return;
 	}
-	errorEnXY("Se requiere que sea de un tipo entero");
+	errorEnXY("Se requiere que "+arg+" sea de un tipo entero");
 }
 
 public void setearUso(String arg, String arg2){
@@ -477,6 +509,7 @@ public void setearUso(String arg, String arg2){
 }
 
 public void verificarTipos(String arg1,String arg2){
+	if (arg1==null||arg2==null||arg1==""||arg2=="") return;
 	String aux1 = arg1;
 	while (aux1.startsWith("[")){
 		aux1=ListaTercetos.getTerceto(aux1).getSarg();
@@ -553,13 +586,17 @@ private void imprimirMSGEstructura(String msg){
 
 private void programaListo(){
 	if (yynerrs!=0){
-		System.out.println(ANSI_RED+"!|!|!|!: El programa encontro "+yynerrs+" errores al compilarse."+ANSI_RESET);
+		System.out.println(ANSI_RED+"!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!\n"+ANSI_RESET);
+		System.out.println(ANSI_RED+"!|!|!|!: El programa encontro "+yynerrs+" errores al compilarse.\n"+ANSI_RESET);
+		System.out.println(ANSI_RED+"!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!/!\n\n"+ANSI_RESET);
 		for (int i = 0; i<erroresDump.size();i++){
 			System.out.println(erroresDump.get(i));
 		}
 		return;
 	}
-	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores."+ANSI_RESET);
+	System.out.println(ANSI_GREEN+"|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|\n"+ANSI_RESET);
+	System.out.println(ANSI_GREEN+"%|%|%|%: El programa compilo sin errores.\n"+ANSI_RESET);
+	System.out.println(ANSI_GREEN+"|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|%|\n\n"+ANSI_RESET);
 	for (int i = 0; i<warningsDump.size();i++){
 			System.out.println(warningsDump.get(i));
 		}

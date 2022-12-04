@@ -327,8 +327,7 @@ public class GestorAssembler {
                         TablaSimbolos.addSimbolo(new TokenLexema(259,variableAuxiliar));
                         cadenasAux.put(tercetoProcesar.sarg, variableAuxiliar);
                     }
-                    lineaCODE.add("invoke MessageBox, NULL, addr _out, addr "+variableAuxiliar+", MB_OK");
-                    lineaCODE.add("invoke ExitProcess, 0");
+                    lineaCODE.add("invoke MessageBox, NULL, addr "+variableAuxiliar+", addr _out, MB_OK");
                     break;
                 case "CALL":
                     String segundoArg = tercetoProcesar.sarg;
@@ -430,7 +429,7 @@ public class GestorAssembler {
             if (entry.getValue().getId()== 259){
                 String aux= entry.getKey();
                 if(aux.startsWith("@")){
-                    lineaDATA.add(aux+ " DB \""+getKeyDeHashCadenas(aux).replaceAll("'", "")+"\"" );
+                    lineaDATA.add(aux+ " DB \""+getKeyDeHashCadenas(aux).replaceAll("'", "")+"\", 0" );
                 }
             }
         }
@@ -444,7 +443,7 @@ public class GestorAssembler {
             case "=": return jne;
             case "<=": return jg;
             case ">=": return jl;
-            case "!=": return je;
+            case "=!": return je;
             default: return jmp;
         }
     }
@@ -527,17 +526,14 @@ public class GestorAssembler {
         
         lineaCODE.add("ErrRec:"); 
         lineaCODE.add("invoke MessageBox, NULL, addr _ErrRec, addr _ErrRec, MB_OK");
-        lineaCODE.add("invoke ExitProcess, 0");
         lineaCODE.add(jmp+" final");
         
         lineaCODE.add("ErrUiNeg:"); 
         lineaCODE.add("invoke MessageBox, NULL, addr _ErrUiNeg, addr _ErrUiNeg, MB_OK");
-        lineaCODE.add("invoke ExitProcess, 0");
         lineaCODE.add(jmp+" final");
         
         lineaCODE.add("ErrOvMul:"); 
         lineaCODE.add("invoke MessageBox, NULL, addr _ErrOvMul, addr _ErrOvMul, MB_OK");
-        lineaCODE.add("invoke ExitProcess, 0");
         lineaCODE.add(jmp+" final");
         
         lineaCODE.add("final:");

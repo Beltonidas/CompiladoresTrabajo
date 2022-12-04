@@ -1,0 +1,28 @@
+programa
+{
+	ui8 a;
+    a=:1.0;
+    f64 i;
+    i=:50;
+    if(a>1.0)then{
+        i =: 50.0+100;
+    } end_if;
+    for (i =: 0; i<10; +1){
+        continue;
+    };
+    for (a =: 0.0; a<10.0; +1.0){
+        continue;
+    };
+    fun fi (f64 x):ui8{
+        x=:1.0;
+        return (x);
+    }
+    fun fa (ui8 x):f64{
+        x=:1;
+        return (x);
+    }
+    discard fi(3.0);
+    discard fa(3);
+    discard fi(a);
+    discard fa(i);
+}

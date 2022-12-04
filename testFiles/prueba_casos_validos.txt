@@ -21,7 +21,7 @@ programa
     x=:10;
     defer x=:fi(a);
     ui8 j;
-     outer:for (i =: 0; i<10; +1 ){
+    outer:for (i =: 0; i<10; +1 ){
     	continue;
     	for (j =: 0; j<10; +1 ){
     		continue;
@@ -31,7 +31,6 @@ programa
         break;
         b =: x;
         x =: a;
-        
     };
     z =: 3.;
     v =: 3.;
