@@ -1,12 +1,19 @@
 programa
 {
-    defer out('Esta iria 5to');
+    ui8 a;
+    a =: 2;
     defer out('Esta iria 6to');
 	out('Esta iria 1ero');
     fun fi (ui8 x):ui8{
         defer out('Esta iria 3ero');
-        defer out('Esta iria 4to');
         out('Esta iria 2da');
+        defer out('Esta iria 4to');
+
+        <<discard fi(4);>>
+
         return (x);
     }
+    discard fi(4);
+    defer out('Esta iria 7to');
+    out('Esta iria 5to');
 }

@@ -10,7 +10,7 @@ programa
         i =: 50+100;
     }end_if;
     fun fi (ui8 x):ui8{
-        discard fi(x);
+        <<discard fi(x);>>
         f64 z;
         z=:10.;
         a=:a*b;

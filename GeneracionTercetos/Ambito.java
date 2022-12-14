@@ -8,7 +8,7 @@ import java.util.Stack;
 
 public class Ambito {
     private static List<String> ambitos = new ArrayList<String>();
-    private static Stack<List<Terceto>> tercetosDiferidos = new Stack<List<Terceto>>();
+    public static Stack<List<Terceto>> tercetosDiferidos = new Stack<List<Terceto>>();
     
     public static int getIndiceDiferido() {
         return tercetosDiferidos.get(tercetosDiferidos.size()-1).size();

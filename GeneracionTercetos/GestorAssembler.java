@@ -16,10 +16,10 @@ public class GestorAssembler {
     final static String sub = "SUB";
     final static String div = "DIV";
     final static String jmp = "JMP";
-    final static String jle = "JLE";
-    final static String jge = "JGE";
-    final static String jg = "JG";
-    final static String jl = "JL";
+    final static String jbe = "JBE";
+    final static String jae = "JAE";
+    final static String ja = "JA";
+    final static String jb = "JB";
     final static String je = "JE";
     final static String jne = "JNE";
     final static String push = "PUSH";
@@ -162,12 +162,12 @@ public class GestorAssembler {
                     TablaSimbolos.addSimbolo(new TokenLexema(257, (variableAux+x), "f64"));
                     x++;
                 }
-                lineaCODE.add(fild +" "+variableAuxiliar);
+                lineaCODE.add(fld +" "+variableAuxiliar);
                 nombreAux = segundoArgumento.getLexema().toString();
                 nombreAux = nombreAux.replace(":", "");
                 lineaCODE.add(fstp +" _"+nombreAux);
             }else{
-                lineaCODE.add(fild +" "+tercerArgumento.getLexema());
+                lineaCODE.add(fld +" "+tercerArgumento.getLexema());
                 nombreAux = segundoArgumento.getLexema().toString();
                 nombreAux = nombreAux.replace(":", "");
                 lineaCODE.add(fstp +" _"+nombreAux);
@@ -198,7 +198,8 @@ public class GestorAssembler {
             }
         }
         if (terceto.targ.startsWith("[")) {
-            tercerArgumento = TablaSimbolos.getSimbolo(variablesAux.get(referenciaTerceto(terceto.targ))).getLexema().toString();
+            String aux = variablesAux.get(referenciaTerceto(terceto.targ));
+            tercerArgumento = TablaSimbolos.getSimbolo(aux).getLexema().toString();
         }else {
             TokenLexema aux = TablaSimbolos.getSimbolo(terceto.targ);
             tercerArgumento = aux.getLexema().toString();
@@ -211,14 +212,40 @@ public class GestorAssembler {
             }
         }
         if (tipoOp.equals("ui8")) {
-            if (segEsImm&&terEsImm) {
+            if (((segundoArgumento.startsWith("_") || segundoArgumento.startsWith("@"))
+                    && (tercerArgumento.startsWith("_") || tercerArgumento.startsWith("@")) ) || segEsImm){
                 lineaCODE.add(mov+" AL, "+segundoArgumento);
-                lineaCODE.add(cmp+" AL, "+tercerArgumento);
-            }else 
+                lineaCODE.add(cmp+" AL"+", "+tercerArgumento);
+            } else{
                 lineaCODE.add(cmp+" "+segundoArgumento+", "+tercerArgumento);
+            }
         }else {
-            lineaCODE.add(fild+" "+segundoArgumento);
-            lineaCODE.add(fild+" "+tercerArgumento);
+            if (segEsImm){
+                String variableAuxiliar="";
+                if (ctesAux.containsKey(segundoArgumento)){
+                    variableAuxiliar=ctesAux.get(segundoArgumento);
+                }else{
+                    variableAuxiliar=(variableAux+x);
+                    ctesAux.put(segundoArgumento, (variableAux+x));
+                    TablaSimbolos.addSimbolo(new TokenLexema(257, (variableAux+x), "f64"));
+                    x++;
+                }
+                segundoArgumento = variableAuxiliar;
+            }
+            if (terEsImm){
+                String variableAuxiliar="";
+                if (ctesAux.containsKey(tercerArgumento)){
+                    variableAuxiliar=ctesAux.get(tercerArgumento);
+                }else{
+                    variableAuxiliar=(variableAux+x);
+                    ctesAux.put(tercerArgumento, (variableAux+x));
+                    TablaSimbolos.addSimbolo(new TokenLexema(257, (variableAux+x), "f64"));
+                    x++;
+                }
+                tercerArgumento = variableAuxiliar;
+            }
+            lineaCODE.add(fld+" "+segundoArgumento);
+            lineaCODE.add(fld+" "+tercerArgumento);
             lineaCODE.add(fcompp);
             lineaCODE.add(fstsw+" "+(variableAux+x));
             lineaCODE.add(mov+" AX, "+(variableAux+x));
@@ -235,6 +262,7 @@ public class GestorAssembler {
     public static void procesarArchivo(){
         //----------------ITERAR TERCETOS GENERAR CODIGO--------------------
         String operadorAnterior="";
+        Terceto tercetoAnterior = new Terceto(null, null, null);
         String nombreAUX= "";
         for (int i = 0; i < ListaTercetos.getIndice() ; i++) {
             Terceto tercetoProcesar = ListaTercetos.getTerceto(i);
@@ -264,7 +292,15 @@ public class GestorAssembler {
                     lineaCODE.add(jmp+" Label_"+referenciaTerceto(tercetoProcesar.sarg));
                     break;
                 case "BF":
-                    lineaCODE.add(nemesisOp(operadorAnterior)+" Label_"+referenciaTerceto(tercetoProcesar.targ));
+                    if (tercetoAnterior.sarg.startsWith("[")) {
+                        nombreAUX = variablesAux.get(referenciaTerceto(tercetoAnterior.sarg));
+                    } else {
+                        nombreAUX = tercetoAnterior.sarg;
+                    }
+
+                    TokenLexema auxx = TablaSimbolos.getSimbolo(nombreAUX);
+                    String tipoOp = auxx.getTipo().toString();
+                    lineaCODE.add(nemesisOp(operadorAnterior, tipoOp)+" Label_"+referenciaTerceto(tercetoProcesar.targ));
                     break;
                 case "<":
                     comparacion(i,tercetoProcesar);
@@ -287,13 +323,27 @@ public class GestorAssembler {
                 case "Push":
                     if (tercetoProcesar.sarg.equals("EBX")) {
                         lineaCODE.add(push+" "+tercetoProcesar.sarg);
-                    }else if (TablaSimbolos.getSimbolo(tercetoProcesar.sarg).getTipo().equals("ui8")) {
-                        nombreAUX = tercetoProcesar.sarg;
+                    } else if (obtenerTipoTerceto(tercetoProcesar).equals("ui8")) {
+                        if (tercetoProcesar.sarg.startsWith("[")) {
+                            nombreAUX = variablesAux.get(referenciaTerceto(tercetoProcesar.sarg));
+                        } else {
+                            nombreAUX = tercetoProcesar.sarg;
+                        }
                         nombreAUX = nombreAUX.replace(":", "");
-                        lineaCODE.add(mov+" AL, _"+nombreAUX);
+                        if (!segundoEsInmediato(tercetoProcesar)){
+                            lineaCODE.add(mov+" AL, _"+nombreAUX);
+                            
+                        } else {
+                            lineaCODE.add(mov+" AL, "+nombreAUX);
+                        }
                         lineaCODE.add(push+" AX");
                     }else {
-                        lineaCODE.add(fild+" _"+tercetoProcesar.sarg.replace(":", ""));
+                        if (tercetoProcesar.sarg.startsWith("[")) {
+                            nombreAUX = variablesAux.get(referenciaTerceto(tercetoProcesar.sarg));
+                            lineaCODE.add(fld+" "+nombreAUX.replace(":", ""));
+                        } else {
+                            lineaCODE.add(fld+" _"+tercetoProcesar.sarg.replace(":", ""));
+                        }
                     }
                     break;
                 case "Pop":
@@ -339,12 +389,40 @@ public class GestorAssembler {
                     aux = primerArg + " " +segundoArg;
                     lineaCODE.add(aux);
                     break;
+                case "RET":
+                    lineaCODE.add("RET");
             }
             operadorAnterior=operador;
+            tercetoAnterior=tercetoProcesar;
         }
         addLibrerias();
     }
     
+    private static boolean segundoEsInmediato(Terceto tercetoProcesar) {
+        String usoOp = "";
+        if (tercetoProcesar.sarg.startsWith("[")) {
+            String aux = variablesAux.get(referenciaTerceto(tercetoProcesar.sarg));
+            usoOp = TablaSimbolos.getSimbolo(aux).getUso();
+        } else {
+            TokenLexema aux = TablaSimbolos.getSimbolo(tercetoProcesar.sarg);
+            usoOp = aux.getUso();
+        }
+        if (usoOp != null) return false;
+        else return true;
+    }
+
+    private static String obtenerTipoTerceto(Terceto tercetoProcesar) {
+        String tipoOp = "";
+        if (tercetoProcesar.sarg.startsWith("[")) {
+            String aux = variablesAux.get(referenciaTerceto(tercetoProcesar.sarg));
+            tipoOp = TablaSimbolos.getSimbolo(aux).getTipo();
+        } else {
+            TokenLexema aux = TablaSimbolos.getSimbolo(tercetoProcesar.sarg);
+            tipoOp = aux.getTipo();
+        }
+        return tipoOp;
+    }
+
     public static void addLibrerias() {
         lineaDATA.add(".386");
         lineaDATA.add(".model flat, stdcall");
@@ -436,16 +514,29 @@ public class GestorAssembler {
     }
 
     //Dado que esta la usamos para bifurcaciones por falso devolvemos el opuesto
-    public static String nemesisOp(String op) {
-        switch (op) {
-            case ">": return jle;
-            case "<": return jge;
-            case "=": return jne;
-            case "<=": return jg;
-            case ">=": return jl;
-            case "=!": return je;
-            default: return jmp;
+    public static String nemesisOp(String op, String tipoOp) {
+        if (tipoOp.equals("ui8")){
+            switch (op) {
+                case ">": return jbe;
+                case "<": return jae;
+                case "=": return jne;
+                case "<=": return ja;
+                case ">=": return jb;
+                case "=!": return je;
+                default: return jmp;
+            }
+        } else {
+            switch (op) {
+                case ">": return ja;
+                case "<": return jb;
+                case "=": return je;
+                case "<=": return jbe;
+                case ">=": return jae;
+                case "=!": return jne;
+                default: return jmp;
+            }
         }
+        
     }
     
     public static void procesarTerceto(String sOp, String tOp, String funcion, boolean sOpINM, boolean tOpIMN) {
@@ -463,6 +554,11 @@ public class GestorAssembler {
             sOp= (variableAux+x);
             x++;
         }
+
+        if (funcion.equals(div)) {
+            lineaCODE.add(mov+" AX, 0");
+        }
+
         lineaCODE.add(mov + " AL, " +sOp);
         if (funcion.equals(mul) ||funcion.equals(div)){
             lineaCODE.add(funcion +" "+tOp);
@@ -471,7 +567,7 @@ public class GestorAssembler {
             lineaCODE.add(funcion + " AL, " +tOp);
         if(funcion.equals(sub)) {
             lineaCODE.add(cmp +" AL, 0");
-            lineaCODE.add(jl+" ErrUiNeg");
+            lineaCODE.add("JL ErrUiNeg");
         }
         lineaCODE.add(mov +" " + variableAux+x + ", AL");
     }
@@ -497,18 +593,18 @@ public class GestorAssembler {
                 x++;
             }
         }
-        lineaCODE.add(fild+" "+sOp);
-        lineaCODE.add(fild+" "+tOp);
+        lineaCODE.add(fld+" "+sOp);
+        lineaCODE.add(fld+" "+tOp);
         lineaCODE.add(funcion);
         if (funcion.equals(fmul)) {
-            lineaCODE.add(fcom+" "+dobleMax); // mal, primero hay que meterlo en una variable xq sino no anda
+            lineaCODE.add(fcom+" "+dobleMax);
             lineaCODE.add(fstsw+" "+(variableAux+x));
             lineaCODE.add(mov+" AX, "+(variableAux+x));
             //Insetar en tabla de simbolos
             TablaSimbolos.addSimbolo(new TokenLexema(257, (variableAux+x), "f16"));
             x++;
             lineaCODE.add(sahf);
-            lineaCODE.add(jg+" ErrOvMul");
+            lineaCODE.add(ja+" ErrOvMul");
             
             lineaCODE.add(fcom+" "+dobleMin);
             lineaCODE.add(fstsw+" "+(variableAux+x));
@@ -516,7 +612,7 @@ public class GestorAssembler {
             TablaSimbolos.addSimbolo(new TokenLexema(257, (variableAux+x), "f16"));
             x++;
             lineaCODE.add(sahf);
-            lineaCODE.add(jl+" ErrOvMul");
+            lineaCODE.add(jb+" ErrOvMul");
         }
         lineaCODE.add(fstp+" "+variableAux+x);
     }

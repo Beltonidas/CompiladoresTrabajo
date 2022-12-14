@@ -1,0 +1,36 @@
+programa
+{
+	ui8 j;
+	for (j =: 0; j<10+1*1-1/1/1/1/1; +1 ){
+    		out('aaa');
+    };
+
+	fun fi(ui8 e):f64 {
+		e =: 4;
+		ui8 j;
+		ui8 k;
+		k =: 4+8-1*5/6/6+5;
+
+		if (1 < 2) then { j =: 1;out('primer if bien'); } end_if;
+		if (1 <= j) then { j =: 1;out('segundo if bien'); } end_if;
+		if (j < 1) then { j =: 1;out('tercer if mal'); } end_if;
+		if (j < k) then { j =: 1;out('cuarto if bien'); } end_if;
+
+		<<discard fi(j);>>
+
+		f64 a, b;
+		a =: 3.3;
+		b =: 10.;
+
+		if (-4.+8.-1.*5./6./6.+5. = -4.+8.-1.*5./6./6.+5.) then { j =: 1;out('quinto if bien'); } end_if;
+		if (-4.+8.-1.*5./6./6.+5. <= b) then { j =: 1;out('sexto if bien'); } end_if;
+		if (a < -4.+8.-1.*5./6./6.+5.) then { j =: 1;out('septimo if mal'); } end_if;
+		if (a < b) then { j =: 1;out('octavo if bien'); } end_if;
+
+		a =: -4.+8.-1.*5./6./6.+5.;
+
+		return (a+a*a-a/a);
+	}
+
+	discard fi(3);
+}
