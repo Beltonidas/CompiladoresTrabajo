@@ -19,6 +19,10 @@ public class Ambito {
         tercetosDiferidos.push(new ArrayList<Terceto>());
     }
 
+    public static Terceto getTerceto(int indice){
+        return tercetosDiferidos.peek().get(indice);
+    }
+
     public static String removeAmbito(){
         List<Terceto> aux=tercetosDiferidos.pop();
         while (!aux.isEmpty()) {

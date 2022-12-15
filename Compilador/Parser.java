@@ -598,6 +598,7 @@ public void verificarTipos(String arg1,String arg2){
 	if (arg1==null||arg2==null||arg1==""||arg2=="") return;
 	String aux1 = arg1;
 	while (aux1.startsWith("[")){
+    System.out.println("aux1: "+aux1);
 		aux1=ListaTercetos.getTerceto(aux1).getSarg();
 	}
 	String aux2=arg2;

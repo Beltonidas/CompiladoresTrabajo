@@ -44,9 +44,16 @@ public class ListaTercetos {
     
     public static Terceto getTerceto(String indice){
         StringBuilder aux = new StringBuilder(indice);
+        System.out.println("tamanio "+tercetos.size());
+        System.out.println(aux);
         aux.deleteCharAt(0);
         aux.deleteCharAt(aux.length()-1);
-        return tercetos.get(Integer.parseInt(aux.toString()));
+        int aux_indice = Integer.parseInt(aux.toString());
+        if (tercetos.size() <= aux_indice){
+            return Ambito.getTerceto(aux_indice-tercetos.size());
+        }
+
+        return tercetos.get(aux_indice);
     }
 
     public static void add_seleccion_cond(){

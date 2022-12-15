@@ -19,7 +19,8 @@ programa
     a=:10;
     discard fi(a);
     x=:10;
-    defer x=:fi(a);
+    defer x=:fi(a)+3/5/8-0;
+    out('sigue la ejecucion normalmente');
     ui8 j;
     outer:for (i =: 0; i<10; +1 ){
     	continue;

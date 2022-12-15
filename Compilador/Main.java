@@ -8,7 +8,7 @@ import GeneracionTercetos.GestorAssembler;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-	    Boolean com=false;
+	    Boolean com=true;
 	    //System.out.println("Ruta del archivo que desea ejecutar: ");
 	    //Scanner consola = new Scanner(System.in);
 	    //String ruta = consola.nextLine();
@@ -19,7 +19,7 @@ public class Main {
         //}
         //consola.close();
         //AnalizadorLexico.inic(ruta,com);
-		AnalizadorLexico.inic("./testFiles/prueba_defer.txt",com);
+		AnalizadorLexico.inic("./testFiles/prueba_casos_validos.txt",com);
 		Parser paruser = new Parser();
 		AnalizadorLexico.paruser=paruser;
 		paruser.run();
