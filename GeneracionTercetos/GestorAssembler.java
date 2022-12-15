@@ -244,8 +244,8 @@ public class GestorAssembler {
                 }
                 tercerArgumento = variableAuxiliar;
             }
-            lineaCODE.add(fld+" "+segundoArgumento);
             lineaCODE.add(fld+" "+tercerArgumento);
+            lineaCODE.add(fld+" "+segundoArgumento);
             lineaCODE.add(fcompp);
             lineaCODE.add(fstsw+" "+(variableAux+x));
             lineaCODE.add(mov+" AX, "+(variableAux+x));
@@ -391,6 +391,15 @@ public class GestorAssembler {
                     break;
                 case "RET":
                     lineaCODE.add("RET");
+                    break;
+                case "PUSH":
+                    //lineaCODE.add("marcaPUSH");
+                    lineaCODE.add("PUSH "+tercetoProcesar.sarg);
+                    break;
+                case "POP":
+                    //lineaCODE.add("marcaPOP");
+                    lineaCODE.add("POP "+tercetoProcesar.sarg);
+                    break;
             }
             operadorAnterior=operador;
             tercetoAnterior=tercetoProcesar;
@@ -527,12 +536,12 @@ public class GestorAssembler {
             }
         } else {
             switch (op) {
-                case ">": return ja;
-                case "<": return jb;
-                case "=": return je;
-                case "<=": return jbe;
-                case ">=": return jae;
-                case "=!": return jne;
+                case ">": return jbe;
+                case "<": return jae;
+                case "=": return jne;
+                case "<=": return ja;
+                case ">=": return jb;
+                case "=!": return je;
                 default: return jmp;
             }
         }

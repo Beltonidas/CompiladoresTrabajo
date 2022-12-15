@@ -79,17 +79,20 @@ header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 							llamadasFunciones.put($2.sval,f);
 							terAux = new Terceto("MOV","EBX",String.valueOf(ListaTercetos.getIndice()));
 							ListaTercetos.addTerceto(terAux);
+							ListaTercetos.addTerceto(new Terceto("POP","DX","_"));
 							$$.sval=$2.sval;}
 		| fun '(' {errorEnXY("La declaracion de la funcion necesita un nombre");}
 ;
 
-cola_funcion: ')' ':' tipo '{' cuerpo_fun '}' {TokenLexema tokenAux=tokens.pop();
+cola_funcion: ')' {ListaTercetos.addTerceto(new Terceto("PUSH","DX","_"));} ':' tipo '{' cuerpo_fun '}' {TokenLexema tokenAux=tokens.pop();
 												if(tokenAux!=null){
 													Ambito.removeAmbito();
-													tokenAux.setTipo($3.sval);
-													verificarTipos(tokenAux.getLexema().toString(),$5.sval);
-													Terceto terAux=new Terceto("Push",$5.sval,"_");
+													tokenAux.setTipo($4.sval);
+													verificarTipos(tokenAux.getLexema().toString(),$6.sval);
+													ListaTercetos.addTerceto(new Terceto("POP","DX","_"));
+													Terceto terAux=new Terceto("Push",$6.sval,"_");
 													ListaTercetos.addTerceto(terAux);
+													ListaTercetos.addTerceto(new Terceto("PUSH","DX","_"));
 													//Ambito.removeAmbito();
 													terAux=new Terceto("RET","_","_");
 													ListaTercetos.addTerceto(terAux);

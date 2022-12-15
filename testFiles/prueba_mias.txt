@@ -1,9 +1,9 @@
 programa
 {
 	ui8 j;
-	for (j =: 0; j<10+1*1-1/1/1/1/1; +1 ){
+	<<for (j =: 0; j<10+1*1-1/1/1/1/1; +1 ){
     		out('aaa');
-    };
+    };>>
 
 	fun fi(ui8 e):f64 {
 		e =: 4;
@@ -22,10 +22,28 @@ programa
 		a =: 3.3;
 		b =: 10.;
 
-		if (-4.+8.-1.*5./6./6.+5. = -4.+8.-1.*5./6./6.+5.) then { j =: 1;out('quinto if bien'); } end_if;
-		if (-4.+8.-1.*5./6./6.+5. <= b) then { j =: 1;out('sexto if bien'); } end_if;
-		if (a < -4.+8.-1.*5./6./6.+5.) then { j =: 1;out('septimo if mal'); } end_if;
-		if (a < b) then { j =: 1;out('octavo if bien'); } end_if;
+		<< -4.+8.-1.*5./6./6.+5. es igual a 8.86111 >>
+
+		if (-4.+8.-1.*5./6./6.+5. = -4.+8.-1.*5./6./6.+5.) then { j =: 1;out('quinto if bien'); } else out('quinto if mal'); end_if;
+		if (-4.+8.-1.*5./6./6.+5. <= b) then { j =: 1;out('sexto if bien'); } else out('sexto if mal'); end_if;
+
+		if (a >= 20.) then { 
+			out('septimo if mal'); 
+		} else {
+			out('septimo if bien');
+		} end_if;
+
+		if (a <= b) then { j =: 1;out('octavo if bien'); } else out('octavo if mal'); end_if;
+
+		if (a > -2.2) then { j =: 1;out('noveno if bien'); } else out('noveno if mal'); end_if;
+
+		if (10. = b) then {
+			out('decimo if bien');
+		} else { 
+			out('decimo if mal');
+		} end_if;
+
+		if (a =! 2.2) then { j =: 1;out('11vo if bien'); } else out('11vo if mal'); end_if;
 
 		a =: -4.+8.-1.*5./6./6.+5.;
 

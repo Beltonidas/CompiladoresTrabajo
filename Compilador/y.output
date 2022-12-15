@@ -42,110 +42,112 @@
   27  header_funcion : fun id '('
   28                 | fun '('
 
-  29  cola_funcion : ')' ':' tipo '{' cuerpo_fun '}'
-  30               | error
+  29  $$3 :
 
-  31  parametro : tipo id
-  32            | tipo
+  30  cola_funcion : ')' $$3 ':' tipo '{' cuerpo_fun '}'
+  31               | error
 
-  33  cuerpo_fun : sentencia Return '(' expresion ')' ';'
-  34             | sentencia Return '(' expresion ';'
-  35             | sentencia Return expresion ';'
-  36             | sentencia Return expresion ')' ';'
-  37             | sentencia Return expresion
-  38             | sentencia Return '(' expresion ')'
+  32  parametro : tipo id
+  33            | tipo
 
-  39  ejecutable : inst_ejecutable
+  34  cuerpo_fun : sentencia Return '(' expresion ')' ';'
+  35             | sentencia Return '(' expresion ';'
+  36             | sentencia Return expresion ';'
+  37             | sentencia Return expresion ')' ';'
+  38             | sentencia Return expresion
+  39             | sentencia Return '(' expresion ')'
 
-  40  $$3 :
+  40  ejecutable : inst_ejecutable
 
-  41  ejecutable : defer $$3 inst_ejecutable
+  41  $$4 :
 
-  42  inst_ejecutable : asignacion ';'
-  43                  | seleccion ';'
-  44                  | impresion ';'
-  45                  | invocar_fun ';'
-  46                  | for_continue
+  42  ejecutable : defer $$4 inst_ejecutable
 
-  47  asignacion : id SIMB_ASIGNACION expresion
-  48             | id SIMB_ASIGNACION
-  49             | id ':' '=' expresion
+  43  inst_ejecutable : asignacion ';'
+  44                  | seleccion ';'
+  45                  | impresion ';'
+  46                  | invocar_fun ';'
+  47                  | for_continue
 
-  50  expresion : expresion '+' termino
-  51            | expresion '-' termino
-  52            | termino
+  48  asignacion : id SIMB_ASIGNACION expresion
+  49             | id SIMB_ASIGNACION
+  50             | id ':' '=' expresion
 
-  53  termino : termino '*' factor
-  54          | termino '/' factor
-  55          | factor
+  51  expresion : expresion '+' termino
+  52            | expresion '-' termino
+  53            | termino
 
-  56  factor : id
-  57         | cte
-  58         | '-' cte
-  59         | retorno_funcion
+  54  termino : termino '*' factor
+  55          | termino '/' factor
+  56          | factor
 
-  60  retorno_funcion : id '(' ')'
-  61                  | id '(' parametro_real ')'
-  62                  | id '(' parametro_real ',' parametro_real ')'
+  57  factor : id
+  58         | cte
+  59         | '-' cte
+  60         | retorno_funcion
 
-  63  parametro_real : id
-  64                 | cte
-  65                 | '-' cte
+  61  retorno_funcion : id '(' ')'
+  62                  | id '(' parametro_real ')'
+  63                  | id '(' parametro_real ',' parametro_real ')'
 
-  66  seleccion : If condicion_if cuerpo_if
+  64  parametro_real : id
+  65                 | cte
+  66                 | '-' cte
 
-  67  cuerpo_if : then_selec Else else_selecc end_if
-  68            | then_selec end_if
+  67  seleccion : If condicion_if cuerpo_if
 
-  69  then_selec : then '{' ejecutable_for '}'
-  70             | then inst_ejecutable_for
+  68  cuerpo_if : then_selec Else else_selecc end_if
+  69            | then_selec end_if
 
-  71  else_selecc : '{' ejecutable_for '}'
-  72              | inst_ejecutable_for
+  70  then_selec : then '{' ejecutable_for '}'
+  71             | then inst_ejecutable_for
 
-  73  condicion_if : '(' expresion_booleana ')'
+  72  else_selecc : '{' ejecutable_for '}'
+  73              | inst_ejecutable_for
 
-  74  expresion_booleana : expresion comparador expresion
+  74  condicion_if : '(' expresion_booleana ')'
 
-  75  comparador : SIMB_DISTINTO
-  76             | SIMB_MAY_IGUAL
-  77             | SIMB_MEN_IGUAL
-  78             | '='
-  79             | '<'
-  80             | '>'
+  75  expresion_booleana : expresion comparador expresion
 
-  81  impresion : out '(' cadena ')'
-  82            | out cadena ')'
-  83            | out '(' cadena
+  76  comparador : SIMB_DISTINTO
+  77             | SIMB_MAY_IGUAL
+  78             | SIMB_MEN_IGUAL
+  79             | '='
+  80             | '<'
+  81             | '>'
 
-  84  invocar_fun : discard retorno_funcion
-  85              | retorno_funcion
+  82  impresion : out '(' cadena ')'
+  83            | out cadena ')'
+  84            | out '(' cadena
 
-  86  for_continue : For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
-  87               | etiqueta For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
+  85  invocar_fun : discard retorno_funcion
+  86              | retorno_funcion
 
-  88  etiqueta : id ':'
+  87  for_continue : For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
+  88               | etiqueta For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo
 
-  89  for_inic : id SIMB_ASIGNACION cte
+  89  etiqueta : id ':'
 
-  90  for_cond : id comparador expresion
+  90  for_inic : id SIMB_ASIGNACION cte
 
-  91  for_act : mas_o_menos cte
-  92          | cte
+  91  for_cond : id comparador expresion
 
-  93  for_cuerpo : '{' ejecutable_for '}' ';'
-  94             | inst_ejecutable_for
+  92  for_act : mas_o_menos cte
+  93          | cte
 
-  95  mas_o_menos : '+'
-  96              | '-'
+  94  for_cuerpo : '{' ejecutable_for '}' ';'
+  95             | inst_ejecutable_for
 
-  97  ejecutable_for : ejecutable_for inst_ejecutable_for
-  98                 | inst_ejecutable_for
+  96  mas_o_menos : '+'
+  97              | '-'
 
-  99  inst_ejecutable_for : inst_ejecutable
- 100                      | Break ';'
- 101                      | Break ':' id ';'
- 102                      | Continue ';'
+  98  ejecutable_for : ejecutable_for inst_ejecutable_for
+  99                 | inst_ejecutable_for
+
+ 100  inst_ejecutable_for : inst_ejecutable
+ 101                      | Break ';'
+ 102                      | Break ':' id ';'
+ 103                      | Continue ';'
 
 state 0
 	$accept : . programa $end  (0)
@@ -227,13 +229,13 @@ state 6
 state 7
 	tipo : id .  (18)
 	list_variables : id .  (19)
-	asignacion : id . SIMB_ASIGNACION expresion  (47)
-	asignacion : id . SIMB_ASIGNACION  (48)
-	asignacion : id . ':' '=' expresion  (49)
-	retorno_funcion : id . '(' ')'  (60)
-	retorno_funcion : id . '(' parametro_real ')'  (61)
-	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (62)
-	etiqueta : id . ':'  (88)
+	asignacion : id . SIMB_ASIGNACION expresion  (48)
+	asignacion : id . SIMB_ASIGNACION  (49)
+	asignacion : id . ':' '=' expresion  (50)
+	retorno_funcion : id . '(' ')'  (61)
+	retorno_funcion : id . '(' parametro_real ')'  (62)
+	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (63)
+	etiqueta : id . ':'  (89)
 
 	SIMB_ASIGNACION  shift 34
 	'('  shift 35
@@ -245,7 +247,7 @@ state 7
 
 
 state 8
-	seleccion : If . condicion_if cuerpo_if  (66)
+	seleccion : If . condicion_if cuerpo_if  (67)
 
 	'('  shift 37
 	.  error
@@ -254,9 +256,9 @@ state 8
 
 
 state 9
-	impresion : out . '(' cadena ')'  (81)
-	impresion : out . cadena ')'  (82)
-	impresion : out . '(' cadena  (83)
+	impresion : out . '(' cadena ')'  (82)
+	impresion : out . cadena ')'  (83)
+	impresion : out . '(' cadena  (84)
 
 	cadena  shift 39
 	'('  shift 40
@@ -285,7 +287,7 @@ state 12
 
 
 state 13
-	invocar_fun : discard . retorno_funcion  (84)
+	invocar_fun : discard . retorno_funcion  (85)
 
 	id  shift 43
 	.  error
@@ -294,19 +296,19 @@ state 13
 
 
 state 14
-	for_continue : For . '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo  (86)
+	for_continue : For . '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo  (87)
 
 	'('  shift 45
 	.  error
 
 
 state 15
-	ejecutable : defer . $$3 inst_ejecutable  (41)
-	$$3 : .  (40)
+	ejecutable : defer . $$4 inst_ejecutable  (42)
+	$$4 : .  (41)
 
-	.  reduce 40
+	.  reduce 41
 
-	$$3  goto 46
+	$$4  goto 46
 
 
 state 16
@@ -445,66 +447,66 @@ state 25
 
 
 state 26
-	ejecutable : inst_ejecutable .  (39)
+	ejecutable : inst_ejecutable .  (40)
 
-	.  reduce 39
+	.  reduce 40
 
 
 state 27
-	inst_ejecutable : asignacion . ';'  (42)
+	inst_ejecutable : asignacion . ';'  (43)
 
 	';'  shift 61
 	.  error
 
 
 state 28
-	inst_ejecutable : seleccion . ';'  (43)
+	inst_ejecutable : seleccion . ';'  (44)
 
 	';'  shift 62
 	.  error
 
 
 state 29
-	inst_ejecutable : impresion . ';'  (44)
+	inst_ejecutable : impresion . ';'  (45)
 
 	';'  shift 63
 	.  error
 
 
 state 30
-	inst_ejecutable : invocar_fun . ';'  (45)
+	inst_ejecutable : invocar_fun . ';'  (46)
 
 	';'  shift 64
 	.  error
 
 
 state 31
-	inst_ejecutable : for_continue .  (46)
+	inst_ejecutable : for_continue .  (47)
 
-	.  reduce 46
+	.  reduce 47
 
 
 state 32
-	invocar_fun : retorno_funcion .  (85)
+	invocar_fun : retorno_funcion .  (86)
 
-	.  reduce 85
+	.  reduce 86
 
 
 state 33
-	for_continue : etiqueta . For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo  (87)
+	for_continue : etiqueta . For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo  (88)
 
 	For  shift 65
 	.  error
 
 
 state 34
-	asignacion : id SIMB_ASIGNACION . expresion  (47)
-	asignacion : id SIMB_ASIGNACION .  (48)
+	asignacion : id SIMB_ASIGNACION . expresion  (48)
+	asignacion : id SIMB_ASIGNACION .  (49)
 
 	id  shift 66
 	cte  shift 67
 	'-'  shift 68
-	';'  reduce 48
+	';'  reduce 49
 
 	expresion  goto 69
 	termino  goto 70
@@ -513,9 +515,9 @@ state 34
 
 
 state 35
-	retorno_funcion : id '(' . ')'  (60)
-	retorno_funcion : id '(' . parametro_real ')'  (61)
-	retorno_funcion : id '(' . parametro_real ',' parametro_real ')'  (62)
+	retorno_funcion : id '(' . ')'  (61)
+	retorno_funcion : id '(' . parametro_real ')'  (62)
+	retorno_funcion : id '(' . parametro_real ',' parametro_real ')'  (63)
 
 	id  shift 73
 	cte  shift 74
@@ -527,15 +529,15 @@ state 35
 
 
 state 36
-	asignacion : id ':' . '=' expresion  (49)
-	etiqueta : id ':' .  (88)
+	asignacion : id ':' . '=' expresion  (50)
+	etiqueta : id ':' .  (89)
 
 	'='  shift 78
-	For  reduce 88
+	For  reduce 89
 
 
 state 37
-	condicion_if : '(' . expresion_booleana ')'  (73)
+	condicion_if : '(' . expresion_booleana ')'  (74)
 
 	id  shift 66
 	cte  shift 67
@@ -550,7 +552,7 @@ state 37
 
 
 state 38
-	seleccion : If condicion_if . cuerpo_if  (66)
+	seleccion : If condicion_if . cuerpo_if  (67)
 
 	then  shift 81
 	.  error
@@ -560,15 +562,15 @@ state 38
 
 
 state 39
-	impresion : out cadena . ')'  (82)
+	impresion : out cadena . ')'  (83)
 
 	')'  shift 84
 	.  error
 
 
 state 40
-	impresion : out '(' . cadena ')'  (81)
-	impresion : out '(' . cadena  (83)
+	impresion : out '(' . cadena ')'  (82)
+	impresion : out '(' . cadena  (84)
 
 	cadena  shift 85
 	.  error
@@ -588,22 +590,22 @@ state 42
 
 
 state 43
-	retorno_funcion : id . '(' ')'  (60)
-	retorno_funcion : id . '(' parametro_real ')'  (61)
-	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (62)
+	retorno_funcion : id . '(' ')'  (61)
+	retorno_funcion : id . '(' parametro_real ')'  (62)
+	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (63)
 
 	'('  shift 35
 	.  error
 
 
 state 44
-	invocar_fun : discard retorno_funcion .  (84)
+	invocar_fun : discard retorno_funcion .  (85)
 
-	.  reduce 84
+	.  reduce 85
 
 
 state 45
-	for_continue : For '(' . for_inic ';' for_cond ';' for_act ')' for_cuerpo  (86)
+	for_continue : For '(' . for_inic ';' for_cond ';' for_act ')' for_cuerpo  (87)
 
 	id  shift 87
 	.  error
@@ -612,7 +614,7 @@ state 45
 
 
 state 46
-	ejecutable : defer $$3 . inst_ejecutable  (41)
+	ejecutable : defer $$4 . inst_ejecutable  (42)
 
 	id  shift 89
 	If  shift 8
@@ -714,9 +716,9 @@ state 54
 
 
 state 55
-	cola_funcion : error .  (30)
+	cola_funcion : error .  (31)
 
-	.  reduce 30
+	.  reduce 31
 
 
 state 56
@@ -726,20 +728,22 @@ state 56
 
 
 state 57
-	cola_funcion : ')' . ':' tipo '{' cuerpo_fun '}'  (29)
+	cola_funcion : ')' . $$3 ':' tipo '{' cuerpo_fun '}'  (30)
+	$$3 : .  (29)
 
-	':'  shift 94
-	.  error
+	.  reduce 29
+
+	$$3  goto 94
 
 
 state 58
-	parametro : tipo . id  (31)
-	parametro : tipo .  (32)
+	parametro : tipo . id  (32)
+	parametro : tipo .  (33)
 
 	id  shift 95
-	error  reduce 32
-	','  reduce 32
-	')'  reduce 32
+	error  reduce 33
+	','  reduce 33
+	')'  reduce 33
 
 
 state 59
@@ -761,141 +765,141 @@ state 60
 
 
 state 61
-	inst_ejecutable : asignacion ';' .  (42)
-
-	.  reduce 42
-
-
-state 62
-	inst_ejecutable : seleccion ';' .  (43)
+	inst_ejecutable : asignacion ';' .  (43)
 
 	.  reduce 43
 
 
-state 63
-	inst_ejecutable : impresion ';' .  (44)
+state 62
+	inst_ejecutable : seleccion ';' .  (44)
 
 	.  reduce 44
 
 
-state 64
-	inst_ejecutable : invocar_fun ';' .  (45)
+state 63
+	inst_ejecutable : impresion ';' .  (45)
 
 	.  reduce 45
 
 
+state 64
+	inst_ejecutable : invocar_fun ';' .  (46)
+
+	.  reduce 46
+
+
 state 65
-	for_continue : etiqueta For . '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo  (87)
+	for_continue : etiqueta For . '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo  (88)
 
 	'('  shift 98
 	.  error
 
 
 state 66
-	factor : id .  (56)
-	retorno_funcion : id . '(' ')'  (60)
-	retorno_funcion : id . '(' parametro_real ')'  (61)
-	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (62)
+	factor : id .  (57)
+	retorno_funcion : id . '(' ')'  (61)
+	retorno_funcion : id . '(' parametro_real ')'  (62)
+	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (63)
 
 	'('  shift 35
-	SIMB_MAY_IGUAL  reduce 56
-	SIMB_MEN_IGUAL  reduce 56
-	SIMB_DISTINTO  reduce 56
-	'}'  reduce 56
-	';'  reduce 56
-	')'  reduce 56
-	'='  reduce 56
-	'+'  reduce 56
-	'-'  reduce 56
-	'*'  reduce 56
-	'/'  reduce 56
-	'<'  reduce 56
-	'>'  reduce 56
+	SIMB_MAY_IGUAL  reduce 57
+	SIMB_MEN_IGUAL  reduce 57
+	SIMB_DISTINTO  reduce 57
+	'}'  reduce 57
+	';'  reduce 57
+	')'  reduce 57
+	'='  reduce 57
+	'+'  reduce 57
+	'-'  reduce 57
+	'*'  reduce 57
+	'/'  reduce 57
+	'<'  reduce 57
+	'>'  reduce 57
 
 
 state 67
-	factor : cte .  (57)
+	factor : cte .  (58)
 
-	.  reduce 57
+	.  reduce 58
 
 
 state 68
-	factor : '-' . cte  (58)
+	factor : '-' . cte  (59)
 
 	cte  shift 99
 	.  error
 
 
 state 69
-	asignacion : id SIMB_ASIGNACION expresion .  (47)
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
+	asignacion : id SIMB_ASIGNACION expresion .  (48)
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
 
 	'+'  shift 100
 	'-'  shift 101
-	';'  reduce 47
+	';'  reduce 48
 
 
 state 70
-	expresion : termino .  (52)
-	termino : termino . '*' factor  (53)
-	termino : termino . '/' factor  (54)
+	expresion : termino .  (53)
+	termino : termino . '*' factor  (54)
+	termino : termino . '/' factor  (55)
 
 	'*'  shift 102
 	'/'  shift 103
-	SIMB_MAY_IGUAL  reduce 52
-	SIMB_MEN_IGUAL  reduce 52
-	SIMB_DISTINTO  reduce 52
-	'}'  reduce 52
-	';'  reduce 52
-	')'  reduce 52
-	'='  reduce 52
-	'+'  reduce 52
-	'-'  reduce 52
-	'<'  reduce 52
-	'>'  reduce 52
+	SIMB_MAY_IGUAL  reduce 53
+	SIMB_MEN_IGUAL  reduce 53
+	SIMB_DISTINTO  reduce 53
+	'}'  reduce 53
+	';'  reduce 53
+	')'  reduce 53
+	'='  reduce 53
+	'+'  reduce 53
+	'-'  reduce 53
+	'<'  reduce 53
+	'>'  reduce 53
 
 
 state 71
-	termino : factor .  (55)
+	termino : factor .  (56)
 
-	.  reduce 55
+	.  reduce 56
 
 
 state 72
-	factor : retorno_funcion .  (59)
-
-	.  reduce 59
-
-
-state 73
-	parametro_real : id .  (63)
-
-	.  reduce 63
-
-
-state 74
-	parametro_real : cte .  (64)
-
-	.  reduce 64
-
-
-state 75
-	retorno_funcion : id '(' ')' .  (60)
+	factor : retorno_funcion .  (60)
 
 	.  reduce 60
 
 
+state 73
+	parametro_real : id .  (64)
+
+	.  reduce 64
+
+
+state 74
+	parametro_real : cte .  (65)
+
+	.  reduce 65
+
+
+state 75
+	retorno_funcion : id '(' ')' .  (61)
+
+	.  reduce 61
+
+
 state 76
-	parametro_real : '-' . cte  (65)
+	parametro_real : '-' . cte  (66)
 
 	cte  shift 104
 	.  error
 
 
 state 77
-	retorno_funcion : id '(' parametro_real . ')'  (61)
-	retorno_funcion : id '(' parametro_real . ',' parametro_real ')'  (62)
+	retorno_funcion : id '(' parametro_real . ')'  (62)
+	retorno_funcion : id '(' parametro_real . ',' parametro_real ')'  (63)
 
 	','  shift 105
 	')'  shift 106
@@ -903,7 +907,7 @@ state 77
 
 
 state 78
-	asignacion : id ':' '=' . expresion  (49)
+	asignacion : id ':' '=' . expresion  (50)
 
 	id  shift 66
 	cte  shift 67
@@ -917,9 +921,9 @@ state 78
 
 
 state 79
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
-	expresion_booleana : expresion . comparador expresion  (74)
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
+	expresion_booleana : expresion . comparador expresion  (75)
 
 	SIMB_MAY_IGUAL  shift 108
 	SIMB_MEN_IGUAL  shift 109
@@ -935,15 +939,15 @@ state 79
 
 
 state 80
-	condicion_if : '(' expresion_booleana . ')'  (73)
+	condicion_if : '(' expresion_booleana . ')'  (74)
 
 	')'  shift 115
 	.  error
 
 
 state 81
-	then_selec : then . '{' ejecutable_for '}'  (69)
-	then_selec : then . inst_ejecutable_for  (70)
+	then_selec : then . '{' ejecutable_for '}'  (70)
+	then_selec : then . inst_ejecutable_for  (71)
 
 	id  shift 89
 	If  shift 8
@@ -967,14 +971,14 @@ state 81
 
 
 state 82
-	seleccion : If condicion_if cuerpo_if .  (66)
+	seleccion : If condicion_if cuerpo_if .  (67)
 
-	.  reduce 66
+	.  reduce 67
 
 
 state 83
-	cuerpo_if : then_selec . Else else_selecc end_if  (67)
-	cuerpo_if : then_selec . end_if  (68)
+	cuerpo_if : then_selec . Else else_selecc end_if  (68)
+	cuerpo_if : then_selec . end_if  (69)
 
 	Else  shift 121
 	end_if  shift 122
@@ -982,17 +986,17 @@ state 83
 
 
 state 84
-	impresion : out cadena ')' .  (82)
+	impresion : out cadena ')' .  (83)
 
-	.  reduce 82
+	.  reduce 83
 
 
 state 85
-	impresion : out '(' cadena . ')'  (81)
-	impresion : out '(' cadena .  (83)
+	impresion : out '(' cadena . ')'  (82)
+	impresion : out '(' cadena .  (84)
 
 	')'  shift 123
-	';'  reduce 83
+	';'  reduce 84
 
 
 state 86
@@ -1002,27 +1006,27 @@ state 86
 
 
 state 87
-	for_inic : id . SIMB_ASIGNACION cte  (89)
+	for_inic : id . SIMB_ASIGNACION cte  (90)
 
 	SIMB_ASIGNACION  shift 124
 	.  error
 
 
 state 88
-	for_continue : For '(' for_inic . ';' for_cond ';' for_act ')' for_cuerpo  (86)
+	for_continue : For '(' for_inic . ';' for_cond ';' for_act ')' for_cuerpo  (87)
 
 	';'  shift 125
 	.  error
 
 
 state 89
-	asignacion : id . SIMB_ASIGNACION expresion  (47)
-	asignacion : id . SIMB_ASIGNACION  (48)
-	asignacion : id . ':' '=' expresion  (49)
-	retorno_funcion : id . '(' ')'  (60)
-	retorno_funcion : id . '(' parametro_real ')'  (61)
-	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (62)
-	etiqueta : id . ':'  (88)
+	asignacion : id . SIMB_ASIGNACION expresion  (48)
+	asignacion : id . SIMB_ASIGNACION  (49)
+	asignacion : id . ':' '=' expresion  (50)
+	retorno_funcion : id . '(' ')'  (61)
+	retorno_funcion : id . '(' parametro_real ')'  (62)
+	retorno_funcion : id . '(' parametro_real ',' parametro_real ')'  (63)
+	etiqueta : id . ':'  (89)
 
 	SIMB_ASIGNACION  shift 34
 	'('  shift 35
@@ -1031,9 +1035,9 @@ state 89
 
 
 state 90
-	ejecutable : defer $$3 inst_ejecutable .  (41)
+	ejecutable : defer $$4 inst_ejecutable .  (42)
 
-	.  reduce 41
+	.  reduce 42
 
 
 state 91
@@ -1055,20 +1059,16 @@ state 93
 
 
 state 94
-	cola_funcion : ')' ':' . tipo '{' cuerpo_fun '}'  (29)
+	cola_funcion : ')' $$3 . ':' tipo '{' cuerpo_fun '}'  (30)
 
-	id  shift 56
-	ui8  shift 11
-	f64  shift 12
+	':'  shift 126
 	.  error
-
-	tipo  goto 126
 
 
 state 95
-	parametro : tipo id .  (31)
+	parametro : tipo id .  (32)
 
-	.  reduce 31
+	.  reduce 32
 
 
 state 96
@@ -1094,7 +1094,7 @@ state 97
 
 
 state 98
-	for_continue : etiqueta For '(' . for_inic ';' for_cond ';' for_act ')' for_cuerpo  (87)
+	for_continue : etiqueta For '(' . for_inic ';' for_cond ';' for_act ')' for_cuerpo  (88)
 
 	id  shift 87
 	.  error
@@ -1103,13 +1103,13 @@ state 98
 
 
 state 99
-	factor : '-' cte .  (58)
+	factor : '-' cte .  (59)
 
-	.  reduce 58
+	.  reduce 59
 
 
 state 100
-	expresion : expresion '+' . termino  (50)
+	expresion : expresion '+' . termino  (51)
 
 	id  shift 66
 	cte  shift 67
@@ -1122,7 +1122,7 @@ state 100
 
 
 state 101
-	expresion : expresion '-' . termino  (51)
+	expresion : expresion '-' . termino  (52)
 
 	id  shift 66
 	cte  shift 67
@@ -1135,7 +1135,7 @@ state 101
 
 
 state 102
-	termino : termino '*' . factor  (53)
+	termino : termino '*' . factor  (54)
 
 	id  shift 66
 	cte  shift 67
@@ -1147,7 +1147,7 @@ state 102
 
 
 state 103
-	termino : termino '/' . factor  (54)
+	termino : termino '/' . factor  (55)
 
 	id  shift 66
 	cte  shift 67
@@ -1159,13 +1159,13 @@ state 103
 
 
 state 104
-	parametro_real : '-' cte .  (65)
+	parametro_real : '-' cte .  (66)
 
-	.  reduce 65
+	.  reduce 66
 
 
 state 105
-	retorno_funcion : id '(' parametro_real ',' . parametro_real ')'  (62)
+	retorno_funcion : id '(' parametro_real ',' . parametro_real ')'  (63)
 
 	id  shift 73
 	cte  shift 74
@@ -1176,59 +1176,59 @@ state 105
 
 
 state 106
-	retorno_funcion : id '(' parametro_real ')' .  (61)
+	retorno_funcion : id '(' parametro_real ')' .  (62)
 
-	.  reduce 61
+	.  reduce 62
 
 
 state 107
-	asignacion : id ':' '=' expresion .  (49)
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
+	asignacion : id ':' '=' expresion .  (50)
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
 
 	'+'  shift 100
 	'-'  shift 101
-	';'  reduce 49
+	';'  reduce 50
 
 
 state 108
-	comparador : SIMB_MAY_IGUAL .  (76)
-
-	.  reduce 76
-
-
-state 109
-	comparador : SIMB_MEN_IGUAL .  (77)
+	comparador : SIMB_MAY_IGUAL .  (77)
 
 	.  reduce 77
 
 
-state 110
-	comparador : SIMB_DISTINTO .  (75)
-
-	.  reduce 75
-
-
-state 111
-	comparador : '=' .  (78)
+state 109
+	comparador : SIMB_MEN_IGUAL .  (78)
 
 	.  reduce 78
 
 
-state 112
-	comparador : '<' .  (79)
+state 110
+	comparador : SIMB_DISTINTO .  (76)
+
+	.  reduce 76
+
+
+state 111
+	comparador : '=' .  (79)
 
 	.  reduce 79
 
 
-state 113
-	comparador : '>' .  (80)
+state 112
+	comparador : '<' .  (80)
 
 	.  reduce 80
 
 
+state 113
+	comparador : '>' .  (81)
+
+	.  reduce 81
+
+
 state 114
-	expresion_booleana : expresion comparador . expresion  (74)
+	expresion_booleana : expresion comparador . expresion  (75)
 
 	id  shift 66
 	cte  shift 67
@@ -1242,14 +1242,14 @@ state 114
 
 
 state 115
-	condicion_if : '(' expresion_booleana ')' .  (73)
+	condicion_if : '(' expresion_booleana ')' .  (74)
 
-	.  reduce 73
+	.  reduce 74
 
 
 state 116
-	inst_ejecutable_for : Break . ';'  (100)
-	inst_ejecutable_for : Break . ':' id ';'  (101)
+	inst_ejecutable_for : Break . ';'  (101)
+	inst_ejecutable_for : Break . ':' id ';'  (102)
 
 	';'  shift 136
 	':'  shift 137
@@ -1257,14 +1257,14 @@ state 116
 
 
 state 117
-	inst_ejecutable_for : Continue . ';'  (102)
+	inst_ejecutable_for : Continue . ';'  (103)
 
 	';'  shift 138
 	.  error
 
 
 state 118
-	then_selec : then '{' . ejecutable_for '}'  (69)
+	then_selec : then '{' . ejecutable_for '}'  (70)
 
 	id  shift 89
 	If  shift 8
@@ -1288,19 +1288,19 @@ state 118
 
 
 state 119
-	inst_ejecutable_for : inst_ejecutable .  (99)
+	inst_ejecutable_for : inst_ejecutable .  (100)
 
-	.  reduce 99
+	.  reduce 100
 
 
 state 120
-	then_selec : then inst_ejecutable_for .  (70)
+	then_selec : then inst_ejecutable_for .  (71)
 
-	.  reduce 70
+	.  reduce 71
 
 
 state 121
-	cuerpo_if : then_selec Else . else_selecc end_if  (67)
+	cuerpo_if : then_selec Else . else_selecc end_if  (68)
 
 	id  shift 89
 	If  shift 8
@@ -1325,26 +1325,26 @@ state 121
 
 
 state 122
-	cuerpo_if : then_selec end_if .  (68)
+	cuerpo_if : then_selec end_if .  (69)
 
-	.  reduce 68
+	.  reduce 69
 
 
 state 123
-	impresion : out '(' cadena ')' .  (81)
+	impresion : out '(' cadena ')' .  (82)
 
-	.  reduce 81
+	.  reduce 82
 
 
 state 124
-	for_inic : id SIMB_ASIGNACION . cte  (89)
+	for_inic : id SIMB_ASIGNACION . cte  (90)
 
 	cte  shift 144
 	.  error
 
 
 state 125
-	for_continue : For '(' for_inic ';' . for_cond ';' for_act ')' for_cuerpo  (86)
+	for_continue : For '(' for_inic ';' . for_cond ';' for_act ')' for_cuerpo  (87)
 
 	id  shift 145
 	.  error
@@ -1353,10 +1353,14 @@ state 125
 
 
 state 126
-	cola_funcion : ')' ':' tipo . '{' cuerpo_fun '}'  (29)
+	cola_funcion : ')' $$3 ':' . tipo '{' cuerpo_fun '}'  (30)
 
-	'{'  shift 147
+	id  shift 56
+	ui8  shift 11
+	f64  shift 12
 	.  error
+
+	tipo  goto 147
 
 
 state 127
@@ -1375,36 +1379,16 @@ state 128
 
 
 state 129
-	for_continue : etiqueta For '(' for_inic . ';' for_cond ';' for_act ')' for_cuerpo  (87)
+	for_continue : etiqueta For '(' for_inic . ';' for_cond ';' for_act ')' for_cuerpo  (88)
 
 	';'  shift 149
 	.  error
 
 
 state 130
-	expresion : expresion '+' termino .  (50)
-	termino : termino . '*' factor  (53)
-	termino : termino . '/' factor  (54)
-
-	'*'  shift 102
-	'/'  shift 103
-	SIMB_MAY_IGUAL  reduce 50
-	SIMB_MEN_IGUAL  reduce 50
-	SIMB_DISTINTO  reduce 50
-	'}'  reduce 50
-	';'  reduce 50
-	')'  reduce 50
-	'='  reduce 50
-	'+'  reduce 50
-	'-'  reduce 50
-	'<'  reduce 50
-	'>'  reduce 50
-
-
-state 131
-	expresion : expresion '-' termino .  (51)
-	termino : termino . '*' factor  (53)
-	termino : termino . '/' factor  (54)
+	expresion : expresion '+' termino .  (51)
+	termino : termino . '*' factor  (54)
+	termino : termino . '/' factor  (55)
 
 	'*'  shift 102
 	'/'  shift 103
@@ -1421,57 +1405,77 @@ state 131
 	'>'  reduce 51
 
 
+state 131
+	expresion : expresion '-' termino .  (52)
+	termino : termino . '*' factor  (54)
+	termino : termino . '/' factor  (55)
+
+	'*'  shift 102
+	'/'  shift 103
+	SIMB_MAY_IGUAL  reduce 52
+	SIMB_MEN_IGUAL  reduce 52
+	SIMB_DISTINTO  reduce 52
+	'}'  reduce 52
+	';'  reduce 52
+	')'  reduce 52
+	'='  reduce 52
+	'+'  reduce 52
+	'-'  reduce 52
+	'<'  reduce 52
+	'>'  reduce 52
+
+
 state 132
-	termino : termino '*' factor .  (53)
-
-	.  reduce 53
-
-
-state 133
-	termino : termino '/' factor .  (54)
+	termino : termino '*' factor .  (54)
 
 	.  reduce 54
 
 
+state 133
+	termino : termino '/' factor .  (55)
+
+	.  reduce 55
+
+
 state 134
-	retorno_funcion : id '(' parametro_real ',' parametro_real . ')'  (62)
+	retorno_funcion : id '(' parametro_real ',' parametro_real . ')'  (63)
 
 	')'  shift 150
 	.  error
 
 
 state 135
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
-	expresion_booleana : expresion comparador expresion .  (74)
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
+	expresion_booleana : expresion comparador expresion .  (75)
 
 	'+'  shift 100
 	'-'  shift 101
-	')'  reduce 74
+	')'  reduce 75
 
 
 state 136
-	inst_ejecutable_for : Break ';' .  (100)
+	inst_ejecutable_for : Break ';' .  (101)
 
-	.  reduce 100
+	.  reduce 101
 
 
 state 137
-	inst_ejecutable_for : Break ':' . id ';'  (101)
+	inst_ejecutable_for : Break ':' . id ';'  (102)
 
 	id  shift 151
 	.  error
 
 
 state 138
-	inst_ejecutable_for : Continue ';' .  (102)
+	inst_ejecutable_for : Continue ';' .  (103)
 
-	.  reduce 102
+	.  reduce 103
 
 
 state 139
-	then_selec : then '{' ejecutable_for . '}'  (69)
-	ejecutable_for : ejecutable_for . inst_ejecutable_for  (97)
+	then_selec : then '{' ejecutable_for . '}'  (70)
+	ejecutable_for : ejecutable_for . inst_ejecutable_for  (98)
 
 	id  shift 89
 	If  shift 8
@@ -1495,13 +1499,13 @@ state 139
 
 
 state 140
-	ejecutable_for : inst_ejecutable_for .  (98)
+	ejecutable_for : inst_ejecutable_for .  (99)
 
-	.  reduce 98
+	.  reduce 99
 
 
 state 141
-	else_selecc : '{' . ejecutable_for '}'  (71)
+	else_selecc : '{' . ejecutable_for '}'  (72)
 
 	id  shift 89
 	If  shift 8
@@ -1525,26 +1529,26 @@ state 141
 
 
 state 142
-	cuerpo_if : then_selec Else else_selecc . end_if  (67)
+	cuerpo_if : then_selec Else else_selecc . end_if  (68)
 
 	end_if  shift 155
 	.  error
 
 
 state 143
-	else_selecc : inst_ejecutable_for .  (72)
+	else_selecc : inst_ejecutable_for .  (73)
 
-	.  reduce 72
+	.  reduce 73
 
 
 state 144
-	for_inic : id SIMB_ASIGNACION cte .  (89)
+	for_inic : id SIMB_ASIGNACION cte .  (90)
 
-	.  reduce 89
+	.  reduce 90
 
 
 state 145
-	for_cond : id . comparador expresion  (90)
+	for_cond : id . comparador expresion  (91)
 
 	SIMB_MAY_IGUAL  shift 108
 	SIMB_MEN_IGUAL  shift 109
@@ -1558,44 +1562,17 @@ state 145
 
 
 state 146
-	for_continue : For '(' for_inic ';' for_cond . ';' for_act ')' for_cuerpo  (86)
+	for_continue : For '(' for_inic ';' for_cond . ';' for_act ')' for_cuerpo  (87)
 
 	';'  shift 157
 	.  error
 
 
 state 147
-	cola_funcion : ')' ':' tipo '{' . cuerpo_fun '}'  (29)
+	cola_funcion : ')' $$3 ':' tipo . '{' cuerpo_fun '}'  (30)
 
-	error  shift 6
-	id  shift 7
-	If  shift 8
-	out  shift 9
-	fun  shift 10
-	ui8  shift 11
-	f64  shift 12
-	discard  shift 13
-	For  shift 14
-	defer  shift 15
+	'{'  shift 158
 	.  error
-
-	sentencia  goto 158
-	declarativa  goto 19
-	ejecutable  goto 20
-	dec_variables  goto 21
-	dec_funcion  goto 22
-	tipo  goto 23
-	list_variables  goto 24
-	header_funcion  goto 25
-	cuerpo_fun  goto 159
-	inst_ejecutable  goto 26
-	asignacion  goto 27
-	seleccion  goto 28
-	impresion  goto 29
-	invocar_fun  goto 30
-	for_continue  goto 31
-	retorno_funcion  goto 32
-	etiqueta  goto 33
 
 
 state 148
@@ -1605,46 +1582,46 @@ state 148
 	')'  shift 57
 	.  error
 
-	cola_funcion  goto 160
+	cola_funcion  goto 159
 
 
 state 149
-	for_continue : etiqueta For '(' for_inic ';' . for_cond ';' for_act ')' for_cuerpo  (87)
+	for_continue : etiqueta For '(' for_inic ';' . for_cond ';' for_act ')' for_cuerpo  (88)
 
 	id  shift 145
 	.  error
 
-	for_cond  goto 161
+	for_cond  goto 160
 
 
 state 150
-	retorno_funcion : id '(' parametro_real ',' parametro_real ')' .  (62)
+	retorno_funcion : id '(' parametro_real ',' parametro_real ')' .  (63)
 
-	.  reduce 62
+	.  reduce 63
 
 
 state 151
-	inst_ejecutable_for : Break ':' id . ';'  (101)
+	inst_ejecutable_for : Break ':' id . ';'  (102)
 
-	';'  shift 162
+	';'  shift 161
 	.  error
 
 
 state 152
-	then_selec : then '{' ejecutable_for '}' .  (69)
+	then_selec : then '{' ejecutable_for '}' .  (70)
 
-	.  reduce 69
+	.  reduce 70
 
 
 state 153
-	ejecutable_for : ejecutable_for inst_ejecutable_for .  (97)
+	ejecutable_for : ejecutable_for inst_ejecutable_for .  (98)
 
-	.  reduce 97
+	.  reduce 98
 
 
 state 154
-	else_selecc : '{' ejecutable_for . '}'  (71)
-	ejecutable_for : ejecutable_for . inst_ejecutable_for  (97)
+	else_selecc : '{' ejecutable_for . '}'  (72)
+	ejecutable_for : ejecutable_for . inst_ejecutable_for  (98)
 
 	id  shift 89
 	If  shift 8
@@ -1653,7 +1630,7 @@ state 154
 	discard  shift 13
 	For  shift 14
 	Continue  shift 117
-	'}'  shift 163
+	'}'  shift 162
 	.  error
 
 	inst_ejecutable  goto 119
@@ -1668,53 +1645,154 @@ state 154
 
 
 state 155
-	cuerpo_if : then_selec Else else_selecc end_if .  (67)
+	cuerpo_if : then_selec Else else_selecc end_if .  (68)
 
-	.  reduce 67
+	.  reduce 68
 
 
 state 156
-	for_cond : id comparador . expresion  (90)
+	for_cond : id comparador . expresion  (91)
 
 	id  shift 66
 	cte  shift 67
 	'-'  shift 68
 	.  error
 
-	expresion  goto 164
+	expresion  goto 163
 	termino  goto 70
 	factor  goto 71
 	retorno_funcion  goto 72
 
 
 state 157
-	for_continue : For '(' for_inic ';' for_cond ';' . for_act ')' for_cuerpo  (86)
+	for_continue : For '(' for_inic ';' for_cond ';' . for_act ')' for_cuerpo  (87)
 
-	cte  shift 165
-	'+'  shift 166
-	'-'  shift 167
+	cte  shift 164
+	'+'  shift 165
+	'-'  shift 166
 	.  error
 
-	for_act  goto 168
-	mas_o_menos  goto 169
+	for_act  goto 167
+	mas_o_menos  goto 168
 
 
 state 158
-	sentencia : sentencia . declarativa  (10)
-	sentencia : sentencia . ejecutable  (11)
-	cuerpo_fun : sentencia . Return '(' expresion ')' ';'  (33)
-	cuerpo_fun : sentencia . Return '(' expresion ';'  (34)
-	cuerpo_fun : sentencia . Return expresion ';'  (35)
-	cuerpo_fun : sentencia . Return expresion ')' ';'  (36)
-	cuerpo_fun : sentencia . Return expresion  (37)
-	cuerpo_fun : sentencia . Return '(' expresion ')'  (38)
+	cola_funcion : ')' $$3 ':' tipo '{' . cuerpo_fun '}'  (30)
 
 	error  shift 6
 	id  shift 7
 	If  shift 8
 	out  shift 9
 	fun  shift 10
-	Return  shift 170
+	ui8  shift 11
+	f64  shift 12
+	discard  shift 13
+	For  shift 14
+	defer  shift 15
+	.  error
+
+	sentencia  goto 169
+	declarativa  goto 19
+	ejecutable  goto 20
+	dec_variables  goto 21
+	dec_funcion  goto 22
+	tipo  goto 23
+	list_variables  goto 24
+	header_funcion  goto 25
+	cuerpo_fun  goto 170
+	inst_ejecutable  goto 26
+	asignacion  goto 27
+	seleccion  goto 28
+	impresion  goto 29
+	invocar_fun  goto 30
+	for_continue  goto 31
+	retorno_funcion  goto 32
+	etiqueta  goto 33
+
+
+state 159
+	dec_funcion : header_funcion parametro ',' parametro $$2 cola_funcion .  (26)
+
+	.  reduce 26
+
+
+state 160
+	for_continue : etiqueta For '(' for_inic ';' for_cond . ';' for_act ')' for_cuerpo  (88)
+
+	';'  shift 171
+	.  error
+
+
+state 161
+	inst_ejecutable_for : Break ':' id ';' .  (102)
+
+	.  reduce 102
+
+
+state 162
+	else_selecc : '{' ejecutable_for '}' .  (72)
+
+	.  reduce 72
+
+
+state 163
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
+	for_cond : id comparador expresion .  (91)
+
+	'+'  shift 100
+	'-'  shift 101
+	';'  reduce 91
+
+
+state 164
+	for_act : cte .  (93)
+
+	.  reduce 93
+
+
+state 165
+	mas_o_menos : '+' .  (96)
+
+	.  reduce 96
+
+
+state 166
+	mas_o_menos : '-' .  (97)
+
+	.  reduce 97
+
+
+state 167
+	for_continue : For '(' for_inic ';' for_cond ';' for_act . ')' for_cuerpo  (87)
+
+	')'  shift 172
+	.  error
+
+
+state 168
+	for_act : mas_o_menos . cte  (92)
+
+	cte  shift 173
+	.  error
+
+
+state 169
+	sentencia : sentencia . declarativa  (10)
+	sentencia : sentencia . ejecutable  (11)
+	cuerpo_fun : sentencia . Return '(' expresion ')' ';'  (34)
+	cuerpo_fun : sentencia . Return '(' expresion ';'  (35)
+	cuerpo_fun : sentencia . Return expresion ';'  (36)
+	cuerpo_fun : sentencia . Return expresion ')' ';'  (37)
+	cuerpo_fun : sentencia . Return expresion  (38)
+	cuerpo_fun : sentencia . Return '(' expresion ')'  (39)
+
+	error  shift 6
+	id  shift 7
+	If  shift 8
+	out  shift 9
+	fun  shift 10
+	Return  shift 174
 	ui8  shift 11
 	f64  shift 12
 	discard  shift 13
@@ -1739,120 +1817,27 @@ state 158
 	etiqueta  goto 33
 
 
-state 159
-	cola_funcion : ')' ':' tipo '{' cuerpo_fun . '}'  (29)
-
-	'}'  shift 171
-	.  error
-
-
-state 160
-	dec_funcion : header_funcion parametro ',' parametro $$2 cola_funcion .  (26)
-
-	.  reduce 26
-
-
-state 161
-	for_continue : etiqueta For '(' for_inic ';' for_cond . ';' for_act ')' for_cuerpo  (87)
-
-	';'  shift 172
-	.  error
-
-
-state 162
-	inst_ejecutable_for : Break ':' id ';' .  (101)
-
-	.  reduce 101
-
-
-state 163
-	else_selecc : '{' ejecutable_for '}' .  (71)
-
-	.  reduce 71
-
-
-state 164
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
-	for_cond : id comparador expresion .  (90)
-
-	'+'  shift 100
-	'-'  shift 101
-	';'  reduce 90
-
-
-state 165
-	for_act : cte .  (92)
-
-	.  reduce 92
-
-
-state 166
-	mas_o_menos : '+' .  (95)
-
-	.  reduce 95
-
-
-state 167
-	mas_o_menos : '-' .  (96)
-
-	.  reduce 96
-
-
-state 168
-	for_continue : For '(' for_inic ';' for_cond ';' for_act . ')' for_cuerpo  (86)
-
-	')'  shift 173
-	.  error
-
-
-state 169
-	for_act : mas_o_menos . cte  (91)
-
-	cte  shift 174
-	.  error
-
-
 state 170
-	cuerpo_fun : sentencia Return . '(' expresion ')' ';'  (33)
-	cuerpo_fun : sentencia Return . '(' expresion ';'  (34)
-	cuerpo_fun : sentencia Return . expresion ';'  (35)
-	cuerpo_fun : sentencia Return . expresion ')' ';'  (36)
-	cuerpo_fun : sentencia Return . expresion  (37)
-	cuerpo_fun : sentencia Return . '(' expresion ')'  (38)
+	cola_funcion : ')' $$3 ':' tipo '{' cuerpo_fun . '}'  (30)
 
-	id  shift 66
-	cte  shift 67
-	'('  shift 175
-	'-'  shift 68
+	'}'  shift 175
 	.  error
-
-	expresion  goto 176
-	termino  goto 70
-	factor  goto 71
-	retorno_funcion  goto 72
 
 
 state 171
-	cola_funcion : ')' ':' tipo '{' cuerpo_fun '}' .  (29)
+	for_continue : etiqueta For '(' for_inic ';' for_cond ';' . for_act ')' for_cuerpo  (88)
 
-	.  reduce 29
+	cte  shift 164
+	'+'  shift 165
+	'-'  shift 166
+	.  error
+
+	for_act  goto 176
+	mas_o_menos  goto 168
 
 
 state 172
-	for_continue : etiqueta For '(' for_inic ';' for_cond ';' . for_act ')' for_cuerpo  (87)
-
-	cte  shift 165
-	'+'  shift 166
-	'-'  shift 167
-	.  error
-
-	for_act  goto 177
-	mas_o_menos  goto 169
-
-
-state 173
-	for_continue : For '(' for_inic ';' for_cond ';' for_act ')' . for_cuerpo  (86)
+	for_continue : For '(' for_inic ';' for_cond ';' for_act ')' . for_cuerpo  (87)
 
 	id  shift 89
 	If  shift 8
@@ -1861,7 +1846,7 @@ state 173
 	discard  shift 13
 	For  shift 14
 	Continue  shift 117
-	'{'  shift 178
+	'{'  shift 177
 	.  error
 
 	inst_ejecutable  goto 119
@@ -1871,24 +1856,28 @@ state 173
 	invocar_fun  goto 30
 	for_continue  goto 31
 	retorno_funcion  goto 32
-	inst_ejecutable_for  goto 179
-	for_cuerpo  goto 180
+	inst_ejecutable_for  goto 178
+	for_cuerpo  goto 179
 	etiqueta  goto 33
 
 
+state 173
+	for_act : mas_o_menos cte .  (92)
+
+	.  reduce 92
+
+
 state 174
-	for_act : mas_o_menos cte .  (91)
-
-	.  reduce 91
-
-
-state 175
-	cuerpo_fun : sentencia Return '(' . expresion ')' ';'  (33)
-	cuerpo_fun : sentencia Return '(' . expresion ';'  (34)
-	cuerpo_fun : sentencia Return '(' . expresion ')'  (38)
+	cuerpo_fun : sentencia Return . '(' expresion ')' ';'  (34)
+	cuerpo_fun : sentencia Return . '(' expresion ';'  (35)
+	cuerpo_fun : sentencia Return . expresion ';'  (36)
+	cuerpo_fun : sentencia Return . expresion ')' ';'  (37)
+	cuerpo_fun : sentencia Return . expresion  (38)
+	cuerpo_fun : sentencia Return . '(' expresion ')'  (39)
 
 	id  shift 66
 	cte  shift 67
+	'('  shift 180
 	'-'  shift 68
 	.  error
 
@@ -1898,29 +1887,21 @@ state 175
 	retorno_funcion  goto 72
 
 
+state 175
+	cola_funcion : ')' $$3 ':' tipo '{' cuerpo_fun '}' .  (30)
+
+	.  reduce 30
+
+
 state 176
-	cuerpo_fun : sentencia Return expresion . ';'  (35)
-	cuerpo_fun : sentencia Return expresion . ')' ';'  (36)
-	cuerpo_fun : sentencia Return expresion .  (37)
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
+	for_continue : etiqueta For '(' for_inic ';' for_cond ';' for_act . ')' for_cuerpo  (88)
 
-	';'  shift 182
-	')'  shift 183
-	'+'  shift 100
-	'-'  shift 101
-	'}'  reduce 37
-
-
-state 177
-	for_continue : etiqueta For '(' for_inic ';' for_cond ';' for_act . ')' for_cuerpo  (87)
-
-	')'  shift 184
+	')'  shift 182
 	.  error
 
 
-state 178
-	for_cuerpo : '{' . ejecutable_for '}' ';'  (93)
+state 177
+	for_cuerpo : '{' . ejecutable_for '}' ';'  (94)
 
 	id  shift 89
 	If  shift 8
@@ -1938,52 +1919,55 @@ state 178
 	invocar_fun  goto 30
 	for_continue  goto 31
 	retorno_funcion  goto 32
-	ejecutable_for  goto 185
+	ejecutable_for  goto 183
 	inst_ejecutable_for  goto 140
 	etiqueta  goto 33
 
 
-state 179
-	for_cuerpo : inst_ejecutable_for .  (94)
+state 178
+	for_cuerpo : inst_ejecutable_for .  (95)
 
-	.  reduce 94
+	.  reduce 95
+
+
+state 179
+	for_continue : For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo .  (87)
+
+	.  reduce 87
 
 
 state 180
-	for_continue : For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo .  (86)
+	cuerpo_fun : sentencia Return '(' . expresion ')' ';'  (34)
+	cuerpo_fun : sentencia Return '(' . expresion ';'  (35)
+	cuerpo_fun : sentencia Return '(' . expresion ')'  (39)
 
-	.  reduce 86
+	id  shift 66
+	cte  shift 67
+	'-'  shift 68
+	.  error
+
+	expresion  goto 184
+	termino  goto 70
+	factor  goto 71
+	retorno_funcion  goto 72
 
 
 state 181
-	cuerpo_fun : sentencia Return '(' expresion . ')' ';'  (33)
-	cuerpo_fun : sentencia Return '(' expresion . ';'  (34)
-	cuerpo_fun : sentencia Return '(' expresion . ')'  (38)
-	expresion : expresion . '+' termino  (50)
-	expresion : expresion . '-' termino  (51)
+	cuerpo_fun : sentencia Return expresion . ';'  (36)
+	cuerpo_fun : sentencia Return expresion . ')' ';'  (37)
+	cuerpo_fun : sentencia Return expresion .  (38)
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
 
-	';'  shift 186
-	')'  shift 187
+	';'  shift 185
+	')'  shift 186
 	'+'  shift 100
 	'-'  shift 101
-	.  error
+	'}'  reduce 38
 
 
 state 182
-	cuerpo_fun : sentencia Return expresion ';' .  (35)
-
-	.  reduce 35
-
-
-state 183
-	cuerpo_fun : sentencia Return expresion ')' . ';'  (36)
-
-	';'  shift 188
-	.  error
-
-
-state 184
-	for_continue : etiqueta For '(' for_inic ';' for_cond ';' for_act ')' . for_cuerpo  (87)
+	for_continue : etiqueta For '(' for_inic ';' for_cond ';' for_act ')' . for_cuerpo  (88)
 
 	id  shift 89
 	If  shift 8
@@ -1992,7 +1976,7 @@ state 184
 	discard  shift 13
 	For  shift 14
 	Continue  shift 117
-	'{'  shift 178
+	'{'  shift 177
 	.  error
 
 	inst_ejecutable  goto 119
@@ -2002,14 +1986,14 @@ state 184
 	invocar_fun  goto 30
 	for_continue  goto 31
 	retorno_funcion  goto 32
-	inst_ejecutable_for  goto 179
-	for_cuerpo  goto 189
+	inst_ejecutable_for  goto 178
+	for_cuerpo  goto 187
 	etiqueta  goto 33
 
 
-state 185
-	for_cuerpo : '{' ejecutable_for . '}' ';'  (93)
-	ejecutable_for : ejecutable_for . inst_ejecutable_for  (97)
+state 183
+	for_cuerpo : '{' ejecutable_for . '}' ';'  (94)
+	ejecutable_for : ejecutable_for . inst_ejecutable_for  (98)
 
 	id  shift 89
 	If  shift 8
@@ -2018,7 +2002,7 @@ state 185
 	discard  shift 13
 	For  shift 14
 	Continue  shift 117
-	'}'  shift 190
+	'}'  shift 188
 	.  error
 
 	inst_ejecutable  goto 119
@@ -2032,50 +2016,77 @@ state 185
 	etiqueta  goto 33
 
 
-state 186
-	cuerpo_fun : sentencia Return '(' expresion ';' .  (34)
+state 184
+	cuerpo_fun : sentencia Return '(' expresion . ')' ';'  (34)
+	cuerpo_fun : sentencia Return '(' expresion . ';'  (35)
+	cuerpo_fun : sentencia Return '(' expresion . ')'  (39)
+	expresion : expresion . '+' termino  (51)
+	expresion : expresion . '-' termino  (52)
 
-	.  reduce 34
+	';'  shift 189
+	')'  shift 190
+	'+'  shift 100
+	'-'  shift 101
+	.  error
 
 
-state 187
-	cuerpo_fun : sentencia Return '(' expresion ')' . ';'  (33)
-	cuerpo_fun : sentencia Return '(' expresion ')' .  (38)
-
-	';'  shift 191
-	'}'  reduce 38
-
-
-state 188
-	cuerpo_fun : sentencia Return expresion ')' ';' .  (36)
+state 185
+	cuerpo_fun : sentencia Return expresion ';' .  (36)
 
 	.  reduce 36
 
 
-state 189
-	for_continue : etiqueta For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo .  (87)
+state 186
+	cuerpo_fun : sentencia Return expresion ')' . ';'  (37)
 
-	.  reduce 87
+	';'  shift 191
+	.  error
 
 
-state 190
-	for_cuerpo : '{' ejecutable_for '}' . ';'  (93)
+state 187
+	for_continue : etiqueta For '(' for_inic ';' for_cond ';' for_act ')' for_cuerpo .  (88)
+
+	.  reduce 88
+
+
+state 188
+	for_cuerpo : '{' ejecutable_for '}' . ';'  (94)
 
 	';'  shift 192
 	.  error
 
 
-state 191
-	cuerpo_fun : sentencia Return '(' expresion ')' ';' .  (33)
+state 189
+	cuerpo_fun : sentencia Return '(' expresion ';' .  (35)
 
-	.  reduce 33
+	.  reduce 35
+
+
+state 190
+	cuerpo_fun : sentencia Return '(' expresion ')' . ';'  (34)
+	cuerpo_fun : sentencia Return '(' expresion ')' .  (39)
+
+	';'  shift 193
+	'}'  reduce 39
+
+
+state 191
+	cuerpo_fun : sentencia Return expresion ')' ';' .  (37)
+
+	.  reduce 37
 
 
 state 192
-	for_cuerpo : '{' ejecutable_for '}' ';' .  (93)
+	for_cuerpo : '{' ejecutable_for '}' ';' .  (94)
 
-	.  reduce 93
+	.  reduce 94
 
 
-39 terminals, 43 nonterminals
-103 grammar rules, 193 states
+state 193
+	cuerpo_fun : sentencia Return '(' expresion ')' ';' .  (34)
+
+	.  reduce 34
+
+
+39 terminals, 44 nonterminals
+104 grammar rules, 194 states
