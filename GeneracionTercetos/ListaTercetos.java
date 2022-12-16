@@ -67,7 +67,6 @@ public class ListaTercetos {
     public static void imprimir(){
         considerarEtiquetas();
         System.out.println("Tercetos:");
-        int x=0;
         System.out.println("start:");
         for (int i=0; i<tercetos.size(); i++){
             Terceto aux = tercetos.get(i);
@@ -75,7 +74,6 @@ public class ListaTercetos {
                 System.out.println(aux.getParg()+":");
             }else {
                 System.out.println(tercetos.get(i).toString());
-                x++;
             }
         }
         System.out.println("end start");
