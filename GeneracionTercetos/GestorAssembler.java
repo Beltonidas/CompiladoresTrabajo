@@ -286,6 +286,7 @@ public class GestorAssembler {
                     operacion(i, tercetoProcesar);
                     break;
                 case "/":
+                    System.out.println("terceto a procesar "+i+": "+tercetoProcesar);
                     operacion(i, tercetoProcesar);
                     break;
                 case "BI":

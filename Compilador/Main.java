@@ -8,7 +8,7 @@ import GeneracionTercetos.GestorAssembler;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-	    Boolean com=true;
+	    Boolean com=false;
 	    //System.out.println("Ruta del archivo que desea ejecutar: ");
 	    //Scanner consola = new Scanner(System.in);
 	    //String ruta = consola.nextLine();

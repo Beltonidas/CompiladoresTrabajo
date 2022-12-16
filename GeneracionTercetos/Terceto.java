@@ -3,13 +3,17 @@ package GeneracionTercetos;
 public class Terceto {
     String parg,sarg,targ;
     Boolean carg;
-    
+    int sarg_r = -1;
+    int targ_r = -1;
+    static int id_estatico = 0;
+    int id;
     
     public Terceto(String a, String b, String c) {
         parg=a;
         sarg=b;
         targ=c;
         carg=false;
+        setId();
     }
     
     public Terceto(String a, String b, String c, Boolean d) {
@@ -17,8 +21,29 @@ public class Terceto {
         sarg=b;
         targ=c;
         carg=d;
+        setId();
     }
 
+    public int getSargR() {
+        return sarg_r;
+    }
+
+    public int getTargR() {
+        return targ_r;
+    }
+
+    public void setSargR(int arg) {
+        sarg_r=arg;
+    }
+
+    public void setTargR(int arg) {
+        targ_r=arg;
+    }
+
+    public void setId(){
+        id = id_estatico;
+        id_estatico++;
+    }
 
     public String getParg() {
         return parg;
@@ -61,9 +86,9 @@ public class Terceto {
     @Override
     public String toString() {
         if (carg!=false) {
-            return (carg+":( "+parg+" , "+sarg+" , "+targ+" )");
+            return (id+": "+carg+":( "+parg+" , "+sarg+" | "+sarg_r+", "+targ+" | "+targ_r+" )");
         }
-        return ("( "+parg+" , "+sarg+" , "+targ+" )");
+        return ("( "+id+": "+parg+" , "+sarg+" | "+sarg_r+", "+targ+" | "+targ_r+" )");
     }
     
 }
