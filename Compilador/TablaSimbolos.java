@@ -27,7 +27,6 @@ public class TablaSimbolos {
                 simbolo = new StringBuilder(scanner.nextLine());
                 int simEspacio=simbolo.indexOf(" ")+1;
                 index=Integer.parseInt(simbolo.substring(simEspacio,simbolo.length()));
-                //System.out.println("Palabra reservada: "+simbolo.substring(0,simEspacio-1)+" | Codigo: "+index);
                 palabrasReservadas.put(simbolo.substring(0,simEspacio-1), index);
             }
             scanner.close();
@@ -38,19 +37,13 @@ public class TablaSimbolos {
 	}
 	
 	public static int addSimbolo(TokenLexema tok) {
-	    //int linea = AnalizadorLexico.getLinea();
-	    //int caracter = AnalizadorLexico.getCaracter();
-	    //System.out.println(linea+"|"+caracter+"|"+tok.toString());
 		if (palabrasReservadas.containsKey(tok.getLexema().toString())){
-		    //System.out.println("Token Previo Palabra Reservada");
 		    tok.setId(palabrasReservadas.get(tok.getLexema().toString()));
 		    return tok.getId();
 		}
 		if (tabla.containsKey(tok.getLexema().toString())) {
-		    //System.out.println("Token Previo Existente");
 		    return tok.getId();
 		}
-        //System.out.println("Token Previo Nuevo");
 		tabla.put(tok.getLexema().toString(), tok);
 		return tok.getId();
 	}

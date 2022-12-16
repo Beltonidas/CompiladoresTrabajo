@@ -1,12 +1,32 @@
 package GeneracionTercetos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Terceto {
     String parg,sarg,targ;
     Boolean carg;
-    int sarg_r = -1;
-    int targ_r = -1;
     static int id_estatico = 0;
+    static List<Terceto> padron_Tercetos = new ArrayList<Terceto>();
     int id;
+    
+    public static Terceto GetTerceto(int indice) {
+        return padron_Tercetos.get(indice);
+    }
+    
+    public static Terceto GetTerceto(String indice) {
+        if(indice.startsWith("[")) {
+            StringBuilder aux = new StringBuilder(indice);
+            aux.deleteCharAt(0);
+            aux.deleteCharAt(aux.length()-1);
+            return padron_Tercetos.get(Integer.parseInt(aux.toString()));
+        }
+        return padron_Tercetos.get(Integer.parseInt(indice));
+    }
+    
+    public static int GetIndice() {
+        return id_estatico;
+    }
     
     public Terceto(String a, String b, String c) {
         parg=a;
@@ -14,6 +34,8 @@ public class Terceto {
         targ=c;
         carg=false;
         setId();
+        padron_Tercetos.add(this);
+        //System.out.println(this);
     }
     
     public Terceto(String a, String b, String c, Boolean d) {
@@ -22,22 +44,8 @@ public class Terceto {
         targ=c;
         carg=d;
         setId();
-    }
-
-    public int getSargR() {
-        return sarg_r;
-    }
-
-    public int getTargR() {
-        return targ_r;
-    }
-
-    public void setSargR(int arg) {
-        sarg_r=arg;
-    }
-
-    public void setTargR(int arg) {
-        targ_r=arg;
+        padron_Tercetos.add(this);
+        //System.out.println(this);
     }
 
     public void setId(){
@@ -86,9 +94,9 @@ public class Terceto {
     @Override
     public String toString() {
         if (carg!=false) {
-            return (id+": "+carg+":( "+parg+" , "+sarg+" | "+sarg_r+", "+targ+" | "+targ_r+" )");
+            return (id+". "+carg+":( "+parg+" , "+sarg+", "+targ+" )");
         }
-        return ("( "+id+": "+parg+" , "+sarg+" | "+sarg_r+", "+targ+" | "+targ_r+" )");
+        return (id+". ( "+parg+" , "+sarg+", "+targ+" )");
     }
     
 }

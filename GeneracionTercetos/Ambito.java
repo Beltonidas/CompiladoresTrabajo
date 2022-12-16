@@ -17,7 +17,6 @@ public class Ambito {
     public static void addAmbito(String amb){
         ambitos.add(amb);
         tercetosDiferidos.push(new ArrayList<Terceto>());
-        ListaTercetos.addAmbito();
     }
 
     public static Terceto getTerceto(int indice){
@@ -26,28 +25,10 @@ public class Ambito {
 
     public static String removeAmbito(){
         List<Terceto> aux=tercetosDiferidos.pop();
-        int i = 0;
         while (!aux.isEmpty()) {
             Terceto x = aux.remove(0);
-
-            List<Terceto> aux2 = ListaTercetos.getReferenciasDiferidas(i);
-            if (aux2 != null) {
-                String a = new StringBuilder(i).toString();
-                for (Terceto item : aux2) {
-                    if(item.sarg_r == i){
-                        item.sarg = a;
-                        item.sarg_r = -1;
-                    }
-                    if(item.targ_r == i){
-                        item.targ = a;
-                        item.targ_r = -1;
-                    }
-                }
-            }
             ListaTercetos.addTerceto(x);
-            i++;
         }
-        ListaTercetos.removeAmbito();
         return ambitos.remove(ambitos.size()-1);
     }
     
@@ -63,7 +44,6 @@ public class Ambito {
         int ind = ambitos.size()-1;
         while (ind>=0){
             String aux = lexema + getNamingVar(ind);
-            //System.out.println(aux);
             if (TablaSimbolos.contieneSimbolo(aux)){
                 TablaSimbolos.removeSimbolo(lexema);
                 return aux;

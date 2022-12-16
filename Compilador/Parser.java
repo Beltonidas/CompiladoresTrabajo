@@ -516,7 +516,7 @@ final static String yyrule[] = {
 "inst_ejecutable_for : Continue ';'",
 };
 
-//#line 431 "gramatica.y"
+//#line 433 "gramatica.y"
 
 public static final String ANSI_RESET ="\u001B[0m";
 public static final String ANSI_RED = "\u001B[31m";
@@ -598,12 +598,11 @@ public void verificarTipos(String arg1,String arg2){
 	if (arg1==null||arg2==null||arg1==""||arg2=="") return;
 	String aux1 = arg1;
 	while (aux1.startsWith("[")){
-    System.out.println("aux1: "+aux1);
-		aux1=ListaTercetos.getTerceto(aux1).getSarg();
+		aux1=Terceto.GetTerceto(aux1).getSarg();
 	}
 	String aux2=arg2;
 	while (aux2.startsWith("[")){
-		aux2=ListaTercetos.getTerceto(aux2).getSarg();
+		aux2=Terceto.GetTerceto(aux2).getSarg();
 	}
 	if (TablaSimbolos.getSimbolo(aux1).getTipo().equals(TablaSimbolos.getSimbolo(aux2).getTipo()))
 		return;
@@ -897,7 +896,7 @@ case 12:
 break;
 case 13:
 //#line 43 "gramatica.y"
-{ListaTercetos.getTerceto(llamadasFunciones.get(val_peek(0).sval).getTercetoInv()).setCarg(true);
+{Terceto.GetTerceto(llamadasFunciones.get(val_peek(0).sval).getTercetoInv()).setCarg(true);
 						imprimirMSGEstructura("Declaracion de funcion");}
 break;
 case 15:
@@ -906,11 +905,11 @@ case 15:
 break;
 case 16:
 //#line 51 "gramatica.y"
-{tipoAux=val_peek(0).sval;yyval.sval=val_peek(0).sval;}
+{tipoAux=val_peek(0).sval;}
 break;
 case 17:
 //#line 52 "gramatica.y"
-{tipoAux=val_peek(0).sval;yyval.sval=val_peek(0).sval;}
+{tipoAux=val_peek(0).sval;}
 break;
 case 18:
 //#line 53 "gramatica.y"
@@ -929,17 +928,19 @@ case 21:
 {errorEnXY("Se esperaba un identificador o una lista de identificadores separados por ,");}
 break;
 case 23:
-//#line 63 "gramatica.y"
+//#line 62 "gramatica.y"
 {llamadasFunciones.get(val_peek(1).sval).setPar1(val_peek(0).sval);}
 break;
 case 25:
-//#line 64 "gramatica.y"
-{InvocacionFuncion f = llamadasFunciones.get(val_peek(3).sval);
-																f.setPar1(val_peek(2).sval);
-																f.setPar2(val_peek(0).sval);}
+//#line 63 "gramatica.y"
+{
+													InvocacionFuncion f = llamadasFunciones.get(val_peek(3).sval);
+													f.setPar1(val_peek(2).sval); 
+													f.setPar2(val_peek(0).sval);
+												}
 break;
 case 27:
-//#line 69 "gramatica.y"
+//#line 71 "gramatica.y"
 {setearUso(val_peek(1).sval,"Nombre de Funcion");
 							String aux=TablaSimbolos.cambiarNombreKey(val_peek(1).sval);
 							Ambito.addAmbito(val_peek(1).sval);
@@ -949,23 +950,23 @@ case 27:
 							tercetosAux.push(terAux);
 							ListaTercetos.addTerceto(terAux);
 							InvocacionFuncion f = new InvocacionFuncion();
-							f.setTercetoInv("["+ListaTercetos.getIndice()+"]");
+							f.setTercetoInv("["+(Terceto.GetIndice()-1)+"]");
 							llamadasFunciones.put(val_peek(1).sval,f);
-							terAux = new Terceto("MOV","EBX",String.valueOf(ListaTercetos.getIndice()));
+							terAux = new Terceto("MOV","EBX",String.valueOf(Terceto.GetIndice()-1));
 							ListaTercetos.addTerceto(terAux);
 							ListaTercetos.addTerceto(new Terceto("POP","DX","_"));
 							yyval.sval=val_peek(1).sval;}
 break;
 case 28:
-//#line 84 "gramatica.y"
+//#line 86 "gramatica.y"
 {errorEnXY("La declaracion de la funcion necesita un nombre");}
 break;
 case 29:
-//#line 87 "gramatica.y"
+//#line 89 "gramatica.y"
 {ListaTercetos.addTerceto(new Terceto("PUSH","DX","_"));}
 break;
 case 30:
-//#line 87 "gramatica.y"
+//#line 89 "gramatica.y"
 {TokenLexema tokenAux=tokens.pop();
 												if(tokenAux!=null){
 													Ambito.removeAmbito();
@@ -979,15 +980,15 @@ case 30:
 													terAux=new Terceto("RET","_","_");
 													ListaTercetos.addTerceto(terAux);
 													terAux=tercetosAux.pop();
-													terAux.setSarg("["+ListaTercetos.getIndice()+"]");
+													terAux.setSarg("["+Terceto.GetIndice()+"]");
 												}}
 break;
 case 31:
-//#line 102 "gramatica.y"
+//#line 104 "gramatica.y"
 {errorEnXY("En la declaracion de la funcion falta: ),:,{ o }");}
 break;
 case 32:
-//#line 105 "gramatica.y"
+//#line 107 "gramatica.y"
 {setearTipo(val_peek(0).sval,val_peek(1).sval);
 					setearUso(val_peek(0).sval,"Nombre de Parametro");
 					yyval.sval=TablaSimbolos.cambiarNombreKey(val_peek(0).sval);
@@ -995,42 +996,40 @@ case 32:
 					ListaTercetos.addTerceto(new Terceto("Pop",yyval.sval,"_"));}
 break;
 case 33:
-//#line 110 "gramatica.y"
+//#line 112 "gramatica.y"
 {errorEnXY("Identificador del parametro esperado  en la declaracion de funcion");}
 break;
 case 34:
-//#line 113 "gramatica.y"
+//#line 115 "gramatica.y"
 {yyval.sval=val_peek(2).sval; }
 break;
 case 35:
-//#line 114 "gramatica.y"
+//#line 116 "gramatica.y"
 {yyval.sval=val_peek(1).sval;errorEnXY("Parentesis esperados al final de la expresion");}
 break;
 case 36:
-//#line 115 "gramatica.y"
+//#line 117 "gramatica.y"
 {yyval.sval=val_peek(1).sval;errorEnXY("Parentesis esperados al comienzo y final de la expresion");}
 break;
 case 37:
-//#line 116 "gramatica.y"
+//#line 118 "gramatica.y"
 {yyval.sval=val_peek(2).sval;errorEnXY("Parentesis esperados al final de la expresion");}
 break;
 case 38:
-//#line 117 "gramatica.y"
+//#line 119 "gramatica.y"
 {yyval.sval=val_peek(0).sval;errorEnXY("Parentesis esperados al comienzo y final de la expresion y ; al final de linea");}
 break;
 case 39:
-//#line 118 "gramatica.y"
+//#line 120 "gramatica.y"
 {yyval.sval=val_peek(1).sval;errorEnXY("; esperados al final de linea");}
 break;
 case 41:
-//#line 123 "gramatica.y"
-{ListaTercetos.setDefer(true);diferido=true;}
+//#line 125 "gramatica.y"
+{ListaTercetos.setDefer(true); diferido=true;}
 break;
 case 42:
-//#line 123 "gramatica.y"
-{ListaTercetos.setDefer(false);
-																diferido=false;
-																imprimirMSGEstructura("Defer de instruccion ejecutable");}
+//#line 125 "gramatica.y"
+{ListaTercetos.setDefer(false); diferido=false; imprimirMSGEstructura("Defer de instruccion ejecutable");}
 break;
 case 43:
 //#line 128 "gramatica.y"
@@ -1084,25 +1083,25 @@ break;
 case 51:
 //#line 157 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
-									yyval.sval="["+ListaTercetos.getIndice()+"]";
+									yyval.sval="["+Terceto.GetIndice()+"]";
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 52:
 //#line 160 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
-									yyval.sval="["+ListaTercetos.getIndice()+"]";
+									yyval.sval="["+Terceto.GetIndice()+"]";
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 54:
 //#line 166 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
-							yyval.sval="["+ListaTercetos.getIndice()+"]";
+							yyval.sval="["+Terceto.GetIndice()+"]";
 							ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 55:
 //#line 169 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
-							yyval.sval="["+ListaTercetos.getIndice()+"]";
+							yyval.sval="["+Terceto.GetIndice()+"]";
 							ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 57:
@@ -1127,9 +1126,9 @@ case 61:
 									comprobarParametrosFuncion(val_peek(2).sval,0);
 									val_peek(2).sval=Ambito.getAmbito(val_peek(2).sval);
 									yyval.sval=Ambito.getAmbito(val_peek(2).sval);
-									String tercetoLlamado = llamadasFunciones.get(val_peek(2).sval).getTercetoInv();
 									Terceto terAux=new Terceto("Push","EBX","_");
 									ListaTercetos.addTerceto(terAux);
+									String tercetoLlamado = llamadasFunciones.get(val_peek(2).sval).getTercetoInv();
 									terAux=new Terceto("CMP","EBX",tercetoLlamado.substring(1,tercetoLlamado.length()-1));
 									ListaTercetos.addTerceto(terAux);
 									terAux=new Terceto("JE","ErrRec","_");
@@ -1203,47 +1202,49 @@ case 64:
 break;
 case 66:
 //#line 260 "gramatica.y"
-{verificarRangoDoubleNegativo();val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));yyval.sval=val_peek(0).sval;}
+{verificarRangoDoubleNegativo();
+					val_peek(0).sval="-"+val_peek(0).sval;TablaSimbolos.addSimbolo(new TokenLexema(258, val_peek(0).sval,"f64"));
+					yyval.sval=val_peek(0).sval;}
 break;
 case 67:
-//#line 263 "gramatica.y"
+//#line 265 "gramatica.y"
 {ListaTercetos.add_seleccion_final();}
 break;
 case 70:
-//#line 270 "gramatica.y"
+//#line 272 "gramatica.y"
 {ListaTercetos.add_seleccion_then();}
 break;
 case 71:
-//#line 271 "gramatica.y"
+//#line 273 "gramatica.y"
 {ListaTercetos.add_seleccion_then();}
 break;
 case 74:
-//#line 278 "gramatica.y"
+//#line 280 "gramatica.y"
 {ListaTercetos.add_seleccion_cond();}
 break;
 case 75:
-//#line 281 "gramatica.y"
+//#line 283 "gramatica.y"
 {verificarTipos(val_peek(2).sval,val_peek(0).sval);
 													ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));}
 break;
 case 82:
-//#line 293 "gramatica.y"
+//#line 295 "gramatica.y"
 {ListaTercetos.addTerceto(new Terceto(val_peek(3).sval,val_peek(1).sval,"_"));}
 break;
 case 83:
-//#line 294 "gramatica.y"
+//#line 296 "gramatica.y"
 {errorEnXY("Falta de parentesis al comienzo de la cadena del out");}
 break;
 case 84:
-//#line 295 "gramatica.y"
+//#line 297 "gramatica.y"
 {errorEnXY("Falta de parentesis al final de la cadena del out");}
 break;
 case 86:
-//#line 299 "gramatica.y"
+//#line 301 "gramatica.y"
 {errorEnXY("Funcion invocada sin discard del retorno");}
 break;
 case 87:
-//#line 302 "gramatica.y"
+//#line 304 "gramatica.y"
 {Ambito.removeAmbito();
 																		if(val_peek(6).sval!=null){
 																			verificarIdIguales(val_peek(6).sval,val_peek(4).sval);
@@ -1252,7 +1253,7 @@ case 87:
 																		}}
 break;
 case 88:
-//#line 308 "gramatica.y"
+//#line 310 "gramatica.y"
 {Ambito.removeAmbito();
 																			if(val_peek(6).sval!=null){
 																				verificarIdIguales(val_peek(6).sval,val_peek(4).sval);
@@ -1262,18 +1263,18 @@ case 88:
 																					List<Terceto> aux = tercetosBreakET.get(val_peek(9).sval);
 																					tercetosBreakET.remove(val_peek(9).sval);
 																					for (int i = 0; i<aux.size();i++){
-																						aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+																						aux.get(i).setSarg("["+Terceto.GetIndice()+"]");
 																					}
 																				}
 																			}}
 break;
 case 89:
-//#line 323 "gramatica.y"
+//#line 325 "gramatica.y"
 {setearUso(val_peek(1).sval,"Etiqueta");
 					yyval.sval=TablaSimbolos.cambiarNombreKey(val_peek(1).sval);}
 break;
 case 90:
-//#line 327 "gramatica.y"
+//#line 329 "gramatica.y"
 {val_peek(2).sval=Ambito.getAmbito(val_peek(2).sval);
 									if (!variablesInicializadas.contains(val_peek(2).sval))
 										variablesInicializadas.add(val_peek(2).sval);
@@ -1284,7 +1285,7 @@ case 90:
 									yyval.sval=val_peek(2).sval;}
 break;
 case 91:
-//#line 337 "gramatica.y"
+//#line 339 "gramatica.y"
 {val_peek(2).sval=Ambito.getAmbito(val_peek(2).sval);
 									verificarTipos(val_peek(2).sval,val_peek(0).sval);
 									ListaTercetos.addTerceto(new Terceto(val_peek(1).sval,val_peek(2).sval,val_peek(0).sval));
@@ -1292,55 +1293,55 @@ case 91:
 									yyval.sval=val_peek(2).sval;}
 break;
 case 92:
-//#line 344 "gramatica.y"
+//#line 346 "gramatica.y"
 {yyval.sval= val_peek(0).sval;
 						ListaTercetos.add_for_act(id_for_act.pop(),val_peek(1).sval,val_peek(0).sval);
 						Ambito.addAmbito("for");}
 break;
 case 93:
-//#line 347 "gramatica.y"
+//#line 349 "gramatica.y"
 {errorEnXY("Falta +/- para actualizar for");
 				ListaTercetos.add_for_act(id_for_act.pop(),"+",val_peek(0).sval);
 				Ambito.addAmbito("for");}
 break;
 case 94:
-//#line 352 "gramatica.y"
+//#line 354 "gramatica.y"
 {ListaTercetos.add_for_cpo();
 										if (tercetosContinue.containsKey(Ambito.getNaming())){
 											List<Terceto> aux = tercetosContinue.get(Ambito.getNaming());
 											tercetosContinue.remove(Ambito.getNaming());
 											for (int i = 0; i<aux.size();i++){
-												aux.get(i).setSarg("["+(ListaTercetos.getIndice()-3)+"]");
+												aux.get(i).setSarg("["+(Terceto.GetIndice()-3)+"]");
 											}
 										}
 										if (tercetosBreak.containsKey(Ambito.getNaming())){
 											List<Terceto> aux = tercetosBreak.get(Ambito.getNaming());
 											tercetosBreak.remove(Ambito.getNaming());
 											for (int i = 0; i<aux.size();i++){
-												aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+												aux.get(i).setSarg("["+Terceto.GetIndice()+"]");
 											}
 										}}
 break;
 case 95:
-//#line 367 "gramatica.y"
+//#line 369 "gramatica.y"
 {ListaTercetos.add_for_cpo();
 								if (tercetosContinue.containsKey(Ambito.getNaming())){
 									List<Terceto> aux = tercetosContinue.get(Ambito.getNaming());
 									tercetosContinue.remove(Ambito.getNaming());
 									for (int i = 0; i<aux.size();i++){
-										aux.get(i).setSarg("["+(ListaTercetos.getIndice()-3)+"]");
+										aux.get(i).setSarg("["+(Terceto.GetIndice()-3)+"]");
 									}
 								}
 								if (tercetosBreak.containsKey(Ambito.getNaming())){
 									List<Terceto> aux = tercetosBreak.get(Ambito.getNaming());
 									tercetosBreak.remove(Ambito.getNaming());
 									for (int i = 0; i<aux.size();i++){
-										aux.get(i).setSarg("["+ListaTercetos.getIndice()+"]");
+										aux.get(i).setSarg("["+Terceto.GetIndice()+"]");
 									}
 								}}
 break;
 case 101:
-//#line 393 "gramatica.y"
+//#line 395 "gramatica.y"
 {Terceto brk=new Terceto("BI","_","_");
 					if (tercetosBreak.containsKey(Ambito.getNaming())){
 						tercetosBreak.get(Ambito.getNaming()).add(brk);
@@ -1353,7 +1354,7 @@ case 101:
 					}}
 break;
 case 102:
-//#line 403 "gramatica.y"
+//#line 405 "gramatica.y"
 {String amb = Ambito.getAmbito(val_peek(1).sval);
 							if (amb!=null){
 								Terceto brk=new Terceto("BI","_","_");
@@ -1371,7 +1372,7 @@ case 102:
 							}}
 break;
 case 103:
-//#line 418 "gramatica.y"
+//#line 420 "gramatica.y"
 {Terceto cont=new Terceto("BI","_","_");
 						if (tercetosContinue.containsKey(Ambito.getNaming())){
 							tercetosContinue.get(Ambito.getNaming()).add(cont);
@@ -1383,7 +1384,7 @@ case 103:
 							ListaTercetos.addTerceto(cont);
 						}}
 break;
-//#line 1309 "Parser.java"
+//#line 1311 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

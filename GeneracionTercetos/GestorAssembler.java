@@ -112,7 +112,7 @@ public class GestorAssembler {
             procesarTercetoDouble(segundoArgumento, tercerArgumento, operador, sOpINM, tOpINM);    
         }
         TablaSimbolos.addSimbolo(new TokenLexema(257,(variableAux+x),tipoOp));
-        variablesAux.put(nroTerceto, (variableAux+x));
+        variablesAux.put(terceto.id, (variableAux+x));
         x++;
     }
     
@@ -251,7 +251,7 @@ public class GestorAssembler {
             lineaCODE.add(mov+" AX, "+(variableAux+x));
             lineaCODE.add(sahf);
             TablaSimbolos.addSimbolo(new TokenLexema(257,(variableAux+x),"f16")); // documentalo
-            variablesAux.put(nroTerceto, (variableAux+x));
+            variablesAux.put(terceto.id, (variableAux+x));
             x++;
         }
     }
@@ -265,11 +265,11 @@ public class GestorAssembler {
         Terceto tercetoAnterior = new Terceto(null, null, null);
         String nombreAUX= "";
         for (int i = 0; i < ListaTercetos.getIndice() ; i++) {
-            Terceto tercetoProcesar = ListaTercetos.getTerceto(i);
+            Terceto tercetoProcesar = Terceto.GetTerceto(i);
             String operador = tercetoProcesar.getParg();
 
             if (tercetoProcesar.getCarg()!=false) {
-                lineaCODE.add("Label_"+i+":");
+                lineaCODE.add("Label_"+tercetoProcesar.id+":");
             }
             
             switch (operador) {
@@ -286,7 +286,6 @@ public class GestorAssembler {
                     operacion(i, tercetoProcesar);
                     break;
                 case "/":
-                    System.out.println("terceto a procesar "+i+": "+tercetoProcesar);
                     operacion(i, tercetoProcesar);
                     break;
                 case "BI":
