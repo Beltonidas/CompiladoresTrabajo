@@ -952,7 +952,7 @@ case 27:
 							InvocacionFuncion f = new InvocacionFuncion();
 							f.setTercetoInv("["+(Terceto.GetIndice())+"]");
 							llamadasFunciones.put(val_peek(1).sval,f);
-							terAux = new Terceto("MOV","EBX",String.valueOf(Terceto.GetIndice()-1));
+							terAux = new Terceto("MOV","EBX",String.valueOf(Terceto.GetIndice()));
 							ListaTercetos.addTerceto(terAux);
 							ListaTercetos.addTerceto(new Terceto("POP","DX","_"));
 							yyval.sval=val_peek(1).sval;}

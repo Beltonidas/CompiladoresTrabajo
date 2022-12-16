@@ -19,7 +19,7 @@ public class Main {
         //}
         //consola.close();
         //AnalizadorLexico.inic(ruta,com);
-		AnalizadorLexico.inic("./testFiles/prueba_casos_validos.txt",com);
+		AnalizadorLexico.inic("./testFiles/test.txt",com);
 		Parser paruser = new Parser();
 		AnalizadorLexico.paruser=paruser;
 		paruser.run();

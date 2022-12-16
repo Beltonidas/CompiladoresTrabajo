@@ -14,177 +14,217 @@ _dobleMax DQ 1.7976931348623157E308
 _dobleMin DQ 2.2250738585072014E-308
 _out db "Mensaje de Programa", 0
 _xMain DB ?
-@aux7 DB ?
+@aux7 DQ 1.0
 @aux6 DB ?
-@aux5 DB "sigue la ejecucion normalmente", 0
-@aux4 DB ?
-@aux9 DB ?
-@aux20 DB ?
-@aux8 DB ?
-@aux21 DB ?
-_aMain DB ?
+_f20Main DQ ?
+@aux5 DB ?
+@aux4 DQ ?
+@aux9 DQ -1.2
+@aux20 DQ 30.0
+@aux8 DQ 0.6
+@aux21 DQ 6.0
+_xxMainf20f20 DQ ?
+_fiMainf1 DB ?
+_zMainf1f2 DQ ?
 _fiMain DB ?
-@aux3 DB ?
-@aux2 DB ?
-@aux1 DB ?
-@aux0 DQ 10.0
-_iMain DB ?
-_xMainfi DB ?
-_zMain DQ ?
-_jMain DB ?
-@aux11 DB ?
-_bMain DB ?
-@aux12 DQ 3.0
-@aux13 DB "askjhdjla", 0
-@aux14 DB ?
-_zMainfi DQ ?
-@aux10 DB ?
+_xMainf1 DB ?
+_wMain DB ?
+@aux3 DQ 50.0
+@aux2 DQ 49.0
+@aux1 DB "askjhdjla", 0
+_f20Mainf20 DB ?
+@aux0 DQ 9000.0
+_pepitoMainf20f20 DQ ?
+_zMainf1 DQ ?
+_xMainf1f2 DB ?
+_f2Mainf1 DB ?
+_zMainf1fi DQ ?
+_f1Main DB ?
+_iMain DQ ?
+_xxMainfi DQ ?
+_xxMainf20 DQ ?
+@aux11 DQ 2.0E34
+@aux12 DQ 0.25
+_xMainf1fi DB ?
+@aux13 DQ 13.0
+@aux14 DQ 0.0
+_zMainfi DB ?
+@aux10 DQ 3.0E-5
 @aux19 DB ?
-_vMain DQ ?
-@aux15 DB ?
+_yMain DB ?
+_pepeMainf20 DB ?
+@aux15 DQ 1.2E10
 @aux16 DB ?
 @aux17 DB ?
 @aux18 DB ?
 .CODE
 START:
-FLD @aux0
-FSTP _zMain
-MOV AL, 30
-CMP AL, 20
-JAE Label_6
-MOV AL, 49
-MOV _iMain, AL
-JMP Label_8
-Label_6:
-MOV AL, 100
-MOV @aux1, AL
-MOV AL, 50
-MOV @aux2, AL
-MOV AL, @aux2
-ADD AL, @aux1
-MOV @aux3, AL
-MOV AL, @aux3
-MOV _iMain, AL
-Label_8:
-JMP Label_20
-Label_9:
-MOV EBX, 8
+JMP Label_27
+Label_1:
+MOV EBX, 1
 POP DX
 POP AX
-MOV _xMainfi, AL
+MOV _xMainf1, AL
 PUSH DX
-FLD @aux0
-FSTP _zMainfi
-MOV AL, _aMain
-MUL _bMain
-MOV @aux4, AL
-MOV AL, @aux4
-MOV _aMain, AL
+JMP Label_14
+Label_6:
+MOV EBX, 6
 POP DX
-MOV AL, _xMainfi
+POP AX
+MOV _xMainf1f2, AL
+PUSH DX
+POP DX
+MOV AL, _xMainf1f2
 PUSH AX
 PUSH DX
 RET
-Label_20:
-MOV AL, 10
-MOV _aMain, AL
-PUSH EBX
-CMP EBX, 9
-JE ErrRec
-MOV AL, _aMain
-PUSH AX
-CALL Label_9
+Label_14:
+JMP Label_23
+Label_15:
+MOV EBX, 15
+POP DX
 POP AX
-MOV _fiMain, AL
-POP EBX
-MOV AL, 10
+MOV _xMainf1fi, AL
+PUSH DX
+POP DX
+MOV AL, _xMainf1fi
+PUSH AX
+PUSH DX
+RET
+Label_23:
+POP DX
+MOV AL, _xMainf1
+PUSH AX
+PUSH DX
+RET
+Label_27:
+FLD @aux0
+FSTP _iMain
+invoke MessageBox, NULL, addr @aux1, addr _out, MB_OK
+MOV AL, 30
+CMP AL, 20
+JAE Label_33
+FLD @aux2
+FSTP _iMain
+JMP Label_35
+Label_33:
+FLD @aux3
+FLD @aux3
+FADD
+FSTP @aux4
+FLD @aux4
+FSTP _iMain
+Label_35:
+MOV AL, 30
+CMP AL, 20
+JAE Label_39
+FLD @aux3
+FSTP _iMain
+JMP Label_39
+MOV AL, 30
 MOV _xMain, AL
-invoke MessageBox, NULL, addr @aux5, addr _out, MB_OK
-MOV AL, 0
-MOV _iMain, AL
-Label_43:
-CMP _iMain, 10
-JAE Label_62
-JMP Label_59
-MOV AL, 0
-MOV _jMain, AL
-Label_48:
-CMP _jMain, 10
-JAE Label_55
-JMP Label_52
-Label_52:
-JMP Label_62
-MOV AL, 1
-MOV @aux6, AL
-MOV AL, _jMain
-ADD AL, @aux6
-MOV @aux7, AL
-MOV AL, @aux7
-MOV _jMain, AL
-JMP Label_48
-Label_55:
-MOV AL, 2
-MOV @aux8, AL
-MOV AL, _aMain
-MUL @aux8
-MOV @aux9, AL
-MOV AL, @aux9
-MOV _aMain, AL
-JMP Label_62
+Label_41:
+CMP _xMain, 20
+JAE Label_47
+FLD @aux3
+FSTP _iMain
+MOV AL, 34
+MOV @aux5, AL
 MOV AL, _xMain
-MOV _bMain, AL
-Label_59:
-MOV AL, _aMain
+ADD AL, @aux5
+MOV @aux6, AL
+MOV AL, @aux6
 MOV _xMain, AL
-MOV AL, 1
-MOV @aux10, AL
-MOV AL, _iMain
-ADD AL, @aux10
-MOV @aux11, AL
-MOV AL, @aux11
-MOV _iMain, AL
-JMP Label_43
-Label_62:
+JMP Label_41
+Label_47:
+FLD @aux7
+FSTP _iMain
+FLD @aux8
+FSTP _iMain
+FLD @aux9
+FSTP _iMain
+FLD @aux10
+FSTP _iMain
+FLD @aux11
+FSTP _iMain
 FLD @aux12
-FSTP _zMain
-FLD @aux12
-FSTP _vMain
-invoke MessageBox, NULL, addr @aux13, addr _out, MB_OK
-PUSH EBX
-CMP EBX, 9
-JE ErrRec
-MOV AL, _aMain
-PUSH AX
-CALL Label_9
-POP AX
-MOV _fiMain, AL
-POP EBX
-MOV AL, 5
-MOV @aux14, AL
-MOV AL, 3
-MOV @aux15, AL
-MOV AX, 0
-MOV AL, @aux15
-DIV @aux14
+FSTP _iMain
+FLD @aux13
+FSTP _iMain
+FLD @aux14
+FSTP _iMain
+FLD @aux15
+FSTP _iMain
+MOV AL, 30
+MOV _xMain, AL
+Label_57:
+CMP _xMain, 20
+JAE Label_63
+MOV AL, 40
+MOV _xMain, AL
+MOV AL, 34
 MOV @aux16, AL
-MOV AL, 8
+MOV AL, _xMain
+ADD AL, @aux16
 MOV @aux17, AL
-MOV AX, 0
-MOV AL, @aux16
-DIV @aux17
+MOV AL, @aux17
+MOV _xMain, AL
+JMP Label_57
+Label_63:
+MOV AL, 30
+MOV _xMain, AL
+Label_64:
+CMP _xMain, 20
+JAE Label_70
+JMP Label_70
+MOV AL, 34
 MOV @aux18, AL
-MOV AL, _fiMain
+MOV AL, _xMain
 ADD AL, @aux18
 MOV @aux19, AL
-MOV AL, 0
-MOV @aux20, AL
 MOV AL, @aux19
-SUB AL, @aux20
-CMP AL, 0
-JL ErrUiNeg
-MOV @aux21, AL
-MOV AL, @aux21
 MOV _xMain, AL
+JMP Label_64
+Label_70:
+JMP Label_80
+Label_71:
+MOV EBX, 71
+POP DX
+FSTP _xxMainfi
+PUSH DX
+FLD @aux20
+FSTP _xxMainfi
+POP DX
+MOV AL, 4
+PUSH AX
+PUSH DX
+RET
+Label_80:
+JMP Label_98
+Label_81:
+MOV EBX, 81
+POP DX
+FSTP _xxMainf20
+PUSH DX
+JMP Label_94
+Label_86:
+MOV EBX, 86
+POP DX
+FSTP _xxMainf20f20
+PUSH DX
+POP DX
+MOV AL, _pepeMainf20
+PUSH AX
+PUSH DX
+RET
+Label_94:
+POP DX
+FLD @aux21
+PUSH DX
+RET
+Label_39:
+invoke MessageBox, NULL, addr @aux1, addr _out, MB_OK
+Label_98:
 JMP final
 ErrRec:
 invoke MessageBox, NULL, addr _ErrRec, addr _ErrRec, MB_OK

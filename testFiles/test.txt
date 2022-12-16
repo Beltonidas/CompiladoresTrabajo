@@ -54,7 +54,7 @@ pro {ui8 y, x, w;
     fun fi (f64 xx):ui8{
 	    ui8 z;
 	    xx =: 30.0;
-	    return (z);
+	    return (4);
 	}
     <<y =: roberto + 3.0;>>
 

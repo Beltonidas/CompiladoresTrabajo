@@ -341,7 +341,19 @@ public class GestorAssembler {
                         if (tercetoProcesar.sarg.startsWith("[")) {
                             nombreAUX = variablesAux.get(referenciaTerceto(tercetoProcesar.sarg));
                             lineaCODE.add(fld+" "+nombreAUX.replace(":", ""));
-                        } else {
+                        } else if (segundoEsInmediato(tercetoProcesar)) {
+                            String variableAuxiliar="";
+                            if (ctesAux.containsKey(tercetoProcesar.sarg)){
+                                variableAuxiliar=ctesAux.get(tercetoProcesar.sarg);
+                            }else{
+                                variableAuxiliar=(variableAux+x);
+                                ctesAux.put(tercetoProcesar.sarg, (variableAux+x));
+                                TablaSimbolos.addSimbolo(new TokenLexema(257, (variableAux+x), "f64"));
+                                x++;
+                            }
+                            lineaCODE.add(fld+" "+variableAuxiliar);
+                        }
+                        else {
                             lineaCODE.add(fld+" _"+tercetoProcesar.sarg.replace(":", ""));
                         }
                     }

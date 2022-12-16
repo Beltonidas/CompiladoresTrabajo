@@ -3,6 +3,7 @@ programa
     f64 z;
 	fun fi (ui8 x):ui8{
         z=:10.0;
+        x =: 3;
         ui8 x;
         fun fa (ui8 x):ui8{
             z=:10.0;
