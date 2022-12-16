@@ -265,7 +265,7 @@ public class GestorAssembler {
         Terceto tercetoAnterior = new Terceto(null, null, null);
         String nombreAUX= "";
         for (int i = 0; i < ListaTercetos.getIndice() ; i++) {
-            Terceto tercetoProcesar = Terceto.GetTerceto(i);
+            Terceto tercetoProcesar = ListaTercetos.getTerceto(i);
             String operador = tercetoProcesar.getParg();
 
             if (tercetoProcesar.getCarg()!=false) {

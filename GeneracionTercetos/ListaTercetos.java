@@ -81,11 +81,14 @@ public class ListaTercetos {
         System.out.println("end start");
     }
     
+    public static Terceto getTerceto(int id) {
+        return tercetos.get(id);
+    }
+    
     public static void considerarEtiquetas() {
         List<Integer> labels = new ArrayList<Integer>();
         for (int i=0;i<tercetos.size();i++) {
             Terceto x = tercetos.get(i);
-            //System.out.println(x);
             if (x.getParg().equals("BI")) {
                 String aux=x.getSarg().substring(1,x.getSarg().length()-1);
                 if (!labels.contains(Integer.parseInt(aux))) { 

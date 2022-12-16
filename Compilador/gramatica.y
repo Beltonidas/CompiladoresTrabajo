@@ -77,7 +77,7 @@ header_funcion: fun id '(' {setearUso($2.sval,"Nombre de Funcion");
 							tercetosAux.push(terAux);
 							ListaTercetos.addTerceto(terAux);
 							InvocacionFuncion f = new InvocacionFuncion();
-							f.setTercetoInv("["+(Terceto.GetIndice()-1)+"]");
+							f.setTercetoInv("["+(Terceto.GetIndice())+"]");
 							llamadasFunciones.put($2.sval,f);
 							terAux = new Terceto("MOV","EBX",String.valueOf(Terceto.GetIndice()-1));
 							ListaTercetos.addTerceto(terAux);
